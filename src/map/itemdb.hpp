@@ -221,6 +221,7 @@ enum e_item_job
 	ITEMJ_THIRD       = 0x08,
 	ITEMJ_THIRD_TRANS = 0x10,
 	ITEMJ_THIRD_BABY  = 0x20,
+	ITEMJ_FORTH       = 0x40,
 };
 
 enum e_item_ammo
@@ -834,7 +835,7 @@ struct item_data
 //Lupus: I rearranged order of these fields due to compatibility with ITEMINFO script command
 //		some script commands should be revised as well...
 	uint64 class_base[3];	//Specifies if the base can wear this item (split in 3 indexes per type: 1-1, 2-1, 2-2)
-	unsigned class_upper : 6; //Specifies if the class-type can equip it (0x01: normal, 0x02: trans, 0x04: baby, 0x08:third, 0x10:trans-third, 0x20-third-baby)
+	unsigned class_upper : 7; //Specifies if the class-type can equip it (0x01: normal, 0x02: trans, 0x04: baby, 0x08:third, 0x10:trans-third, 0x20-third-baby, 0x40-forth)
 	struct {
 		int chance;
 		int id;

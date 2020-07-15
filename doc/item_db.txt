@@ -119,6 +119,7 @@ Class: Equippable upper-types. Uses the following bitmasks:
 	 8: Third classes (no Transcedent-Third or Third-Baby classes)
 	16: Transcedent-Third classes
 	32: Third-Baby classes
+	64: Forth classes
 
 ---------------------------------------
 

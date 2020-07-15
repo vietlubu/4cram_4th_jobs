@@ -229,6 +229,9 @@
 	export_constant(JOB_STAR_EMPEROR2);
 	export_constant(JOB_BABY_STAR_EMPEROR2);
 
+	//4-1 Jobs
+	export_constant(JOB_DRAGON_KNIGHT);
+
 	/* EA jobs */
 	export_constant2("EAJL_2_1",JOBL_2_1);
 	export_constant2("EAJL_2_2",JOBL_2_2);
@@ -236,10 +239,12 @@
 	export_constant2("EAJL_UPPER",JOBL_UPPER);
 	export_constant2("EAJL_BABY",JOBL_BABY);
 	export_constant2("EAJL_THIRD",JOBL_THIRD);
+	export_constant2("EAJL_FORTH", JOBL_FORTH);
 
 	export_constant2("EAJ_BASEMASK",MAPID_BASEMASK);
 	export_constant2("EAJ_UPPERMASK",MAPID_UPPERMASK);
 	export_constant2("EAJ_THIRDMASK",MAPID_THIRDMASK);
+	export_constant2("EAJ_FORTHMASK", MAPID_FORTHMASK);
 
 	export_constant2("EAJ_NOVICE",MAPID_NOVICE);
 	export_constant2("EAJ_SWORDMAN",MAPID_SWORDMAN);
@@ -383,6 +388,9 @@
 	export_constant2("EAJ_SUPER_BABY_E",MAPID_SUPER_BABY_E);
 
 	export_constant2("EAJ_SUMMONER",MAPID_SUMMONER);
+
+	//4-1 Jobs
+	export_constant2("EAJ_DRAGON_KNIGHT", MAPID_DRAGON_KNIGHT);
 
 	/* sex */
 	export_constant(SEX_FEMALE);

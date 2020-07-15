@@ -51,6 +51,7 @@ enum sc_type : int16;
 #define PCDIECOUNTER_VAR "PC_DIE_COUNTER"
 #define JOBCHANGE2ND_VAR "jobchange_level"
 #define JOBCHANGE3RD_VAR "jobchange_level_3rd"
+#define JOBCHANGE4TH_VAR "jobchange_level_4th"
 #define TKMISSIONID_VAR "TK_MISSION_ID"
 #define TKMISSIONCOUNT_VAR "TK_MISSION_COUNT"
 #define ATTENDANCE_DATE_VAR "#AttendanceDate"
@@ -617,6 +618,7 @@ struct map_session_data {
 
 	unsigned char change_level_2nd; // job level when changing from 1st to 2nd class [jobchange_level in global_reg_value]
 	unsigned char change_level_3rd; // job level when changing from 2nd to 3rd class [jobchange_level_3rd in global_reg_value]
+	unsigned char change_level_4th; // job level when changing from 3rd to 4th class [jobchange_level_4rd in global_reg_value]
 
 	char fakename[NAME_LENGTH]; // fake names [Valaris]
 
@@ -1004,7 +1006,8 @@ short pc_maxaspd(struct map_session_data *sd);
 	  (class_) == JOB_REBELLION				|| (class_) == JOB_SUMMONER         || \
 	  (class_) == JOB_BABY_SUMMONER			|| \
 	( (class_) >= JOB_BABY_NINJA			&& (class_) <= JOB_BABY_REBELLION ) || \
-	( (class_) >= JOB_BABY_STAR_GLADIATOR2	&& (class_) <= JOB_BABY_STAR_EMPEROR2 ) \
+	( (class_) >= JOB_BABY_STAR_GLADIATOR2	&& (class_) <= JOB_BABY_STAR_EMPEROR2 ) || \
+	(class_) == JOB_DRAGON_KNIGHT \
 )
 #define pcdb_checkid(class_) pcdb_checkid_sub((unsigned int)class_)
 

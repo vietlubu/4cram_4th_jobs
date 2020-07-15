@@ -1315,6 +1315,9 @@ static bool pc_isItemClass (struct map_session_data *sd, struct item_data* item)
 		if (item->class_upper&ITEMJ_THIRD_BABY && sd->class_&JOBL_THIRD && sd->class_&JOBL_BABY)
 			break;
 #endif
+		// 4th Jobs - For equips exclusive to any 4th job classes only.
+		if (item->class_upper&ITEMJ_FORTH && sd->class_&JOBL_FORTH)
+			break;
 		return false;
 	}
 	return true;
@@ -1718,6 +1721,7 @@ void pc_reg_received(struct map_session_data *sd)
 
 	sd->change_level_2nd = static_cast<unsigned char>(pc_readglobalreg(sd, add_str(JOBCHANGE2ND_VAR)));
 	sd->change_level_3rd = static_cast<unsigned char>(pc_readglobalreg(sd, add_str(JOBCHANGE3RD_VAR)));
+	sd->change_level_4th = static_cast<unsigned char>(pc_readglobalreg(sd, add_str(JOBCHANGE4TH_VAR)));
 	sd->die_counter = static_cast<int>(pc_readglobalreg(sd, add_str(PCDIECOUNTER_VAR)));
 
 	sd->langtype = static_cast<int>(pc_readaccountreg(sd, add_str(LANGTYPE_VAR)));
@@ -6548,6 +6552,8 @@ int pc_jobid2mapid(unsigned short b_class)
 		case JOB_BABY_GENETIC:          return MAPID_BABY_GENETIC;
 		case JOB_BABY_SHADOW_CHASER:    return MAPID_BABY_SHADOW_CHASER;
 		case JOB_BABY_SOUL_REAPER:      return MAPID_BABY_SOUL_REAPER;
+	//4-1 Jobs
+		case JOB_DRAGON_KNIGHT:         return MAPID_DRAGON_KNIGHT;
 	//Doram Jobs
 		case JOB_SUMMONER:              return MAPID_SUMMONER;
 		default:
@@ -6699,6 +6705,8 @@ int pc_mapid2jobid(unsigned short class_, int sex)
 		case MAPID_BABY_GENETIC:          return JOB_BABY_GENETIC;
 		case MAPID_BABY_SHADOW_CHASER:    return JOB_BABY_SHADOW_CHASER;
 		case MAPID_BABY_SOUL_REAPER:      return JOB_BABY_SOUL_REAPER;
+	//4-1 Jobs
+		case MAPID_DRAGON_KNIGHT:         return JOB_DRAGON_KNIGHT;
 	//Doram Jobs
 		case MAPID_SUMMONER:              return JOB_SUMMONER;
 		default:
@@ -6959,6 +6967,14 @@ const char* job_name(int class_)
 
 	case JOB_BABY_STAR_EMPEROR2:
 		return msg_txt(NULL,784);
+
+	case JOB_DRAGON_KNIGHT:
+	//case JOB_WARLOCK:
+	//case JOB_RANGER:
+	//case JOB_ARCH_BISHOP:
+	//case JOB_MECHANIC:
+	//case JOB_GUILLOTINE_CROSS:
+		return msg_txt(NULL, 2001 - JOB_DRAGON_KNIGHT + class_);
 
 	default:
 		return msg_txt(NULL,655);
@@ -9240,6 +9256,11 @@ bool pc_jobchange(struct map_session_data *sd,int job, char upper)
 	else if((b_class&JOBL_THIRD) && !(sd->class_&JOBL_THIRD)) {
 		sd->change_level_3rd = sd->status.job_level;
 		pc_setglobalreg(sd, add_str(JOBCHANGE3RD_VAR), sd->change_level_3rd);
+	}
+	// changing from 3rd to 4th job
+	else if ((b_class&JOBL_FORTH) && !(sd->class_&JOBL_FORTH)) {
+		sd->change_level_4th = sd->status.job_level;
+		pc_setglobalreg(sd, add_str(JOBCHANGE4TH_VAR), sd->change_level_4th);
 	}
 
 	if(sd->cloneskill_idx > 0) {

@@ -68,11 +68,13 @@ void map_msg_reload(void);
 #define JOBL_UPPER 0x1000 //4096
 #define JOBL_BABY 0x2000  //8192
 #define JOBL_THIRD 0x4000 //16384
+#define JOBL_FORTH 0x8000 //32768
 
 //for filtering and quick checking.
 #define MAPID_BASEMASK 0x00ff
 #define MAPID_UPPERMASK 0x0fff
 #define MAPID_THIRDMASK (JOBL_THIRD|MAPID_UPPERMASK)
+#define MAPID_FORTHMASK (JOBL_FORTH|MAPID_THIRDMASK)
 
 //First Jobs
 //Note the oddity of the novice:
@@ -219,6 +221,8 @@ enum e_mapid {
 	MAPID_BABY_GENETIC,
 	MAPID_BABY_SHADOW_CHASER,
 	MAPID_BABY_SOUL_REAPER,
+//4-1 Jobs
+	MAPID_DRAGON_KNIGHT = JOBL_FORTH|MAPID_RUNE_KNIGHT,
 };
 
 //Max size for inputs to Graffiti, Talkie Box and Vending text prompts
