@@ -2216,8 +2216,8 @@ enum scs_flag {
 };
 
 ///Define flags for the status_calc_bl function. [Skotlex]
-enum scb_flag
-{
+enum scb_flag : int64
+{	// Main Flags
 	SCB_NONE	= 0x00000000,
 	SCB_BASE	= 0x00000001,
 	SCB_MAXHP	= 0x00000002,
@@ -2249,10 +2249,29 @@ enum scb_flag
 	SCB_RACE	= 0x08000000,
 	SCB_RANGE	= 0x10000000,
 	SCB_REGEN	= 0x20000000,
-	SCB_DYE		= 0x40000000, // force cloth-dye change to 0 to avoid client crashes.
 
-	SCB_BATTLE	= 0x3FFFFFFE,
-	SCB_ALL		= 0x3FFFFFFF
+	// 4th Job Stat/Sub-Stat Flags
+	SCB_MAXAP	= 0x40000000,
+	SCB_POW		= 0x80000000,
+	SCB_STA		= 0x000100000000,
+	SCB_WIS		= 0x000200000000,
+	SCB_SPL		= 0x000400000000,
+	SCB_CON		= 0x000800000000,
+	SCB_CRT		= 0x001000000000,
+	SCB_PATK	= 0x002000000000,
+	SCB_SMATK	= 0x004000000000,
+	SCB_HPLUS	= 0x008000000000,
+	SCB_CRATE	= 0x010000000000,
+	SCB_RES		= 0x020000000000,
+	SCB_MRES	= 0x040000000000,
+
+	// Extra Flags
+	// These are flags not sent through battle/all flags. Always keep these last.
+	SCB_DYE		= 0x080000000000, // force cloth-dye change to 0 to avoid client crashes.
+
+	// Special flags for updating all stat/sub-stat stuff on request.
+	SCB_BATTLE	= 0x07FFFFFFFFFE,// All except BASE and extra flags.
+	SCB_ALL		= 0x07FFFFFFFFFF// All except extra flags.
 };
 
 enum e_status_calc_opt {
@@ -2348,7 +2367,7 @@ struct weapon_atk {
 
 extern sc_type SkillStatusChangeTable[MAX_SKILL];   /// skill  -> status
 extern int StatusIconChangeTable[SC_MAX];           /// status -> "icon" (icon is a bit of a misnomer, since there exist values with no icon associated)
-extern unsigned int StatusChangeFlagTable[SC_MAX];  /// status -> flags
+extern uint64 StatusChangeFlagTable[SC_MAX];  /// status -> flags
 extern int StatusSkillChangeTable[SC_MAX];          /// status -> skill
 extern int StatusRelevantBLTypes[EFST_MAX];           /// "icon" -> enum bl_type (for clif->status_change to identify for which bl types to send packets)
 extern unsigned int StatusChangeStateTable[SC_MAX]; /// status -> flags
@@ -2477,7 +2496,7 @@ struct status_change {
 // for looking up associated data
 sc_type status_skill2sc(int skill);
 int status_sc2skill(sc_type sc);
-unsigned int status_sc2scb_flag(sc_type sc);
+uint64 status_sc2scb_flag(sc_type sc);
 int status_type2relevant_bl_types(int type);
 
 int status_damage(struct block_list *src,struct block_list *target,int64 dhp,int64 dsp, t_tick walkdelay, int flag, uint16 skill_id);

@@ -69,7 +69,7 @@ unsigned int SCDisabled[SC_MAX]; ///< List of disabled SC on map zones. [Cydh]
 
 sc_type SkillStatusChangeTable[MAX_SKILL];
 int StatusIconChangeTable[SC_MAX];
-unsigned int StatusChangeFlagTable[SC_MAX];
+uint64 StatusChangeFlagTable[SC_MAX];
 int StatusSkillChangeTable[SC_MAX];
 int StatusRelevantBLTypes[EFST_MAX];
 unsigned int StatusChangeStateTable[SC_MAX];
@@ -245,7 +245,7 @@ int status_sc2skill(sc_type sc)
  * @param sc The status to look up
  * @return The scb_flag registered for this status (see enum scb_flag)
  */
-unsigned int status_sc2scb_flag(sc_type sc)
+uint64 status_sc2scb_flag(sc_type sc)
 {
 	if( sc < 0 || sc >= SC_MAX ) {
 		ShowError("status_sc2scb_flag: Unsupported status change id %d\n", sc);
@@ -274,7 +274,7 @@ int status_type2relevant_bl_types(int type)
 // Indicates that the status displays a visual effect for the affected unit, and should be sent to the client for all supported units
 #define set_sc_with_vfx(skill, sc, icon, flag) set_sc((skill), (sc), (icon), (flag)); if((icon) < EFST_MAX) StatusRelevantBLTypes[(icon)] |= BL_SCEFFECT
 
-static void set_sc(uint16 skill_id, sc_type sc, int icon, unsigned int flag)
+static void set_sc(uint16 skill_id, sc_type sc, int icon, uint64 flag)
 {
 	uint16 idx = skill_get_index(skill_id);
 	if( idx == 0 ) {
@@ -296,7 +296,7 @@ static void set_sc(uint16 skill_id, sc_type sc, int icon, unsigned int flag)
 		SkillStatusChangeTable[idx] = sc;
 }
 
-static void set_sc_with_vfx_noskill(sc_type sc, int icon, unsigned flag) {
+static void set_sc_with_vfx_noskill(sc_type sc, int icon, uint64 flag) {
 	if (sc > SC_NONE && sc < SC_MAX) {
 		if (StatusIconChangeTable[sc] == EFST_BLANK)
 			StatusIconChangeTable[sc] = icon;
@@ -9116,7 +9116,8 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 	struct status_change_entry* sce;
 	struct status_data *status;
 	struct view_data *vd;
-	int opt_flag, calc_flag, undead_flag, val_flag = 0, tick_time = 0;
+	int opt_flag, undead_flag, val_flag = 0, tick_time = 0;
+	int64 calc_flag;
 	bool sc_isnew = true;
 
 	nullpo_ret(bl);
