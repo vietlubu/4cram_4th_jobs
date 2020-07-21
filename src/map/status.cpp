@@ -81,6 +81,12 @@ static unsigned short status_calc_vit(struct block_list *,struct status_change *
 static unsigned short status_calc_int(struct block_list *,struct status_change *,int);
 static unsigned short status_calc_dex(struct block_list *,struct status_change *,int);
 static unsigned short status_calc_luk(struct block_list *,struct status_change *,int);
+static unsigned short status_calc_pow(struct block_list *, struct status_change *, int);
+static unsigned short status_calc_sta(struct block_list *, struct status_change *, int);
+static unsigned short status_calc_wis(struct block_list *, struct status_change *, int);
+static unsigned short status_calc_spl(struct block_list *, struct status_change *, int);
+static unsigned short status_calc_con(struct block_list *, struct status_change *, int);
+static unsigned short status_calc_crt(struct block_list *, struct status_change *, int);
 static unsigned short status_calc_batk(struct block_list *,struct status_change *,int);
 static unsigned short status_calc_watk(struct block_list *,struct status_change *,int);
 static unsigned short status_calc_matk(struct block_list *,struct status_change *,int);
@@ -99,6 +105,12 @@ static unsigned short status_calc_dmotion(struct block_list *bl, struct status_c
 static short status_calc_aspd(struct block_list *bl, struct status_change *sc, bool fixed);
 #endif
 static short status_calc_fix_aspd(struct block_list *bl, struct status_change *sc, int);
+static signed short status_calc_patk(struct block_list *, struct status_change *, int);
+static signed short status_calc_smatk(struct block_list *, struct status_change *, int);
+static signed short status_calc_res(struct block_list *, struct status_change *, int);
+static signed short status_calc_mres(struct block_list *, struct status_change *, int);
+static signed short status_calc_hplus(struct block_list *, struct status_change *, int);
+static signed short status_calc_crate(struct block_list *, struct status_change *, int);
 static unsigned int status_calc_maxhp(struct block_list *bl, uint64 maxhp);
 static unsigned int status_calc_maxsp(struct block_list *bl, uint64 maxsp);
 static unsigned char status_calc_element(struct block_list *bl, struct status_change *sc, int element);
@@ -5294,7 +5306,7 @@ void status_calc_state( struct block_list *bl, struct status_change *sc, enum sc
  * @param bl: Object whose status has changed [PC|MOB|HOM|MER|ELEM]
  * @param flag: Which status has changed on bl
  */
-void status_calc_bl_main(struct block_list *bl, /*enum scb_flag*/int flag)
+void status_calc_bl_main(struct block_list *bl, /*enum scb_flag*/int64 flag)
 {
 	const struct status_data *b_status = status_get_base_status(bl); // Base Status
 	struct status_data *status = status_get_status_data(bl); // Battle Status
@@ -5376,6 +5388,36 @@ void status_calc_bl_main(struct block_list *bl, /*enum scb_flag*/int flag)
 			|SCB_MATK|SCB_HIT|SCB_FLEE
 #endif
 			;
+	}
+
+	if (flag&SCB_POW) {
+		status->pow = status_calc_pow(bl, sc, b_status->pow);
+		flag |= SCB_BATK|SCB_PATK;
+	}
+
+	if (flag&SCB_STA) {
+		status->sta = status_calc_sta(bl, sc, b_status->sta);
+		flag |= SCB_RES;
+	}
+
+	if (flag&SCB_WIS) {
+		status->wis = status_calc_wis(bl, sc, b_status->wis);
+		flag |= SCB_MRES;
+	}
+
+	if (flag&SCB_SPL) {
+		status->spl = status_calc_spl(bl, sc, b_status->spl);
+		flag |= SCB_MATK|SCB_SMATK;
+	}
+
+	if (flag&SCB_CON) {
+		status->con = status_calc_con(bl, sc, b_status->con);
+		flag |= SCB_HIT|SCB_FLEE|SCB_PATK|SCB_SMATK;
+	}
+
+	if (flag&SCB_CRT) {
+		status->crt = status_calc_crt(bl, sc, b_status->crt);
+		flag |= SCB_HPLUS|SCB_CRATE;
 	}
 
 	if(flag&SCB_BATK && b_status->batk) {
@@ -5770,6 +5812,48 @@ void status_calc_bl_main(struct block_list *bl, /*enum scb_flag*/int flag)
 		} else { // Mercenary and mobs
 			status->dmotion = status_calc_dmotion(bl, sc, b_status->dmotion);
 		}
+	}
+
+	if (flag&SCB_PATK) {
+		if (status->pow == b_status->pow && status->con == b_status->con)
+			status->patk = status_calc_patk(bl, sc, b_status->patk);
+		else
+			status->patk = status_calc_patk(bl, sc, b_status->patk + (status->pow - b_status->pow) / 3 + (status->con - b_status->con) / 5);
+	}
+
+	if (flag&SCB_SMATK) {
+		if (status->spl == b_status->spl && status->con == b_status->con)
+			status->smatk = status_calc_smatk(bl, sc, b_status->smatk);
+		else
+			status->smatk = status_calc_smatk(bl, sc, b_status->smatk) + (status->spl - b_status->spl) / 3 + (status->con - b_status->con) / 5;
+	}
+
+	if (flag&SCB_RES) {
+		if (status->sta == b_status->sta)
+			status->res = status_calc_res(bl, sc, b_status->res);
+		else
+			status->res = status_calc_res(bl, sc, b_status->res + (status->sta - b_status->sta) + (status->sta - b_status->sta) / 3 * 5);
+	}
+
+	if (flag&SCB_MRES) {
+		if (status->wis == b_status->wis)
+			status->mres = status_calc_mres(bl, sc, b_status->mres);
+		else
+			status->mres = status_calc_mres(bl, sc, b_status->mres + (status->wis - b_status->wis) + (status->wis - b_status->wis) / 3 * 5);
+	}
+
+	if (flag&SCB_HPLUS) {
+		if (status->crt == b_status->crt)
+			status->hplus = status_calc_hplus(bl, sc, b_status->hplus);
+		else
+			status->hplus = status_calc_hplus(bl, sc, b_status->hplus + (status->crt - b_status->crt));
+	}
+
+	if (flag&SCB_CRATE) {
+		if (status->crt == b_status->crt)
+			status->crate = status_calc_crate(bl, sc, b_status->crate);
+		else
+			status->crate = status_calc_crate(bl, sc, b_status->crate + (status->crt - b_status->crt) / 3);
 	}
 
 	if(flag&(SCB_VIT|SCB_MAXHP|SCB_INT|SCB_MAXSP) && bl->type&BL_REGEN)
@@ -6452,6 +6536,96 @@ static unsigned short status_calc_luk(struct block_list *bl, struct status_chang
 		luk += sc->data[SC_UNIVERSESTANCE]->val2;
 
 	return (unsigned short)cap_value(luk,0,USHRT_MAX);
+}
+
+/**
+* Adds power modifications based on status changes
+* @param bl: Object to change pow [PC|MOB|HOM|MER|ELEM]
+* @param sc: Object's status change information
+* @param pow: Initial pow
+* @return modified pow with cap_value(pow,0,USHRT_MAX)
+*/
+static unsigned short status_calc_pow(struct block_list *bl, struct status_change *sc, int pow)
+{
+	if (!sc || !sc->count)
+		return cap_value(pow, 0, USHRT_MAX);
+
+	return (unsigned short)cap_value(pow, 0, USHRT_MAX);
+}
+
+/**
+* Adds stamina modifications based on status changes
+* @param bl: Object to change sta [PC|MOB|HOM|MER|ELEM]
+* @param sc: Object's status change information
+* @param sta: Initial sta
+* @return modified sta with cap_value(sta,0,USHRT_MAX)
+*/
+static unsigned short status_calc_sta(struct block_list *bl, struct status_change *sc, int sta)
+{
+	if (!sc || !sc->count)
+		return cap_value(sta, 0, USHRT_MAX);
+
+	return (unsigned short)cap_value(sta, 0, USHRT_MAX);
+}
+
+/**
+* Adds wisdom modifications based on status changes
+* @param bl: Object to change wis [PC|MOB|HOM|MER|ELEM]
+* @param sc: Object's status change information
+* @param wis: Initial wis
+* @return modified wis with cap_value(wis,0,USHRT_MAX)
+*/
+static unsigned short status_calc_wis(struct block_list *bl, struct status_change *sc, int wis)
+{
+	if (!sc || !sc->count)
+		return cap_value(wis, 0, USHRT_MAX);
+
+	return (unsigned short)cap_value(wis, 0, USHRT_MAX);
+}
+
+/**
+* Adds spell modifications based on status changes
+* @param bl: Object to change spl [PC|MOB|HOM|MER|ELEM]
+* @param sc: Object's status change information
+* @param spl: Initial spl
+* @return modified spl with cap_value(spl,0,USHRT_MAX)
+*/
+static unsigned short status_calc_spl(struct block_list *bl, struct status_change *sc, int spl)
+{
+	if (!sc || !sc->count)
+		return cap_value(spl, 0, USHRT_MAX);
+
+	return (unsigned short)cap_value(spl, 0, USHRT_MAX);
+}
+
+/**
+* Adds concentration modifications based on status changes
+* @param bl: Object to change con [PC|MOB|HOM|MER|ELEM]
+* @param sc: Object's status change information
+* @param con: Initial con
+* @return modified con with cap_value(con,0,USHRT_MAX)
+*/
+static unsigned short status_calc_con(struct block_list *bl, struct status_change *sc, int con)
+{
+	if (!sc || !sc->count)
+		return cap_value(con, 0, USHRT_MAX);
+
+	return (unsigned short)cap_value(con, 0, USHRT_MAX);
+}
+
+/**
+* Adds creative modifications based on status changes
+* @param bl: Object to change crt [PC|MOB|HOM|MER|ELEM]
+* @param sc: Object's status change information
+* @param crt: Initial crt
+* @return modified crt with cap_value(crt,0,USHRT_MAX)
+*/
+static unsigned short status_calc_crt(struct block_list *bl, struct status_change *sc, int crt)
+{
+	if (!sc || !sc->count)
+		return cap_value(crt, 0, USHRT_MAX);
+
+	return (unsigned short)cap_value(crt, 0, USHRT_MAX);
 }
 
 /**
@@ -7833,6 +8007,96 @@ static unsigned short status_calc_dmotion(struct block_list *bl, struct status_c
 		return 0;
 
 	return (unsigned short)cap_value(dmotion,0,USHRT_MAX);
+}
+
+/**
+* Adds power atk modifications based on status changes
+* @param bl: Object to change patk [PC|MOB|HOM|MER|ELEM]
+* @param sc: Object's status change information
+* @param patk: Initial patk
+* @return modified patk with cap_value(patk,0,USHRT_MAX)
+*/
+static signed short status_calc_patk(struct block_list *bl, struct status_change *sc, int patk)
+{
+	if (!sc || !sc->count)
+		return cap_value(patk, 0, SHRT_MAX);
+
+	return (short)cap_value(patk, 0, SHRT_MAX);
+}
+
+/**
+* Adds spell matk modifications based on status changes
+* @param bl: Object to change smatk [PC|MOB|HOM|MER|ELEM]
+* @param sc: Object's status change information
+* @param smatk: Initial smatk
+* @return modified smatk with cap_value(smatk,0,USHRT_MAX)
+*/
+static signed short status_calc_smatk(struct block_list *bl, struct status_change *sc, int smatk)
+{
+	if (!sc || !sc->count)
+		return cap_value(smatk, 0, SHRT_MAX);
+
+	return (short)cap_value(smatk, 0, SHRT_MAX);
+}
+
+/**
+* Adds resist modifications based on status changes
+* @param bl: Object to change res [PC|MOB|HOM|MER|ELEM]
+* @param sc: Object's status change information
+* @param res: Initial res
+* @return modified res with cap_value(res,0,USHRT_MAX)
+*/
+static signed short status_calc_res(struct block_list *bl, struct status_change *sc, int res)
+{
+	if (!sc || !sc->count)
+		return cap_value(res, 0, SHRT_MAX);
+
+	return (short)cap_value(res, 0, SHRT_MAX);
+}
+
+/**
+* Adds magic resist modifications based on status changes
+* @param bl: Object to change mres [PC|MOB|HOM|MER|ELEM]
+* @param sc: Object's status change information
+* @param mres: Initial mres
+* @return modified mres with cap_value(mres,0,USHRT_MAX)
+*/
+static signed short status_calc_mres(struct block_list *bl, struct status_change *sc, int mres)
+{
+	if (!sc || !sc->count)
+		return cap_value(mres, 0, SHRT_MAX);
+
+	return (short)cap_value(mres, 0, SHRT_MAX);
+}
+
+/**
+* Adds heal plus modifications based on status changes
+* @param bl: Object to change hplus [PC|MOB|HOM|MER|ELEM]
+* @param sc: Object's status change information
+* @param hplus: Initial hplus
+* @return modified hplus with cap_value(hplus,0,USHRT_MAX)
+*/
+static signed short status_calc_hplus(struct block_list *bl, struct status_change *sc, int hplus)
+{
+	if (!sc || !sc->count)
+		return cap_value(hplus, 0, SHRT_MAX);
+
+	return (short)cap_value(hplus, 0, SHRT_MAX);
+}
+
+/**
+* Adds critical damage rate modifications based on status changes
+* @param bl: Object to change crate [PC|MOB|HOM|MER|ELEM]
+* @param sc: Object's status change information
+* @param crate: Initial crate
+* @return modified crate with cap_value(crate,0,USHRT_MAX)
+*/
+static signed short status_calc_crate(struct block_list *bl, struct status_change *sc, int crate)
+{
+	if (!sc || !sc->count)
+		return cap_value(crate, 0, SHRT_MAX);
+
+	return (short)cap_value(crate, 0, SHRT_MAX);
 }
 
 /**

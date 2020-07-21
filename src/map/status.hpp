@@ -2250,7 +2250,7 @@ enum scb_flag : int64
 	SCB_RANGE	= 0x10000000,
 	SCB_REGEN	= 0x20000000,
 
-	// 4th Job Stat/Sub-Stat Flags
+	// 4th Job T.Stat/T.Sub-Stat Flags
 	SCB_MAXAP	= 0x40000000,
 	SCB_POW		= 0x80000000,
 	SCB_STA		= 0x000100000000,
@@ -2260,10 +2260,10 @@ enum scb_flag : int64
 	SCB_CRT		= 0x001000000000,
 	SCB_PATK	= 0x002000000000,
 	SCB_SMATK	= 0x004000000000,
-	SCB_HPLUS	= 0x008000000000,
-	SCB_CRATE	= 0x010000000000,
-	SCB_RES		= 0x020000000000,
-	SCB_MRES	= 0x040000000000,
+	SCB_RES		= 0x008000000000,
+	SCB_MRES	= 0x010000000000,
+	SCB_HPLUS	= 0x020000000000,
+	SCB_CRATE	= 0x040000000000,
 
 	// Extra Flags
 	// These are flags not sent through battle/all flags. Always keep these last.
@@ -2380,6 +2380,7 @@ struct status_data {
 		max_hp, max_sp;
 	short
 		str, agi, vit, int_, dex, luk,
+		pow, sta, wis, spl, con, crt,
 		eatk;
 	unsigned short
 		batk,
@@ -2397,7 +2398,10 @@ struct status_data {
 #ifdef RENEWAL_ASPD
 		aspd_rate2,
 #endif
-		aspd_rate;
+		aspd_rate,
+		patk, smatk,
+		res, mres,
+		hplus, crate;
 	/**
 	 * defType is RENEWAL dependent and defined in src/config/const.hpp
 	 **/
