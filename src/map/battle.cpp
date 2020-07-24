@@ -8998,6 +8998,12 @@ static const struct _battle_data {
 	{ "slave_stick_with_master",            &battle_config.slave_stick_with_master,         0,      0,      1,              },
 	{ "at_logout_event",                    &battle_config.at_logout_event,                 1,      0,      1,              },
 
+	// 4th Job Stuff
+	{ "trait_points_job_change",            &battle_config.trait_points_job_change,         7,      1,      1000, },
+	{ "trait_points_start_lv",              &battle_config.trait_points_start_lv,           200,    1,      1000, },
+	{ "trait_points_per_lv",                &battle_config.trait_points_per_lv,             3,      1,      1000, },
+	{ "max_ap",                             &battle_config.max_ap,                          200,    100,    1000000000, },
+
 #include "../custom/battle_config_init.inc"
 };
 

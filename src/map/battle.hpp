@@ -686,6 +686,12 @@ struct Battle_Config
 	int slave_stick_with_master;
 	int at_logout_event;
 
+	// 4th Jobs Stuff
+	int trait_points_job_change;
+	int trait_points_start_lv;
+	int trait_points_per_lv;
+	int max_ap;
+
 #include "../custom/battle_config_struct.inc"
 };
 

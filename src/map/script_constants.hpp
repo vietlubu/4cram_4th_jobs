@@ -513,6 +513,7 @@
 
 	/* parameters */
 	export_parameter("StatusPoint",SP_STATUSPOINT);
+	export_parameter("TraitPoint", SP_TRAITPOINT);
 	export_parameter("BaseLevel",SP_BASELEVEL);
 	export_parameter("SkillPoint",SP_SKILLPOINT);
 	export_parameter("Class",SP_CLASS);
@@ -532,6 +533,8 @@
 	export_parameter("MaxHp",SP_MAXHP);
 	export_parameter("Sp",SP_SP);
 	export_parameter("MaxSp",SP_MAXSP);
+	export_parameter("Ap", SP_AP);
+	export_parameter("MaxAp", SP_MAXAP);
 	export_parameter("BaseJob",SP_BASEJOB);
 	export_parameter("BaseClass",SP_BASECLASS);
 	export_parameter("killerrid",SP_KILLERRID);
@@ -553,12 +556,19 @@
 
 	export_constant2("bMaxHP",SP_MAXHP);
 	export_constant2("bMaxSP",SP_MAXSP);
+	export_constant2("bMaxAP",SP_MAXAP);
 	export_constant2("bStr",SP_STR);
 	export_constant2("bAgi",SP_AGI);
 	export_constant2("bVit",SP_VIT);
 	export_constant2("bInt",SP_INT);
 	export_constant2("bDex",SP_DEX);
 	export_constant2("bLuk",SP_LUK);
+	export_constant2("bPow",SP_POW);
+	export_constant2("bSta",SP_STA);
+	export_constant2("bWis",SP_WIS);
+	export_constant2("bSpl",SP_SPL);
+	export_constant2("bCon",SP_CON);
+	export_constant2("bCrt",SP_CRT);
 	export_constant2("bAtk",SP_ATK1);
 	export_constant2("bAtk2",SP_ATK2);
 	export_constant2("bDef",SP_DEF1);
@@ -570,6 +580,12 @@
 	export_constant2("bFlee2",SP_FLEE2);
 	export_constant2("bCritical",SP_CRITICAL);
 	export_constant2("bAspd",SP_ASPD);
+	export_constant2("bPAtk",SP_PATK);
+	export_constant2("bSMatk",SP_SMATK);
+	export_constant2("bRes",SP_RES);
+	export_constant2("bMRes",SP_MRES);
+	export_constant2("bHPlus",SP_HPLUS);
+	export_constant2("bCRate",SP_CRATE);
 	export_constant2("bFame",SP_FAME);
 	export_constant2("bUnbreakable",SP_UNBREAKABLE);
 

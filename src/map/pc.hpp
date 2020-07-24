@@ -423,7 +423,7 @@ struct map_session_data {
 	struct weapon_data right_weapon, left_weapon;
 
 	// here start arrays to be globally zeroed at the beginning of status_calc_pc()
-	int param_bonus[6],param_equip[6]; //Stores card/equipment bonuses.
+	int param_bonus[12],param_equip[12]; //Stores card/equipment bonuses.
 	int subele[ELE_MAX];
 	int subele_script[ELE_MAX];
 	int subdefele[ELE_MAX];
@@ -492,7 +492,7 @@ struct map_session_data {
 
 	// zeroed vars start here.
 	struct s_bonus {
-		int hp, sp;
+		int hp, sp, ap;
 		int atk_rate;
 		int arrow_atk,arrow_ele,arrow_cri,arrow_hit;
 		int nsshealhp,nsshealsp;
@@ -900,6 +900,7 @@ struct s_job_info {
 	uint32 max_level[2];
 	struct s_params {
 		uint16 str, agi, vit, int_, dex, luk;
+		uint16 pow, sta, wis, spl, con, crt;
 	} max_param;
 	struct s_job_noenter_map {
 		uint32 zone;
@@ -973,6 +974,12 @@ enum e_params {
 	PARAM_INT,
 	PARAM_DEX,
 	PARAM_LUK,
+	PARAM_POW,
+	PARAM_STA,
+	PARAM_WIS,
+	PARAM_SPL,
+	PARAM_CON,
+	PARAM_CRT,
 	PARAM_MAX
 };
 short pc_maxparameter(struct map_session_data *sd, enum e_params param);

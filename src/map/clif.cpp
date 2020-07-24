@@ -3289,6 +3289,9 @@ void clif_updatestatus(struct map_session_data *sd,int type)
 	case SP_STATUSPOINT:
 		WFIFOL(fd,4)=sd->status.status_point;
 		break;
+	case SP_TRAITPOINT:
+		WFIFOL(fd, 4) = sd->status.trait_point;
+		break;
 	case SP_SKILLPOINT:
 		WFIFOL(fd,4)=sd->status.skill_point;
 		break;
@@ -3307,6 +3310,9 @@ void clif_updatestatus(struct map_session_data *sd,int type)
 	case SP_MAXSP:
 		WFIFOL(fd,4)=sd->battle_status.max_sp;
 		break;
+	//case SP_MAXAP:
+	//	WFIFOL(fd, 4) = sd->battle_status.max_ap;
+	//	break;
 	case SP_HP:
 		// On officials the HP never go below 1, even if you die [Lemongrass]
 		// On officials the HP Novice class never go below 50%, even if you die [Napster]
@@ -3315,6 +3321,9 @@ void clif_updatestatus(struct map_session_data *sd,int type)
 	case SP_SP:
 		WFIFOL(fd,4)=sd->battle_status.sp;
 		break;
+	//case SP_AP:
+	//	WFIFOL(fd, 4) = sd->battle_status.ap;
+	//	break;
 	case SP_ASPD:
 		WFIFOL(fd,4)=sd->battle_status.amotion;
 		break;
@@ -3353,6 +3362,24 @@ void clif_updatestatus(struct map_session_data *sd,int type)
 		break;
 	case SP_MATK2:
 		WFIFOL(fd,4)=pc_leftside_matk(sd);
+		break;
+	case SP_PATK:
+		WFIFOL(fd, 4) = sd->battle_status.patk;
+		break;
+	case SP_SMATK:
+		WFIFOL(fd, 4) = sd->battle_status.smatk;
+		break;
+	case SP_RES:
+		WFIFOL(fd, 4) = sd->battle_status.res;
+		break;
+	case SP_MRES:
+		WFIFOL(fd, 4) = sd->battle_status.mres;
+		break;
+	case SP_HPLUS:
+		WFIFOL(fd, 4) = sd->battle_status.hplus;
+		break;
+	case SP_CRATE:
+		WFIFOL(fd, 4) = sd->battle_status.crate;
 		break;
 
 	case SP_ZENY:
@@ -3412,6 +3439,16 @@ void clif_updatestatus(struct map_session_data *sd,int type)
 		WFIFOB(fd,4)=pc_need_status_point(sd,type-SP_USTR+SP_STR,1);
 		len=5;
 		break;
+	case SP_UPOW:
+	case SP_USTA:
+	case SP_UWIS:
+	case SP_USPL:
+	case SP_UCON:
+	case SP_UCRT:
+		WFIFOW(fd, 0) = 0xbe;
+		WFIFOB(fd, 4) = pc_need_status_point(sd,type-SP_UPOW+SP_POW, 1);
+		len = 5;
+		break;
 
 	/**
 	 * Tells the client how far it is allowed to attack (weapon range)
@@ -3463,6 +3500,48 @@ void clif_updatestatus(struct map_session_data *sd,int type)
 		WFIFOL(fd,6)=sd->status.luk;
 		WFIFOL(fd,10)=sd->battle_status.luk - sd->status.luk;
 		len=14;
+		break;
+	case SP_POW:
+		WFIFOW(fd, 0) = 0x141;
+		WFIFOL(fd, 2) = type;
+		WFIFOL(fd, 6) = sd->status.pow;
+		WFIFOL(fd, 10) = sd->battle_status.pow - sd->status.pow;
+		len = 14;
+		break;
+	case SP_STA:
+		WFIFOW(fd, 0) = 0x141;
+		WFIFOL(fd, 2) = type;
+		WFIFOL(fd, 6) = sd->status.sta;
+		WFIFOL(fd, 10) = sd->battle_status.sta - sd->status.sta;
+		len = 14;
+		break;
+	case SP_WIS:
+		WFIFOW(fd, 0) = 0x141;
+		WFIFOL(fd, 2) = type;
+		WFIFOL(fd, 6) = sd->status.wis;
+		WFIFOL(fd, 10) = sd->battle_status.wis - sd->status.wis;
+		len = 14;
+		break;
+	case SP_SPL:
+		WFIFOW(fd, 0) = 0x141;
+		WFIFOL(fd, 2) = type;
+		WFIFOL(fd, 6) = sd->status.spl;
+		WFIFOL(fd, 10) = sd->battle_status.spl - sd->status.spl;
+		len = 14;
+		break;
+	case SP_CON:
+		WFIFOW(fd, 0) = 0x141;
+		WFIFOL(fd, 2) = type;
+		WFIFOL(fd, 6) = sd->status.con;
+		WFIFOL(fd, 10) = sd->battle_status.con - sd->status.con;
+		len = 14;
+		break;
+	case SP_CRT:
+		WFIFOW(fd, 0) = 0x141;
+		WFIFOL(fd, 2) = type;
+		WFIFOL(fd, 6) = sd->status.crt;
+		WFIFOL(fd, 10) = sd->battle_status.crt - sd->status.crt;
+		len = 14;
 		break;
 
 	case SP_CARTINFO:
@@ -9580,6 +9659,12 @@ void clif_refresh(struct map_session_data *sd)
 	clif_updatestatus(sd,SP_INT);
 	clif_updatestatus(sd,SP_DEX);
 	clif_updatestatus(sd,SP_LUK);
+	clif_updatestatus(sd,SP_POW);
+	clif_updatestatus(sd,SP_STA);
+	clif_updatestatus(sd,SP_WIS);
+	clif_updatestatus(sd,SP_SPL);
+	clif_updatestatus(sd,SP_CON);
+	clif_updatestatus(sd,SP_CRT);
 	if (sd->spiritball)
 		clif_spiritball_single(sd->fd, sd);
 	if (sd->spiritcharm_type != CHARM_TYPE_NONE && sd->spiritcharm > 0)
@@ -10676,6 +10761,12 @@ void clif_parse_LoadEndAck(int fd,struct map_session_data *sd)
 		clif_updatestatus(sd,SP_INT);
 		clif_updatestatus(sd,SP_DEX);
 		clif_updatestatus(sd,SP_LUK);
+		clif_updatestatus(sd,SP_POW);
+		clif_updatestatus(sd,SP_STA);
+		clif_updatestatus(sd,SP_WIS);
+		clif_updatestatus(sd,SP_SPL);
+		clif_updatestatus(sd,SP_CON);
+		clif_updatestatus(sd,SP_CRT);
 
 		// abort currently running script
 		sd->state.using_fake_npc = 0;

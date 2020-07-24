@@ -492,8 +492,8 @@ struct mmo_charstatus {
 	int zeny;
 
 	short class_; ///< Player's JobID
-	unsigned int status_point,skill_point;
-	int hp,max_hp,sp,max_sp;
+	unsigned int status_point,skill_point,trait_point;
+	int hp,max_hp,sp,max_sp,ap,max_ap;
 	unsigned int option;
 	short manner; // Defines how many minutes a char will be muted, each negative point is equivalent to a minute.
 	unsigned char karma;
@@ -514,6 +514,7 @@ struct mmo_charstatus {
 	char name[NAME_LENGTH];
 	unsigned int base_level,job_level;
 	unsigned short str,agi,vit,int_,dex,luk;
+	unsigned short pow,sta,wis,spl,con,crt;
 	unsigned char slot,sex;
 
 	uint32 mapip;

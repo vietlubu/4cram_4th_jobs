@@ -3038,6 +3038,15 @@ void pc_bonus(struct map_session_data *sd,int type,int val)
 			if(sd->state.lr_flag != 2)
 				sd->param_bonus[type-SP_STR]+=val;
 			break;
+		case SP_POW:
+		case SP_STA:
+		case SP_WIS:
+		case SP_SPL:
+		case SP_CON:
+		case SP_CRT:
+			if (sd->state.lr_flag != 2)
+				sd->param_bonus[type - SP_POW] += val;
+			break;
 		case SP_ATK1:
 			if(!sd->state.lr_flag) {
 				bonus = status->rhw.atk + val;
@@ -3130,6 +3139,42 @@ void pc_bonus(struct map_session_data *sd,int type,int val)
 			} else
 				sd->bonus.arrow_cri += val*10;
 			break;
+		case SP_PATK:
+			if (sd->state.lr_flag != 2) {
+				bonus = status->patk + val;
+				status->patk = cap_value(bonus, SHRT_MIN, SHRT_MAX);
+			}
+			break;
+		case SP_SMATK:
+			if (sd->state.lr_flag != 2) {
+				bonus = status->smatk + val;
+				status->smatk = cap_value(bonus, SHRT_MIN, SHRT_MAX);
+			}
+			break;
+		case SP_RES:
+			if (sd->state.lr_flag != 2) {
+				bonus = status->res + val;
+				status->res = cap_value(bonus, SHRT_MIN, SHRT_MAX);
+			}
+			break;
+		case SP_MRES:
+			if (sd->state.lr_flag != 2) {
+				bonus = status->mres + val;
+				status->mres = cap_value(bonus, SHRT_MIN, SHRT_MAX);
+			}
+			break;
+		case SP_HPLUS:
+			if (sd->state.lr_flag != 2) {
+				bonus = status->hplus + val;
+				status->hplus = cap_value(bonus, SHRT_MIN, SHRT_MAX);
+			}
+			break;
+		case SP_CRATE:
+			if (sd->state.lr_flag != 2) {
+				bonus = status->crate + val;
+				status->crate = cap_value(bonus, SHRT_MIN, SHRT_MAX);
+			}
+			break;
 		case SP_ATKELE:
 			PC_BONUS_CHK_ELEMENT(val,SP_ATKELE);
 			switch (sd->state.lr_flag)
@@ -3172,6 +3217,11 @@ void pc_bonus(struct map_session_data *sd,int type,int val)
 			if(sd->state.lr_flag == 2)
 				break;
 			sd->bonus.sp += val;
+			break;
+		case SP_MAXAP:
+			if (sd->state.lr_flag == 2)
+				break;
+			sd->bonus.ap += val;
 			break;
 		case SP_MAXHPRATE:
 			if(sd->state.lr_flag != 2)
@@ -7072,6 +7122,9 @@ int pc_checkbaselevelup(struct map_session_data *sd) {
 		sd->status.base_level++;
 		sd->status.status_point += next;
 
+		if (sd->status.base_level > battle_config.trait_points_start_lv)
+			sd->status.trait_point += battle_config.trait_points_per_lv;
+
 		if( pc_is_maxbaselv(sd) ){
 			sd->status.base_exp = u32min(sd->status.base_exp,MAX_LEVEL_BASE_EXP);
 			break;
@@ -7459,6 +7512,12 @@ static int pc_getstat(struct map_session_data* sd, int type)
 	case SP_INT: return sd->status.int_;
 	case SP_DEX: return sd->status.dex;
 	case SP_LUK: return sd->status.luk;
+	case SP_POW: return sd->status.pow;
+	case SP_STA: return sd->status.sta;
+	case SP_WIS: return sd->status.wis;
+	case SP_SPL: return sd->status.spl;
+	case SP_CON: return sd->status.con;
+	case SP_CRT: return sd->status.crt;
 	default:
 		return -1;
 	}
@@ -7477,6 +7536,12 @@ static int pc_setstat(struct map_session_data* sd, int type, int val)
 	case SP_INT: sd->status.int_ = val; break;
 	case SP_DEX: sd->status.dex = val; break;
 	case SP_LUK: sd->status.luk = val; break;
+	case SP_POW: sd->status.pow = val; break;
+	case SP_STA: sd->status.sta = val; break;
+	case SP_WIS: sd->status.wis = val; break;
+	case SP_SPL: sd->status.spl = val; break;
+	case SP_CON: sd->status.con = val; break;
+	case SP_CRT: sd->status.crt = val; break;
 	default:
 		return -1;
 	}
@@ -7791,12 +7856,19 @@ int pc_resetlvl(struct map_session_data* sd,int type)
 		sd->status.int_=1;
 		sd->status.dex=1;
 		sd->status.luk=1;
+		sd->status.pow=0;
+		sd->status.sta=0;
+		sd->status.wis=0;
+		sd->status.spl=0;
+		sd->status.con=0;
+		sd->status.crt=0;
 		if(sd->status.class_ == JOB_NOVICE_HIGH) {
 			sd->status.status_point=100;	// not 88 [celest]
 			// give platinum skills upon changing
 			pc_skill(sd,NV_FIRSTAID,1,ADDSKILL_PERMANENT);
 			pc_skill(sd,NV_TRICKDEAD,1,ADDSKILL_PERMANENT);
 		}
+		sd->status.trait_point = 0;
 	}
 
 	if(type == 2){
@@ -7816,12 +7888,19 @@ int pc_resetlvl(struct map_session_data* sd,int type)
 	}
 
 	clif_updatestatus(sd,SP_STATUSPOINT);
+	clif_updatestatus(sd,SP_TRAITPOINT);
 	clif_updatestatus(sd,SP_STR);
 	clif_updatestatus(sd,SP_AGI);
 	clif_updatestatus(sd,SP_VIT);
 	clif_updatestatus(sd,SP_INT);
 	clif_updatestatus(sd,SP_DEX);
 	clif_updatestatus(sd,SP_LUK);
+	clif_updatestatus(sd,SP_POW);
+	clif_updatestatus(sd,SP_STA);
+	clif_updatestatus(sd,SP_WIS);
+	clif_updatestatus(sd,SP_SPL);
+	clif_updatestatus(sd,SP_CON);
+	clif_updatestatus(sd,SP_CRT);
 	clif_updatestatus(sd,SP_BASELEVEL);
 	clif_updatestatus(sd,SP_JOBLEVEL);
 	clif_updatestatus(sd,SP_STATUSPOINT);
@@ -7837,6 +7916,12 @@ int pc_resetlvl(struct map_session_data* sd,int type)
 	clif_updatestatus(sd,SP_UINT);
 	clif_updatestatus(sd,SP_UDEX);
 	clif_updatestatus(sd,SP_ULUK);	// End Addition
+	clif_updatestatus(sd,SP_UPOW);
+	clif_updatestatus(sd,SP_USTA);
+	clif_updatestatus(sd,SP_UWIS);
+	clif_updatestatus(sd,SP_USPL);
+	clif_updatestatus(sd,SP_UCON);
+	clif_updatestatus(sd,SP_UCRT);
 
 	for(i=0;i<EQI_MAX;i++) { // unequip items that can't be equipped by base 1 [Valaris]
 		if(sd->equip_index[i] >= 0)
@@ -7857,6 +7942,8 @@ int pc_resetlvl(struct map_session_data* sd,int type)
  *------------------------------------------*/
 int pc_resetstate(struct map_session_data* sd)
 {
+	int add;
+
 	nullpo_ret(sd);
 
 	if (battle_config.use_statpoint_table)
@@ -7872,7 +7959,7 @@ int pc_resetstate(struct map_session_data* sd)
 	}
 	else
 	{
-		int add=0;
+		add=0;
 		add += pc_need_status_point(sd, SP_STR, 1-pc_getstat(sd, SP_STR));
 		add += pc_need_status_point(sd, SP_AGI, 1-pc_getstat(sd, SP_AGI));
 		add += pc_need_status_point(sd, SP_VIT, 1-pc_getstat(sd, SP_VIT));
@@ -7883,12 +7970,26 @@ int pc_resetstate(struct map_session_data* sd)
 		sd->status.status_point+=add;
 	}
 
+
+	add = 0;
+	if (sd->class_&JOBL_FORTH)// Free points for being a 4th job.
+		add += battle_config.trait_points_job_change;
+	if (sd->status.base_level > battle_config.trait_points_start_lv)// Points given based on base level if above required level.
+		add += sd->status.base_level - battle_config.trait_points_start_lv * battle_config.trait_points_per_lv;
+	sd->status.trait_point = add;
+
 	pc_setstat(sd, SP_STR, 1);
 	pc_setstat(sd, SP_AGI, 1);
 	pc_setstat(sd, SP_VIT, 1);
 	pc_setstat(sd, SP_INT, 1);
 	pc_setstat(sd, SP_DEX, 1);
 	pc_setstat(sd, SP_LUK, 1);
+	pc_setstat(sd, SP_POW, 0);
+	pc_setstat(sd, SP_STA, 0);
+	pc_setstat(sd, SP_WIS, 0);
+	pc_setstat(sd, SP_SPL, 0);
+	pc_setstat(sd, SP_CON, 0);
+	pc_setstat(sd, SP_CRT, 0);
 
 	clif_updatestatus(sd,SP_STR);
 	clif_updatestatus(sd,SP_AGI);
@@ -7896,6 +7997,12 @@ int pc_resetstate(struct map_session_data* sd)
 	clif_updatestatus(sd,SP_INT);
 	clif_updatestatus(sd,SP_DEX);
 	clif_updatestatus(sd,SP_LUK);
+	clif_updatestatus(sd,SP_POW);
+	clif_updatestatus(sd,SP_STA);
+	clif_updatestatus(sd,SP_WIS);
+	clif_updatestatus(sd,SP_SPL);
+	clif_updatestatus(sd,SP_CON);
+	clif_updatestatus(sd,SP_CRT);
 
 	clif_updatestatus(sd,SP_USTR);	// Updates needed stat points - Valaris
 	clif_updatestatus(sd,SP_UAGI);
@@ -7903,8 +8010,15 @@ int pc_resetstate(struct map_session_data* sd)
 	clif_updatestatus(sd,SP_UINT);
 	clif_updatestatus(sd,SP_UDEX);
 	clif_updatestatus(sd,SP_ULUK);	// End Addition
+	clif_updatestatus(sd,SP_UPOW);
+	clif_updatestatus(sd,SP_USTA);
+	clif_updatestatus(sd,SP_UWIS);
+	clif_updatestatus(sd,SP_USPL);
+	clif_updatestatus(sd,SP_UCON);
+	clif_updatestatus(sd,SP_UCRT);
 
 	clif_updatestatus(sd,SP_STATUSPOINT);
+	clif_updatestatus(sd,SP_TRAITPOINT);
 
 	if( sd->mission_mobid ) { //bugreport:2200
 		sd->mission_mobid = 0;
@@ -8659,6 +8773,7 @@ int64 pc_readparam(struct map_session_data* sd,int64 type)
 	switch(type) {
 		case SP_SKILLPOINT:      val = sd->status.skill_point; break;
 		case SP_STATUSPOINT:     val = sd->status.status_point; break;
+		case SP_TRAITPOINT:      val = sd->status.trait_point; break;
 		case SP_ZENY:            val = sd->status.zeny; break;
 		case SP_BASELEVEL:       val = sd->status.base_level; break;
 		case SP_JOBLEVEL:        val = sd->status.job_level; break;
@@ -8677,12 +8792,20 @@ int64 pc_readparam(struct map_session_data* sd,int64 type)
 		case SP_MAXHP:           val = sd->battle_status.max_hp; break;
 		case SP_SP:              val = sd->battle_status.sp; break;
 		case SP_MAXSP:           val = sd->battle_status.max_sp; break;
+		//case SP_AP:              val = sd->battle_status.ap; break;
+		//case SP_MAXAP:           val = sd->battle_status.max_ap; break;
 		case SP_STR:             val = sd->status.str; break;
 		case SP_AGI:             val = sd->status.agi; break;
 		case SP_VIT:             val = sd->status.vit; break;
 		case SP_INT:             val = sd->status.int_; break;
 		case SP_DEX:             val = sd->status.dex; break;
 		case SP_LUK:             val = sd->status.luk; break;
+		case SP_POW:             val = sd->status.pow; break;
+		case SP_STA:             val = sd->status.sta; break;
+		case SP_WIS:             val = sd->status.wis; break;
+		case SP_SPL:             val = sd->status.spl; break;
+		case SP_CON:             val = sd->status.con; break;
+		case SP_CRT:             val = sd->status.crt; break;
 		case SP_KARMA:           val = sd->status.karma; break;
 		case SP_MANNER:          val = sd->status.manner; break;
 		case SP_FAME:            val = sd->status.fame; break;
@@ -8718,6 +8841,12 @@ int64 pc_readparam(struct map_session_data* sd,int64 type)
 		case SP_HIT:		     val = sd->battle_status.hit; break;
 		case SP_FLEE1:		     val = sd->battle_status.flee; break;
 		case SP_FLEE2:		     val = sd->battle_status.flee2; break;
+		case SP_PATK:		     val = sd->battle_status.patk; break;
+		case SP_SMATK:		     val = sd->battle_status.smatk; break;
+		case SP_RES:		     val = sd->battle_status.res; break;
+		case SP_MRES:		     val = sd->battle_status.mres; break;
+		case SP_HPLUS:		     val = sd->battle_status.hplus; break;
+		case SP_CRATE:		     val = sd->battle_status.crate; break;
 		case SP_DEFELE:		     val = sd->battle_status.def_ele; break;
 		case SP_MAXHPRATE:	     val = sd->hprate; break;
 		case SP_MAXSPRATE:	     val = sd->sprate; break;
@@ -8840,6 +8969,17 @@ bool pc_setparam(struct map_session_data *sd,int64 type,int64 val_tmp)
 			for (i = 0; i < (int)(val - sd->status.base_level); i++)
 				stat += pc_gets_status_point(sd->status.base_level + i);
 			sd->status.status_point += stat;
+
+			if (val > battle_config.trait_points_start_lv)
+			{
+				short level_check = 1 + sd->status.base_level;
+				for (i = 0; i < (int)(val - sd->status.base_level); i++)
+				{
+					if ( level_check > battle_config.trait_points_start_lv )
+						sd->status.trait_point += battle_config.trait_points_per_lv;
+					level_check++;
+				}
+			}
 		}
 		sd->status.base_level = val;
 		sd->status.base_exp = 0;
@@ -8869,6 +9009,9 @@ bool pc_setparam(struct map_session_data *sd,int64 type,int64 val_tmp)
 		break;
 	case SP_STATUSPOINT:
 		sd->status.status_point = val;
+		break;
+	case SP_TRAITPOINT:
+		sd->status.trait_point = val;
 		break;
 	case SP_ZENY:
 		if( val < 0 )
@@ -8932,6 +9075,18 @@ bool pc_setparam(struct map_session_data *sd,int64 type,int64 val_tmp)
 			clif_updatestatus(sd, SP_SP);
 		}
 		break;
+	/*case SP_AP:
+		sd->battle_status.ap = cap_value(val, 0, (int)sd->battle_status.max_ap);
+		break;
+	case SP_MAXAP:
+		sd->battle_status.max_ap = cap_value(val, 1, battle_config.max_ap);
+
+		if (sd->battle_status.max_ap < sd->battle_status.ap)
+		{
+			sd->battle_status.ap = sd->battle_status.max_ap;
+			clif_updatestatus(sd, SP_AP);
+		}
+		break;*/
 	case SP_STR:
 		sd->status.str = cap_value(val, 1, pc_maxparameter(sd,PARAM_STR));
 		break;
@@ -8949,6 +9104,24 @@ bool pc_setparam(struct map_session_data *sd,int64 type,int64 val_tmp)
 		break;
 	case SP_LUK:
 		sd->status.luk = cap_value(val, 1, pc_maxparameter(sd,PARAM_LUK));
+		break;
+	case SP_POW:
+		sd->status.pow = cap_value(val, 0, pc_maxparameter(sd, PARAM_POW));
+		break;
+	case SP_STA:
+		sd->status.sta = cap_value(val, 0, pc_maxparameter(sd, PARAM_STA));
+		break;
+	case SP_WIS:
+		sd->status.wis = cap_value(val, 0, pc_maxparameter(sd, PARAM_WIS));
+		break;
+	case SP_SPL:
+		sd->status.spl = cap_value(val, 0, pc_maxparameter(sd, PARAM_SPL));
+		break;
+	case SP_CON:
+		sd->status.con = cap_value(val, 0, pc_maxparameter(sd, PARAM_CON));
+		break;
+	case SP_CRT:
+		sd->status.crt = cap_value(val, 0, pc_maxparameter(sd, PARAM_CRT));
 		break;
 	case SP_KARMA:
 		sd->status.karma = val;
@@ -9298,6 +9471,20 @@ bool pc_jobchange(struct map_session_data *sd,int job, char upper)
 		}
 		sd->status.status_point -= battle_config.transcendent_status_points;
 		clif_updatestatus(sd,SP_STATUSPOINT);
+	}
+
+	// Give or reduce trait status points
+	if ((b_class&JOBL_FORTH) && !(sd->class_&JOBL_FORTH)) {// Change to a 4th job.
+		sd->status.trait_point += battle_config.trait_points_job_change;
+		clif_updatestatus(sd, SP_TRAITPOINT);
+	}
+	else if (!(b_class&JOBL_FORTH) && (sd->class_&JOBL_FORTH)) {// Change to a non 4th job.
+		if (sd->status.trait_point < battle_config.trait_points_job_change) {
+			// Player may have already used the trait statu points. Force a reset.
+			pc_resetstate(sd);
+		}
+		sd->status.trait_point -= battle_config.trait_points_job_change;
+		clif_updatestatus(sd, SP_TRAITPOINT);
 	}
 
 	if ( (b_class&MAPID_UPPERMASK) != (sd->class_&MAPID_UPPERMASK) ) { //Things to remove when changing class tree.
@@ -13055,6 +13242,12 @@ short pc_maxparameter(struct map_session_data *sd, enum e_params param) {
 			case PARAM_INT: max_param = job_info[idx].max_param.int_; break;
 			case PARAM_DEX: max_param = job_info[idx].max_param.dex; break;
 			case PARAM_LUK: max_param = job_info[idx].max_param.luk; break;
+			case PARAM_POW: max_param = job_info[idx].max_param.pow; break;
+			case PARAM_STA: max_param = job_info[idx].max_param.sta; break;
+			case PARAM_WIS: max_param = job_info[idx].max_param.wis; break;
+			case PARAM_SPL: max_param = job_info[idx].max_param.spl; break;
+			case PARAM_CON: max_param = job_info[idx].max_param.con; break;
+			case PARAM_CRT: max_param = job_info[idx].max_param.crt; break;
 		}
 		if (max_param > 0)
 			return max_param;

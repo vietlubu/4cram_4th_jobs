@@ -2538,12 +2538,20 @@ int status_get_lv(struct block_list *bl);
 #define status_get_max_hp(bl) status_get_status_data(bl)->max_hp
 #define status_get_sp(bl) status_get_status_data(bl)->sp
 #define status_get_max_sp(bl) status_get_status_data(bl)->max_sp
+#define status_get_ap(bl) status_get_status_data(bl)->ap
+#define status_get_max_ap(bl) status_get_status_data(bl)->max_ap
 #define status_get_str(bl) status_get_status_data(bl)->str
 #define status_get_agi(bl) status_get_status_data(bl)->agi
 #define status_get_vit(bl) status_get_status_data(bl)->vit
 #define status_get_int(bl) status_get_status_data(bl)->int_
 #define status_get_dex(bl) status_get_status_data(bl)->dex
 #define status_get_luk(bl) status_get_status_data(bl)->luk
+#define status_get_pow(bl) status_get_status_data(bl)->pow
+#define status_get_sta(bl) status_get_status_data(bl)->sta
+#define status_get_wis(bl) status_get_status_data(bl)->wis
+#define status_get_spl(bl) status_get_status_data(bl)->spl
+#define status_get_con(bl) status_get_status_data(bl)->con
+#define status_get_crt(bl) status_get_status_data(bl)->crt
 #define status_get_hit(bl) status_get_status_data(bl)->hit
 #define status_get_flee(bl) status_get_status_data(bl)->flee
 defType status_get_def(struct block_list *bl);
@@ -2563,6 +2571,12 @@ unsigned short status_get_speed(struct block_list *bl);
 #define status_get_adelay(bl) status_get_status_data(bl)->adelay
 #define status_get_amotion(bl) status_get_status_data(bl)->amotion
 #define status_get_dmotion(bl) status_get_status_data(bl)->dmotion
+#define status_get_patk(bl) status_get_status_data(bl)->patk
+#define status_get_smatk(bl) status_get_status_data(bl)->smatk
+#define status_get_res(bl) status_get_status_data(bl)->res
+#define status_get_mres(bl) status_get_status_data(bl)->mres
+#define status_get_hplus(bl) status_get_status_data(bl)->hplus
+#define status_get_crate(bl) status_get_status_data(bl)->crate
 #define status_get_element(bl) status_get_status_data(bl)->def_ele
 #define status_get_element_level(bl) status_get_status_data(bl)->ele_lv
 unsigned char status_calc_attack_element(struct block_list *bl, struct status_change *sc, int element);

@@ -2954,6 +2954,33 @@ void status_calc_misc(struct block_list *bl, struct status_data *status, int lev
 			stat += (int)(bl->type == BL_PC ? (status->int_ + ((float)level / 4) + ((float)(status->dex + status->vit) / 5)) : ((float)(status->int_ + level) / 4)); //(every 4 base level = +1 mdef) + (every 1 int = +1 mdef) + (every 5 dex = +1 mdef) + (every 5 vit = +1 mdef)
 		}
 		status->mdef2 = cap_value(stat, 0, SHRT_MAX);
+		if (bl->type == BL_PC)
+		{
+			// PAtk
+			stat = status->patk;
+			stat += status->pow / 3 + status->con / 5;
+			status->patk = cap_value(stat, 0, SHRT_MAX);
+			// SMatk
+			stat = status->smatk;
+			stat += status->spl / 3 + status->con / 5;
+			status->smatk = cap_value(stat, 0, SHRT_MAX);
+			// Res
+			stat = status->res;
+			stat += status->sta + status->sta / 3 * 5;
+			status->res = cap_value(stat, 0, SHRT_MAX);
+			// Mres
+			stat = status->mres;
+			stat += status->wis + status->wis / 3 * 5;
+			status->mres = cap_value(stat, 0, SHRT_MAX);
+			// HPlus
+			stat = status->hplus;
+			stat += status->crt;
+			status->hplus = cap_value(stat, 0, SHRT_MAX);
+			// CRate
+			stat = status->crate;
+			stat += status->crt / 3;
+			status->crate = cap_value(stat, 0, SHRT_MAX);
+		}
 	}
 
 	// ATK
@@ -4288,6 +4315,18 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 	base_status->dex = cap_value(i,0,USHRT_MAX);
 	i = base_status->luk + sd->status.luk + sd->param_bonus[5] + sd->param_equip[5];
 	base_status->luk = cap_value(i,0,USHRT_MAX);
+	i = base_status->pow + sd->status.pow + sd->param_bonus[6] + sd->param_equip[6];
+	base_status->pow = cap_value(i, 0, USHRT_MAX);
+	i = base_status->sta + sd->status.sta + sd->param_bonus[7] + sd->param_equip[7];
+	base_status->sta = cap_value(i, 0, USHRT_MAX);
+	i = base_status->wis + sd->status.wis + sd->param_bonus[8] + sd->param_equip[8];
+	base_status->wis = cap_value(i, 0, USHRT_MAX);
+	i = base_status->spl + sd->status.spl + sd->param_bonus[9] + sd->param_equip[9];
+	base_status->spl = cap_value(i, 0, USHRT_MAX);
+	i = base_status->con + sd->status.con + sd->param_bonus[10] + sd->param_equip[10];
+	base_status->con = cap_value(i, 0, USHRT_MAX);
+	i = base_status->crt + sd->status.crt + sd->param_bonus[11] + sd->param_equip[11];
+	base_status->crt = cap_value(i, 0, USHRT_MAX);
 
 	if (sd->special_state.no_walk_delay) {
 		if (sc->data[SC_ENDURE]) {
@@ -5932,6 +5971,18 @@ void status_calc_bl_(struct block_list* bl, enum scb_flag flag, enum e_status_ca
 			clif_updatestatus(sd,SP_DEX);
 		if(b_status.luk != status->luk)
 			clif_updatestatus(sd,SP_LUK);
+		if (b_status.pow != status->pow)
+			clif_updatestatus(sd,SP_POW);
+		if (b_status.sta != status->sta)
+			clif_updatestatus(sd,SP_STA);
+		if (b_status.wis != status->wis)
+			clif_updatestatus(sd,SP_WIS);
+		if (b_status.spl != status->spl)
+			clif_updatestatus(sd,SP_SPL);
+		if (b_status.con != status->con)
+			clif_updatestatus(sd,SP_CON);
+		if (b_status.crt != status->crt)
+			clif_updatestatus(sd,SP_CRT);
 		if(b_status.hit != status->hit)
 			clif_updatestatus(sd,SP_HIT);
 		if(b_status.flee != status->flee)
@@ -5997,16 +6048,32 @@ void status_calc_bl_(struct block_list* bl, enum scb_flag flag, enum e_status_ca
 			clif_updatestatus(sd,SP_MDEF1);
 #endif
 		}
+		if (b_status.patk != status->patk)
+			clif_updatestatus(sd, SP_PATK);
+		if (b_status.smatk != status->smatk)
+			clif_updatestatus(sd, SP_SMATK);
+		if (b_status.res != status->res)
+			clif_updatestatus(sd, SP_RES);
+		if (b_status.mres != status->mres)
+			clif_updatestatus(sd, SP_MRES);
+		if (b_status.hplus != status->hplus)
+			clif_updatestatus(sd, SP_HPLUS);
+		if (b_status.crate != status->crate)
+			clif_updatestatus(sd, SP_CRATE);
 		if(b_status.rhw.range != status->rhw.range)
 			clif_updatestatus(sd,SP_ATTACKRANGE);
 		if(b_status.max_hp != status->max_hp)
 			clif_updatestatus(sd,SP_MAXHP);
 		if(b_status.max_sp != status->max_sp)
 			clif_updatestatus(sd,SP_MAXSP);
+		//if (b_status.max_ap != status->max_ap)
+		//	clif_updatestatus(sd, SP_MAXAP);
 		if(b_status.hp != status->hp)
 			clif_updatestatus(sd,SP_HP);
 		if(b_status.sp != status->sp)
 			clif_updatestatus(sd,SP_SP);
+		//if (b_status.ap != status->ap)
+		//	clif_updatestatus(sd, SP_AP);
 	} else if( bl->type == BL_HOM ) {
 		TBL_HOM* hd = BL_CAST(BL_HOM, bl);
 

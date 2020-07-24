@@ -2720,6 +2720,12 @@ ACMD_FUNC(stat_all)
 	status[3] = &sd->status.int_;
 	status[4] = &sd->status.dex;
 	status[5] = &sd->status.luk;
+	status[6] = &sd->status.pow;
+	status[7] = &sd->status.sta;
+	status[8] = &sd->status.wis;
+	status[9] = &sd->status.spl;
+	status[10] = &sd->status.con;
+	status[11] = &sd->status.crt;
 
 	if (!message || !*message || sscanf(message, "%11d", &value) < 1 || value == 0) {
 		max_status[0] = pc_maxparameter(sd,PARAM_STR);
@@ -2728,10 +2734,16 @@ ACMD_FUNC(stat_all)
 		max_status[3] = pc_maxparameter(sd,PARAM_INT);
 		max_status[4] = pc_maxparameter(sd,PARAM_DEX);
 		max_status[5] = pc_maxparameter(sd,PARAM_LUK);
+		max_status[6] = pc_maxparameter(sd,PARAM_POW);
+		max_status[7] = pc_maxparameter(sd,PARAM_STA);
+		max_status[8] = pc_maxparameter(sd,PARAM_WIS);
+		max_status[9] = pc_maxparameter(sd,PARAM_SPL);
+		max_status[10] = pc_maxparameter(sd,PARAM_CON);
+		max_status[11] = pc_maxparameter(sd,PARAM_CRT);
 		value = SHRT_MAX;
 	} else {
 		if( pc_has_permission(sd, PC_PERM_BYPASS_MAX_STAT) )
-			max_status[0] = max_status[1] = max_status[2] = max_status[3] = max_status[4] = max_status[5] = SHRT_MAX;
+			max_status[0] = max_status[1] = max_status[2] = max_status[3] = max_status[4] = max_status[5] = max_status[6] = max_status[7] = max_status[8] = max_status[9] = max_status[10] = max_status[11] = SHRT_MAX;
 		else {
 			max_status[0] = pc_maxparameter(sd,PARAM_STR);
 			max_status[1] = pc_maxparameter(sd,PARAM_AGI);
@@ -2739,6 +2751,12 @@ ACMD_FUNC(stat_all)
 			max_status[3] = pc_maxparameter(sd,PARAM_INT);
 			max_status[4] = pc_maxparameter(sd,PARAM_DEX);
 			max_status[5] = pc_maxparameter(sd,PARAM_LUK);
+			max_status[6] = pc_maxparameter(sd,PARAM_POW);
+			max_status[7] = pc_maxparameter(sd,PARAM_STA);
+			max_status[8] = pc_maxparameter(sd,PARAM_WIS);
+			max_status[9] = pc_maxparameter(sd,PARAM_SPL);
+			max_status[10] = pc_maxparameter(sd,PARAM_CON);
+			max_status[11] = pc_maxparameter(sd,PARAM_CRT);
 		}
 	}
 	
@@ -2754,8 +2772,16 @@ ACMD_FUNC(stat_all)
 
 		if (new_value != *status[i]) {
 			*status[i] = new_value;
-			clif_updatestatus(sd, SP_STR + i);
-			clif_updatestatus(sd, SP_USTR + i);
+			if (i >= 0 && i <= 5)
+			{
+				clif_updatestatus(sd, SP_STR + i);
+				clif_updatestatus(sd, SP_USTR + i);
+			}
+			else
+			{
+				clif_updatestatus(sd, SP_POW + i - 6);
+				clif_updatestatus(sd, SP_UPOW + i - 6);
+			}
 			count++;
 		}
 	}
