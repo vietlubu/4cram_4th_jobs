@@ -229,8 +229,24 @@
 	export_constant(JOB_STAR_EMPEROR2);
 	export_constant(JOB_BABY_STAR_EMPEROR2);
 
-	//4-1 Jobs
 	export_constant(JOB_DRAGON_KNIGHT);
+	export_constant(JOB_MEISTER);
+	export_constant(JOB_SHADOW_CROSS);
+	export_constant(JOB_ARCH_MAGE);
+	export_constant(JOB_CARDINAL);
+	export_constant(JOB_WINDHAWK);
+	export_constant(JOB_IMPERIAL_GUARD);
+	export_constant(JOB_BIOLO);
+	export_constant(JOB_ABYSS_CHASER);
+	export_constant(JOB_ELEMENTAL_MASTER);
+	export_constant(JOB_INQUISITOR);
+	export_constant(JOB_TROUBADOUR);
+	export_constant(JOB_TROUVERE);
+
+	export_constant(JOB_WOLF_WINDHAWK);
+	export_constant(JOB_MEISTER_MADOGEAR);
+	export_constant(JOB_DRAGON_KNIGHT_CHICKEN);
+	export_constant(JOB_IMPERIAL_GUARD_CHICKEN);
 
 	/* EA jobs */
 	export_constant2("EAJL_2_1",JOBL_2_1);
@@ -239,12 +255,12 @@
 	export_constant2("EAJL_UPPER",JOBL_UPPER);
 	export_constant2("EAJL_BABY",JOBL_BABY);
 	export_constant2("EAJL_THIRD",JOBL_THIRD);
-	export_constant2("EAJL_FORTH", JOBL_FORTH);
+	export_constant2("EAJL_FORTH",JOBL_FORTH);
 
 	export_constant2("EAJ_BASEMASK",MAPID_BASEMASK);
 	export_constant2("EAJ_UPPERMASK",MAPID_UPPERMASK);
 	export_constant2("EAJ_THIRDMASK",MAPID_THIRDMASK);
-	export_constant2("EAJ_FORTHMASK", MAPID_FORTHMASK);
+	export_constant2("EAJ_FORTHMASK",MAPID_FORTHMASK);
 
 	export_constant2("EAJ_NOVICE",MAPID_NOVICE);
 	export_constant2("EAJ_SWORDMAN",MAPID_SWORDMAN);
@@ -389,8 +405,19 @@
 
 	export_constant2("EAJ_SUMMONER",MAPID_SUMMONER);
 
-	//4-1 Jobs
-	export_constant2("EAJ_DRAGON_KNIGHT", MAPID_DRAGON_KNIGHT);
+	export_constant2("EAJ_DRAGON_KNIGHT",MAPID_DRAGON_KNIGHT);
+	export_constant2("EAJ_ARCH_MAGE",MAPID_ARCH_MAGE);
+	export_constant2("EAJ_WINDHAWK",MAPID_WINDHAWK);
+	export_constant2("EAJ_CARDINAL",MAPID_CARDINAL);
+	export_constant2("EAJ_MEISTER",MAPID_MEISTER);
+	export_constant2("EAJ_SHADOW_CROSS",MAPID_SHADOW_CROSS);
+
+	export_constant2("EAJ_IMPERIAL_GUARD",MAPID_IMPERIAL_GUARD);
+	export_constant2("EAJ_ELEMENTAL_MASTER",MAPID_ELEMENTAL_MASTER);
+	export_constant2("EAJ_TROUBADOURTROUVERE",MAPID_TROUBADOURTROUVERE);
+	export_constant2("EAJ_INQUISITOR",MAPID_INQUISITOR);
+	export_constant2("EAJ_BIOLO",MAPID_BIOLO);
+	export_constant2("EAJ_ABYSS_CHASER",MAPID_ABYSS_CHASER);
 
 	/* sex */
 	export_constant(SEX_FEMALE);

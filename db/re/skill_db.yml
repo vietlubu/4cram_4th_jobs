@@ -33447,6 +33447,58 @@ Body:
     Name: NV_TRANSCENDENCE
     Description: Transcendence
     MaxLevel: 5
+  - Id: 5201
+    Name: DK_SERVANTWEAPON
+    Description: Servant Weapon
+    MaxLevel: 5
+  - Id: 5202
+    Name: DK_SERVANTWEAPON_ATK
+    Description: Servant Weapon Attack
+    MaxLevel: 5
+  - Id: 5203
+    Name: DK_SERVANT_W_SIGN
+    Description: Servant Weapon Sign
+    MaxLevel: 5
+  - Id: 5204
+    Name: DK_SERVANT_W_PHANTOM
+    Description: Servant Weapon Phantom
+    MaxLevel: 5
+  - Id: 5205
+    Name: DK_SERVANT_W_DEMOL
+    Description: Servant Weapon Demolition
+    MaxLevel: 5
+  - Id: 5206
+    Name: DK_CHARGINGPIERCE
+    Description: Charging Pierce
+    MaxLevel: 10
+  - Id: 5207
+    Name: DK_TWOHANDDEF
+    Description: Two Hand Defending
+    MaxLevel: 10
+  - Id: 5208
+    Name: DK_HACKANDSLASHER
+    Description: Hack And Slasher
+    MaxLevel: 10
+  - Id: 5209
+    Name: DK_HACKANDSLASHER_ATK
+    Description: Hack And Slasher Attack
+    MaxLevel: 10
+  - Id: 5210
+    Name: DK_DRAGONIC_AURA
+    Description: Dragonic Aura
+    MaxLevel: 10
+  - Id: 5211
+    Name: DK_MADNESS_CRUSHER
+    Description: Madness Crusher
+    MaxLevel: 5
+  - Id: 5212
+    Name: DK_VIGOR
+    Description: Vigor
+    MaxLevel: 10
+  - Id: 5213
+    Name: DK_STORMSLASH
+    Description: Storm Slash
+    MaxLevel: 5
   - Id: 8001
     Name: HLIF_HEAL
     Description: Healing Touch

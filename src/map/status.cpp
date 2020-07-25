@@ -2769,7 +2769,7 @@ unsigned short status_base_atk(const struct block_list *bl, const struct status_
 			break;
 		case BL_PC:
 #ifdef RENEWAL
-			str = (dstr * 10 + dex * 10 / 5 + status->luk * 10 / 3 + level * 10 / 4) / 10;
+			str = (dstr * 10 + dex * 10 / 5 + status->luk * 10 / 3 + level * 10 / 4) / 10 + 5 * status->pow;
 #else
 			dstr = str / 10;
 			str += dstr*dstr;
@@ -2868,7 +2868,7 @@ unsigned short status_base_matk_min(struct block_list *bl, const struct status_d
 			return status_get_homint(bl) + level + (status_get_homint(bl) + status_get_homdex(bl)) / 5;
 		case BL_PC:
 		default:
-			return status->int_ + (status->int_ / 2) + (status->dex / 5) + (status->luk / 3) + (level / 4);
+			return status->int_ + (status->int_ / 2) + (status->dex / 5) + (status->luk / 3) + (level / 4) + 5 * status->spl;
 	}
 }
 
@@ -2887,7 +2887,7 @@ unsigned short status_base_matk_max(struct block_list *bl, const struct status_d
 			return status_get_homint(bl) + level + (status_get_homluk(bl) + status_get_homint(bl) + status_get_homdex(bl)) / 3;
 		case BL_PC:
 		default:
-			return status->int_ + (status->int_ / 2) + (status->dex / 5) + (status->luk / 3) + (level / 4);
+			return status->int_ + (status->int_ / 2) + (status->dex / 5) + (status->luk / 3) + (level / 4) + 5 * status->spl;
 	}
 }
 #endif
@@ -2933,10 +2933,14 @@ void status_calc_misc(struct block_list *bl, struct status_data *status, int lev
 		// Hit
 		stat = status->hit;
 		stat += level + status->dex + (bl->type == BL_PC ? status->luk / 3 + 175 : 150); //base level + ( every 1 dex = +1 hit ) + (every 3 luk = +1 hit) + 175
+		if (bl->type == BL_PC)
+			stat += 2 * status->con;
 		status->hit = cap_value(stat, 1, SHRT_MAX);
 		// Flee
 		stat = status->flee;
 		stat += level + status->agi + (bl->type == BL_MER ? 0 : bl->type == BL_PC ? status->luk / 5 : 0) + 100; //base level + ( every 1 agi = +1 flee ) + (every 5 luk = +1 flee) + 100
+		if (bl->type == BL_PC)
+			stat += 2 * status->con;
 		status->flee = cap_value(stat, 1, SHRT_MAX);
 		// Def2
 		if (bl->type == BL_MER)
@@ -5498,6 +5502,20 @@ void status_calc_bl_main(struct block_list *bl, /*enum scb_flag*/int64 flag)
 	}
 
 	if(flag&SCB_HIT) {
+		// Player check for CON
+		if (bl->type == BL_PC && status->dex == b_status->dex
+#ifdef RENEWAL
+			&& status->luk == b_status->luk && status->con == b_status->con
+#endif
+			)
+			status->hit = status_calc_hit(bl, sc, b_status->hit);
+		else
+			status->hit = status_calc_hit(bl, sc, b_status->hit + (status->dex - b_status->dex)
+#ifdef RENEWAL
+				+ (status->luk / 3 - b_status->luk / 3) + 2 * (status->con - b_status->con)
+#endif
+			);
+		// Everything else that doesn't have CON
 		if (status->dex == b_status->dex
 #ifdef RENEWAL
 			&& status->luk == b_status->luk
@@ -5513,6 +5531,20 @@ void status_calc_bl_main(struct block_list *bl, /*enum scb_flag*/int64 flag)
 	}
 
 	if(flag&SCB_FLEE) {
+		// Player check for CON
+		if (bl->type == BL_PC && status->agi == b_status->agi
+#ifdef RENEWAL
+			&& status->luk == b_status->luk && status->con == b_status->con
+#endif
+			)
+			status->flee = status_calc_flee(bl, sc, b_status->flee);
+		else
+			status->flee = status_calc_flee(bl, sc, b_status->flee + (status->agi - b_status->agi)
+#ifdef RENEWAL
+				+ (status->luk / 5 - b_status->luk / 5) + 2 * (status->con - b_status->con)
+#endif
+			);
+		// Everything else that doesn't have CON
 		if (status->agi == b_status->agi
 #ifdef RENEWAL
 			&& status->luk == b_status->luk

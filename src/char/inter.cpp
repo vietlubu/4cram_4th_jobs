@@ -323,12 +323,31 @@ const char* job_name(int class_) {
 			return msg_txt(120);
 
 		case JOB_DRAGON_KNIGHT:
-		//case JOB_WARLOCK:
-		//case JOB_RANGER:
-		//case JOB_ARCH_BISHOP:
-		//case JOB_MECHANIC:
-		//case JOB_GUILLOTINE_CROSS:
+		case JOB_MEISTER:
+		case JOB_SHADOW_CROSS:
+		case JOB_ARCH_MAGE:
+		case JOB_CARDINAL:
+		case JOB_WINDHAWK:
+		case JOB_IMPERIAL_GUARD:
+		case JOB_BIOLO:
+		case JOB_ABYSS_CHASER:
+		case JOB_ELEMENTAL_MASTER:
+		case JOB_INQUISITOR:
+		case JOB_TROUBADOUR:
+		case JOB_TROUVERE:
 			return msg_txt(122 - JOB_DRAGON_KNIGHT + class_);
+
+		case JOB_WOLF_WINDHAWK:
+			return msg_txt(127);
+
+		case JOB_MEISTER_MADOGEAR:
+			return msg_txt(123);
+
+		case JOB_DRAGON_KNIGHT_CHICKEN:
+			return msg_txt(122);
+
+		case JOB_IMPERIAL_GUARD_CHICKEN:
+			return msg_txt(128);
 
 		default:
 			return msg_txt(199);
