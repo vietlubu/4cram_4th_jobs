@@ -8017,7 +8017,7 @@ int pc_resetstate(struct map_session_data* sd)
 	if (sd->class_&JOBL_FORTH)// Free points for being a 4th job.
 		add += battle_config.trait_points_job_change;
 	if (sd->status.base_level > battle_config.trait_points_start_lv)// Points given based on base level if above required level.
-		add += sd->status.base_level - battle_config.trait_points_start_lv * battle_config.trait_points_per_lv;
+		add += (sd->status.base_level - battle_config.trait_points_start_lv) * battle_config.trait_points_per_lv;
 	sd->status.trait_point = add;
 
 	pc_setstat(sd, SP_STR, 1);
