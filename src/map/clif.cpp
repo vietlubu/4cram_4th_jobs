@@ -3441,7 +3441,7 @@ void clif_updatestatus(struct map_session_data *sd,int type)
 	case SP_UCON:
 	case SP_UCRT:
 		WFIFOW(fd, 0) = 0xbe;
-		WFIFOB(fd, 4) = pc_need_status_point(sd,type-SP_UPOW+SP_POW, 1);
+		WFIFOB(fd, 4) = pc_need_trait_point(sd,type-SP_UPOW+SP_POW, 1);
 		len = 5;
 		break;
 
@@ -3794,6 +3794,7 @@ void clif_refreshlook(struct block_list *bl, int id, int type, int val, enum sen
 ///     <int>.B <need int>.B <dex>.B <need dex>.B <luk>.B <need luk>.B <atk>.W <atk2>.W
 ///     <matk min>.W <matk max>.W <def>.W <def2>.W <mdef>.W <mdef2>.W <hit>.W
 ///     <flee>.W <flee2>.W <crit>.W <aspd>.W <aspd2>.W
+/// Note: Need to find ZC_STATUS2 to support trait stats/sub-stats and trait stat points. [Rytech]
 void clif_initialstatus(struct map_session_data *sd) {
 	int fd, mdef2;
 	unsigned char *buf;
@@ -3947,7 +3948,7 @@ void clif_arrow_create_list( struct map_session_data *sd ){
 /// Notifies the client, about the result of an status change request (ZC_STATUS_CHANGE_ACK).
 /// 00bc <status id>.W <result>.B <value>.B
 /// status id:
-///     SP_STR ~ SP_LUK
+///     SP_STR ~ SP_LUK and SP_POW ~ SP_CRT
 /// result:
 ///     0 = failure
 ///     1 = success
@@ -12425,6 +12426,25 @@ void clif_parse_StatusUp(int fd,struct map_session_data *sd)
 }
 
 
+/// Request to increase trait status (CZ_TRAIT_STATUS_CHANGE).
+/// 0b24 <status id>.W <amount>.W???
+/// status id:
+///     SP_POW ~ SP_CON
+/// amount:
+///     Old clients always send 1 for this, even when using /pow+ and the like.
+///     Newer clients (2013-12-23 and newer) send the correct amount.
+void clif_parse_TraitStatusUp(int fd, struct map_session_data *sd)
+{
+	int increase_amount = RFIFOW(fd, packet_db[RFIFOW(fd, 0)].pos[1]);
+
+	if (increase_amount < 0) {
+		ShowDebug("clif_parse_TraitStatusUp: Negative 'increase' value sent by client! (fd: %d, value: %d)\n",
+			fd, increase_amount);
+	}
+	pc_traitstatusup(sd, RFIFOW(fd, packet_db[RFIFOW(fd, 0)].pos[0]), increase_amount);
+}
+
+
 /// Request to increase level of a skill (CZ_UPGRADE_SKILLLEVEL).
 /// 0112 <skill id>.W
 void clif_parse_SkillUp(int fd,struct map_session_data *sd)
@@ -15294,6 +15314,7 @@ void clif_parse_AutoRevive(int fd, struct map_session_data *sd)
 ///      <itemdefPower>.W <plusdefPower>.W <mdefPower>.W <plusmdefPower>.W
 ///      <hitSuccessValue>.W <avoidSuccessValue>.W <plusAvoidSuccessValue>.W
 ///      <criticalSuccessValue>.W <ASPD>.W <plusASPD>.W
+/// Note: Is there a ZC_ACK_STATUS_GM2 that supports trait stats/sub-stats??? [Rytech]
 void clif_check(int fd, struct map_session_data* pl_sd)
 {
 	WFIFOHEAD(fd,packet_len(0x214));

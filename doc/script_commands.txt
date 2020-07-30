@@ -1,4 +1,4 @@
-//===== rAthena Documentation================================
+﻿//===== rAthena Documentation================================
 //= rAthena Script Commands
 //===== By:==================================================
 //= rAthena Dev Team
@@ -5872,6 +5872,30 @@ specified amount permanently. The amount can be negative. See 'statusup'.
 
 	// This will decrease a character's Vit forever.
 	statusup2 bVit,-1;
+---------------------------------------
+
+*traitstatusup <stat>{,<char_id>};
+
+This command will change a specified trait stat of the invoking character up by one
+permanently. Trait stats are to be given as number, but you can use these constants to
+replace them:
+
+bPow -  Power
+bSta -  Stamina
+bWis -  Wisdon
+bSpl -  Spell
+bCon -  Concentration
+bCrt -  Creative
+
+---------------------------------------
+
+*traitstatusup2 <stat>,<amount>{,<char_id>};
+
+This command will change a specified trait stat of the invoking character by the
+specified amount permanently. The amount can be negative. See 'statusup'.
+
+	// This will decrease a character's Sta forever.
+	traitstatusup2 bSta,-1;
 
 ---------------------------------------
 

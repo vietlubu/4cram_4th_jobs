@@ -88,7 +88,7 @@
 #define MIN_STAR 0
 #define MAX_STAR 3
 
-#define MAX_STATUS_TYPE 5
+#define MAX_STATUS_TYPE 11
 
 #define WEDDING_RING_M 2634
 #define WEDDING_RING_F 2635

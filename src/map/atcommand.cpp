@@ -1539,7 +1539,7 @@ ACMD_FUNC(itemreset)
  *------------------------------------------*/
 ACMD_FUNC(baselevelup)
 {
-	int level=0, i=0, status_point=0;
+	int level=0, i=0, status_point=0, trait_point=0;
 	nullpo_retr(-1, sd);
 	level = atoi(message);
 
@@ -1557,8 +1557,19 @@ ACMD_FUNC(baselevelup)
 			level = pc_maxbaselv(sd) - sd->status.base_level;
 		for (i = 0; i < level; i++)
 			status_point += pc_gets_status_point(sd->status.base_level + i);
+		if (sd->status.base_level + level > battle_config.trait_points_start_lv)
+		{
+			short level_check = 1 + sd->status.base_level;
+			for (i = 0; i < level; i++)
+			{
+				if ( level_check > battle_config.trait_points_start_lv)
+					trait_point += battle_config.trait_points_per_lv;
+				level_check++;
+			}
+		}
 
 		sd->status.status_point += status_point;
+		sd->status.trait_point += trait_point;
 		sd->status.base_level += (unsigned int)level;
 		status_calc_pc(sd, SCO_FORCE);
 		status_percent_heal(&sd->bl, 100, 100);
@@ -1576,12 +1587,19 @@ ACMD_FUNC(baselevelup)
 			level = sd->status.base_level-1;
 		for (i = 0; i > -level; i--)
 			status_point += pc_gets_status_point(sd->status.base_level + i - 1);
-		if (sd->status.status_point < status_point)
+		if (sd->status.base_level > battle_config.trait_points_start_lv)
+			for (i = 0; i > -level; i--)
+				trait_point += battle_config.trait_points_per_lv;
+		if (sd->status.status_point < status_point || sd->status.trait_point < trait_point)
 			pc_resetstate(sd);
 		if (sd->status.status_point < status_point)
 			sd->status.status_point = 0;
 		else
 			sd->status.status_point -= status_point;
+		if (sd->status.trait_point < trait_point)
+			sd->status.trait_point = 0;
+		else
+			sd->status.trait_point -= trait_point;
 		sd->status.base_level -= (unsigned int)level;
 		clif_displaymessage(fd, msg_txt(sd,22)); // Base level lowered.
 		status_calc_pc(sd, SCO_FORCE);
@@ -1589,6 +1607,7 @@ ACMD_FUNC(baselevelup)
 	}
 	sd->status.base_exp = 0;
 	clif_updatestatus(sd, SP_STATUSPOINT);
+	clif_updatestatus(sd, SP_TRAITPOINT);
 	clif_updatestatus(sd, SP_BASELEVEL);
 	clif_updatestatus(sd, SP_BASEEXP);
 	clif_updatestatus(sd, SP_NEXTBASEEXP);
@@ -2560,6 +2579,55 @@ ACMD_FUNC(statuspoint)
 }
 
 /*==========================================
+* @trpoint
+*------------------------------------------*/
+ACMD_FUNC(traitpoint)
+{
+	int point;
+	unsigned int new_trait_point;
+
+	if (!message || !*message || (point = atoi(message)) == 0) {
+		clif_displaymessage(fd, msg_txt(sd, 2014)); // Please enter a number (usage: @trpoint <number of points>).
+		return -1;
+	}
+
+	if (point < 0)
+	{
+		if (sd->status.trait_point < (unsigned int)(-point))
+		{
+			new_trait_point = 0;
+		}
+		else
+		{
+			new_trait_point = sd->status.trait_point + point;
+		}
+	}
+	else if (UINT_MAX - sd->status.trait_point < (unsigned int)point)
+	{
+		new_trait_point = UINT_MAX;
+	}
+	else
+	{
+		new_trait_point = sd->status.trait_point + point;
+	}
+
+	if (new_trait_point != sd->status.trait_point) {
+		sd->status.trait_point = new_trait_point;
+		clif_updatestatus(sd, SP_TRAITPOINT);
+		clif_displaymessage(fd, msg_txt(sd, 174)); // Number of status points changed.
+	}
+	else {
+		if (point < 0)
+			clif_displaymessage(fd, msg_txt(sd, 41)); // Unable to decrease the number/value.
+		else
+			clif_displaymessage(fd, msg_txt(sd, 149)); // Unable to increase the number/value.
+		return -1;
+	}
+
+	return 0;
+}
+
+/*==========================================
  * @skpoint (Rewritten by [Yor])
  *------------------------------------------*/
 ACMD_FUNC(skillpoint)
@@ -2641,8 +2709,8 @@ ACMD_FUNC(param)
 {
 	uint8 i;
 	int value = 0;
-	const char* param[] = { "str", "agi", "vit", "int", "dex", "luk" };
-	unsigned short new_value, *status[6], max_status[6];
+	const char* param[] = { "str", "agi", "vit", "int", "dex", "luk", "pow", "sta", "wis", "spl", "con", "crt" };
+	unsigned short new_value, *status[12], max_status[12];
  	//we don't use direct initialization because it isn't part of the c standard.
 	nullpo_retr(-1, sd);
 
@@ -2666,9 +2734,16 @@ ACMD_FUNC(param)
 	status[3] = &sd->status.int_;
 	status[4] = &sd->status.dex;
 	status[5] = &sd->status.luk;
+	status[6] = &sd->status.pow;
+	status[7] = &sd->status.sta;
+	status[8] = &sd->status.wis;
+	status[9] = &sd->status.spl;
+	status[10] = &sd->status.con;
+	status[11] = &sd->status.crt;
 
 	if( pc_has_permission(sd, PC_PERM_BYPASS_MAX_STAT) )
-		max_status[0] = max_status[1] = max_status[2] = max_status[3] = max_status[4] = max_status[5] = SHRT_MAX;
+		max_status[0] = max_status[1] = max_status[2] = max_status[3] = max_status[4] = max_status[5] = 
+		max_status[6] = max_status[7] = max_status[8] = max_status[9] = max_status[10] = max_status[11] = SHRT_MAX;
 	else {
 		max_status[0] = pc_maxparameter(sd,PARAM_STR);
 		max_status[1] = pc_maxparameter(sd,PARAM_AGI);
@@ -2676,6 +2751,12 @@ ACMD_FUNC(param)
 		max_status[3] = pc_maxparameter(sd,PARAM_INT);
 		max_status[4] = pc_maxparameter(sd,PARAM_DEX);
 		max_status[5] = pc_maxparameter(sd,PARAM_LUK);
+		max_status[6] = pc_maxtraitparameter(sd, PARAM_POW);
+		max_status[7] = pc_maxtraitparameter(sd, PARAM_STA);
+		max_status[8] = pc_maxtraitparameter(sd, PARAM_WIS);
+		max_status[9] = pc_maxtraitparameter(sd, PARAM_SPL);
+		max_status[10] = pc_maxtraitparameter(sd, PARAM_CON);
+		max_status[11] = pc_maxtraitparameter(sd, PARAM_CRT);
 	}
 
 	if(value > 0  && *status[i] + value >= max_status[i])
@@ -2687,8 +2768,17 @@ ACMD_FUNC(param)
 
 	if (new_value != *status[i]) {
 		*status[i] = new_value;
-		clif_updatestatus(sd, SP_STR + i);
-		clif_updatestatus(sd, SP_USTR + i);
+		if (i >= PARAM_STR && i <= PARAM_LUK)
+		{
+			clif_updatestatus(sd, SP_STR + i);
+			clif_updatestatus(sd, SP_USTR + i);
+		}
+		else
+		{
+			clif_updatestatus(sd, SP_POW + i - 6);
+			clif_updatestatus(sd, SP_UPOW + i - 6);
+		}
+
 		status_calc_pc(sd, SCO_FORCE);
 		clif_displaymessage(fd, msg_txt(sd,42)); // Stat changed.
 
@@ -2735,16 +2825,17 @@ ACMD_FUNC(stat_all)
 		max_status[3] = pc_maxparameter(sd,PARAM_INT);
 		max_status[4] = pc_maxparameter(sd,PARAM_DEX);
 		max_status[5] = pc_maxparameter(sd,PARAM_LUK);
-		max_status[6] = pc_maxparameter(sd,PARAM_POW);
-		max_status[7] = pc_maxparameter(sd,PARAM_STA);
-		max_status[8] = pc_maxparameter(sd,PARAM_WIS);
-		max_status[9] = pc_maxparameter(sd,PARAM_SPL);
-		max_status[10] = pc_maxparameter(sd,PARAM_CON);
-		max_status[11] = pc_maxparameter(sd,PARAM_CRT);
+		max_status[6] = pc_maxtraitparameter(sd,PARAM_POW);
+		max_status[7] = pc_maxtraitparameter(sd,PARAM_STA);
+		max_status[8] = pc_maxtraitparameter(sd,PARAM_WIS);
+		max_status[9] = pc_maxtraitparameter(sd,PARAM_SPL);
+		max_status[10] = pc_maxtraitparameter(sd,PARAM_CON);
+		max_status[11] = pc_maxtraitparameter(sd,PARAM_CRT);
 		value = SHRT_MAX;
 	} else {
 		if( pc_has_permission(sd, PC_PERM_BYPASS_MAX_STAT) )
-			max_status[0] = max_status[1] = max_status[2] = max_status[3] = max_status[4] = max_status[5] = max_status[6] = max_status[7] = max_status[8] = max_status[9] = max_status[10] = max_status[11] = SHRT_MAX;
+			max_status[0] = max_status[1] = max_status[2] = max_status[3] = max_status[4] = max_status[5] = 
+			max_status[6] = max_status[7] = max_status[8] = max_status[9] = max_status[10] = max_status[11] = SHRT_MAX;
 		else {
 			max_status[0] = pc_maxparameter(sd,PARAM_STR);
 			max_status[1] = pc_maxparameter(sd,PARAM_AGI);
@@ -2752,12 +2843,12 @@ ACMD_FUNC(stat_all)
 			max_status[3] = pc_maxparameter(sd,PARAM_INT);
 			max_status[4] = pc_maxparameter(sd,PARAM_DEX);
 			max_status[5] = pc_maxparameter(sd,PARAM_LUK);
-			max_status[6] = pc_maxparameter(sd,PARAM_POW);
-			max_status[7] = pc_maxparameter(sd,PARAM_STA);
-			max_status[8] = pc_maxparameter(sd,PARAM_WIS);
-			max_status[9] = pc_maxparameter(sd,PARAM_SPL);
-			max_status[10] = pc_maxparameter(sd,PARAM_CON);
-			max_status[11] = pc_maxparameter(sd,PARAM_CRT);
+			max_status[6] = pc_maxtraitparameter(sd,PARAM_POW);
+			max_status[7] = pc_maxtraitparameter(sd,PARAM_STA);
+			max_status[8] = pc_maxtraitparameter(sd,PARAM_WIS);
+			max_status[9] = pc_maxtraitparameter(sd,PARAM_SPL);
+			max_status[10] = pc_maxtraitparameter(sd,PARAM_CON);
+			max_status[11] = pc_maxtraitparameter(sd,PARAM_CRT);
 		}
 	}
 	
@@ -2773,7 +2864,7 @@ ACMD_FUNC(stat_all)
 
 		if (new_value != *status[i]) {
 			*status[i] = new_value;
-			if (i >= 0 && i <= 5)
+			if (i >= PARAM_STR && i <= PARAM_LUK)
 			{
 				clif_updatestatus(sd, SP_STR + i);
 				clif_updatestatus(sd, SP_USTR + i);
@@ -9058,14 +9149,24 @@ ACMD_FUNC(stats)
 		{ "MaxHp - %d", 0 },
 		{ "Sp - %d", 0 },
 		{ "MaxSp - %d", 0 },
+		{ "Ap - %d", 0 },
+		{ "MaxAp - %d", 0 },
 		{ "Str - %3d", 0 },
 		{ "Agi - %3d", 0 },
 		{ "Vit - %3d", 0 },
 		{ "Int - %3d", 0 },
 		{ "Dex - %3d", 0 },
 		{ "Luk - %3d", 0 },
+		{ "Pow - %3d", 0 },
+		{ "Sta - %3d", 0 },
+		{ "Wis - %3d", 0 },
+		{ "Spl - %3d", 0 },
+		{ "Con - %3d", 0 },
+		{ "Crt - %3d", 0 },
 		{ "Zeny - %d", 0 },
-		{ "Free SK Points - %d", 0 },
+		{ "Free Status Points - %d", 0 },
+		{ "Free Trait Points - %d", 0 },
+		{ "Free Skill Points - %d", 0 },
 		{ "JobChangeLvl (2nd) - %d", 0 },
 		{ "JobChangeLvl (3rd) - %d", 0 },
 		{ "JobChangeLvl (4th) - %d", 0 },
@@ -9083,17 +9184,27 @@ ACMD_FUNC(stats)
 	output_table[3].value = sd->status.max_hp;
 	output_table[4].value = sd->status.sp;
 	output_table[5].value = sd->status.max_sp;
-	output_table[6].value = sd->status.str;
-	output_table[7].value = sd->status.agi;
-	output_table[8].value = sd->status.vit;
-	output_table[9].value = sd->status.int_;
-	output_table[10].value = sd->status.dex;
-	output_table[11].value = sd->status.luk;
-	output_table[12].value = sd->status.zeny;
-	output_table[13].value = sd->status.skill_point;
-	output_table[14].value = sd->change_level_2nd;
-	output_table[15].value = sd->change_level_3rd;
-	output_table[16].value = sd->change_level_4th;
+	output_table[6].value = sd->status.ap;
+	output_table[7].value = sd->status.max_ap;
+	output_table[8].value = sd->status.str;
+	output_table[9].value = sd->status.agi;
+	output_table[10].value = sd->status.vit;
+	output_table[11].value = sd->status.int_;
+	output_table[12].value = sd->status.dex;
+	output_table[13].value = sd->status.luk;
+	output_table[14].value = sd->status.pow;
+	output_table[15].value = sd->status.sta;
+	output_table[16].value = sd->status.wis;
+	output_table[17].value = sd->status.spl;
+	output_table[18].value = sd->status.con;
+	output_table[19].value = sd->status.crt;
+	output_table[20].value = sd->status.zeny;
+	output_table[21].value = sd->status.status_point;
+	output_table[22].value = sd->status.trait_point;
+	output_table[23].value = sd->status.skill_point;
+	output_table[24].value = sd->change_level_2nd;
+	output_table[25].value = sd->change_level_3rd;
+	output_table[26].value = sd->change_level_4th;
 
 	sprintf(job_jobname, "Job - %s %s", job_name(sd->status.class_), "(level %d)");
 	sprintf(output, msg_txt(sd,53), sd->status.name); // '%s' stats:
@@ -10088,11 +10199,12 @@ ACMD_FUNC(clonestat) {
 	}
 	else {
 		uint8 i;
-		short max_status[6];
+		short max_status[12];
 
 		pc_resetstate(sd);
 		if (pc_has_permission(sd, PC_PERM_BYPASS_STAT_ONCLONE))
-			max_status[0] = max_status[1] = max_status[2] = max_status[3] = max_status[4] = max_status[5] = SHRT_MAX;
+			max_status[0] = max_status[1] = max_status[2] = max_status[3] = max_status[4] = max_status[5] = 
+			max_status[6] = max_status[7] = max_status[8] = max_status[9] = max_status[10] = max_status[11] = SHRT_MAX;
 		else {
 			max_status[0] = pc_maxparameter(sd, PARAM_STR);
 			max_status[1] = pc_maxparameter(sd, PARAM_AGI);
@@ -10100,6 +10212,12 @@ ACMD_FUNC(clonestat) {
 			max_status[3] = pc_maxparameter(sd, PARAM_INT);
 			max_status[4] = pc_maxparameter(sd, PARAM_DEX);
 			max_status[5] = pc_maxparameter(sd, PARAM_LUK);
+			max_status[6] = pc_maxtraitparameter(sd, PARAM_POW);
+			max_status[7] = pc_maxtraitparameter(sd, PARAM_STA);
+			max_status[8] = pc_maxtraitparameter(sd, PARAM_WIS);
+			max_status[9] = pc_maxtraitparameter(sd, PARAM_SPL);
+			max_status[10] = pc_maxtraitparameter(sd, PARAM_CON);
+			max_status[11] = pc_maxtraitparameter(sd, PARAM_CRT);
 		}
 
 #define clonestat_check(cmd,stat)\
@@ -10120,10 +10238,24 @@ ACMD_FUNC(clonestat) {
 		clonestat_check(int_, PARAM_INT);
 		clonestat_check(dex, PARAM_DEX);
 		clonestat_check(luk, PARAM_LUK);
+		clonestat_check(pow, PARAM_POW);
+		clonestat_check(sta, PARAM_STA);
+		clonestat_check(wis, PARAM_WIS);
+		clonestat_check(spl, PARAM_SPL);
+		clonestat_check(con, PARAM_CON);
+		clonestat_check(crt, PARAM_CRT);
 
 		for (i = 0; i < PARAM_MAX; i++) {
-			clif_updatestatus(sd, SP_STR + i);
-			clif_updatestatus(sd, SP_USTR + i);
+			if (i >= PARAM_STR && i <= PARAM_LUK)
+			{
+				clif_updatestatus(sd, SP_STR + i);
+				clif_updatestatus(sd, SP_USTR + i);
+			}
+			else
+			{
+				clif_updatestatus(sd, SP_POW + i - 6);
+				clif_updatestatus(sd, SP_UPOW + i - 6);
+			}
 		}
 		status_calc_pc(sd, SCO_FORCE);
 	}
@@ -10354,6 +10486,7 @@ void atcommand_basecommands(void) {
 		ACMD_DEF(gat),
 		ACMD_DEF(displaystatus),
 		ACMD_DEF2("stpoint", statuspoint),
+		ACMD_DEF2("trpoint", traitpoint),
 		ACMD_DEF2("skpoint", skillpoint),
 		ACMD_DEF(zeny),
 		ACMD_DEF2("str", param),
@@ -10362,6 +10495,12 @@ void atcommand_basecommands(void) {
 		ACMD_DEF2("int", param),
 		ACMD_DEF2("dex", param),
 		ACMD_DEF2("luk", param),
+		ACMD_DEF2("pow", param),
+		ACMD_DEF2("sta", param),
+		ACMD_DEF2("wis", param),
+		ACMD_DEF2("spl", param),
+		ACMD_DEF2("con", param),
+		ACMD_DEF2("crt", param),
 		ACMD_DEF2("glvl", guildlevelup),
 		ACMD_DEF(makeegg),
 		ACMD_DEF(hatch),

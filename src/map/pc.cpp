@@ -7177,6 +7177,7 @@ int pc_checkbaselevelup(struct map_session_data *sd) {
 		status_calc_pet(sd->pd,SCO_NONE);
 
 	clif_updatestatus(sd,SP_STATUSPOINT);
+	clif_updatestatus(sd,SP_TRAITPOINT);
 	clif_updatestatus(sd,SP_BASELEVEL);
 	clif_updatestatus(sd,SP_BASEEXP);
 	clif_updatestatus(sd,SP_NEXTBASEEXP);
@@ -7762,6 +7763,164 @@ int pc_statusup2(struct map_session_data* sd, int type, int val)
 	clif_statusupack(sd,type,1,val); // required
 	if( val > 255 )
 		clif_updatestatus(sd,type); // send after the 'ack' to override the truncated value
+
+	return val;
+}
+
+/// Returns the number of trait stat points needed to change the specified trait stat by val.
+/// If val is negative, returns the number of trait stat points that would be needed to
+/// raise the specified trait stat from (current value - val) to current value.
+int pc_need_trait_point(struct map_session_data* sd, int type, int val)
+{
+	int low, high, sp = 0, max = 0;
+
+	if (val == 0)
+		return 0;
+
+	low = pc_getstat(sd, type);
+	max = pc_maxtraitparameter(sd, (enum e_params)(type - SP_POW));
+
+	if (low >= max && val > 0)
+		return 0; // Official servers show '0' when max is reached
+
+	high = low + val;
+
+	if (val < 0)
+		SWAP(low, high);
+
+	for (; low < high; low++)
+		sp += 1;
+
+	return sp;
+}
+
+/**
+* Returns the value the specified trait stat can be increased by with the current
+* amount of available trait status points for the current character's class.
+*
+* @param sd   The target character.
+* @param type Trait stat to verify.
+* @return Maximum value the stat could grow by.
+*/
+int pc_maxtraitparameterincrease(struct map_session_data* sd, int type)
+{
+	int base, final_val, trait_points, max_param;
+
+	nullpo_ret(sd);
+
+	base = final_val = pc_getstat(sd, type);
+	trait_points = sd->status.trait_point;
+	max_param = pc_maxtraitparameter(sd, (enum e_params)(type - SP_POW));
+
+	while (final_val <= max_param && trait_points >= 0) {
+		trait_points -= 1;
+		final_val++;
+	}
+	final_val--;
+
+	return (final_val > base ? final_val - base : 0);
+}
+
+/**
+* Raises a trait stat by the specified amount.
+*
+* Obeys max_traitparameter limits.
+* Subtracts trait status points according to the cost of the increased trait stat points.
+*
+* @param sd       The target character.
+* @param type     The stat to change (see enum _sp)
+* @param increase The stat increase (strictly positive) amount.
+* @retval true  if the trait stat was increased by any amount.
+* @retval false if there were no changes.
+*/
+bool pc_traitstatusup(struct map_session_data* sd, int type, int increase)
+{
+	int max_increase = 0, current = 0, needed_points = 0, final_value = 0;
+
+	nullpo_ret(sd);
+
+	// check conditions
+	if (type < SP_POW || type > SP_CRT || increase <= 0) {
+		clif_statusupack(sd, type, 0, 0);
+		return false;
+	}
+
+	// check limits
+	current = pc_getstat(sd, type);
+	max_increase = pc_maxtraitparameterincrease(sd, type);
+	increase = cap_value(increase, 0, max_increase); // cap to the maximum status points available
+	if (increase <= 0 || current + increase > pc_maxtraitparameter(sd, (enum e_params)(type - SP_POW))) {
+		clif_statusupack(sd, type, 0, 0);
+		return false;
+	}
+
+	// check status points
+	needed_points = pc_need_trait_point(sd, type, increase);
+	if (needed_points < 0 || needed_points > sd->status.trait_point) { // Sanity check
+		clif_statusupack(sd, type, 0, 0);
+		return false;
+	}
+
+	// set new values
+	final_value = pc_setstat(sd, type, current + increase);
+	sd->status.trait_point -= needed_points;
+
+	status_calc_pc(sd, SCO_NONE);
+
+	// update increase cost indicator
+	clif_updatestatus(sd, SP_UPOW + type - SP_POW);
+
+	// update statpoint count
+	clif_updatestatus(sd, SP_TRAITPOINT);
+
+	// update stat value
+	clif_statusupack(sd, type, 1, final_value); // required
+	if (final_value > 255)
+		clif_updatestatus(sd, type); // send after the 'ack' to override the truncated value
+
+	//achievement_update_objective(sd, AG_GOAL_STATUS, 1, final_value);
+
+	return true;
+}
+
+/**
+* Raises a trait stat by the specified amount.
+*
+* Obeys max_trait_parameter limits.
+* Does not subtract status points for the cost of the modified stat points.
+*
+* @param sd   The target character.
+* @param type The stat to change (see enum _sp)
+* @param val  The stat increase (or decrease) amount.
+* @return the stat increase amount.
+* @retval 0 if no changes were made.
+*/
+int pc_traitstatusup2(struct map_session_data* sd, int type, int val)
+{
+	int max, need;
+	nullpo_ret(sd);
+
+	if (type < SP_POW || type > SP_CRT)
+	{
+		clif_statusupack(sd, type, 0, 0);
+		return 0;
+	}
+
+	need = pc_need_trait_point(sd, type, 1);
+	max = pc_maxtraitparameter(sd, (enum e_params)(type - SP_POW)); // set new value
+
+	val = pc_setstat(sd, type, cap_value(pc_getstat(sd, type) + val, 1, max));
+
+	status_calc_pc(sd, SCO_NONE);
+
+	// update increase cost indicator
+	if (need != pc_need_trait_point(sd, type, 1))
+		clif_updatestatus(sd, SP_UPOW + type - SP_POW);
+
+	// update stat value
+	clif_statusupack(sd, type, 1, val); // required
+	if (val > 255)
+		clif_updatestatus(sd, type); // send after the 'ack' to override the truncated value
 
 	return val;
 }
@@ -9033,6 +9192,7 @@ bool pc_setparam(struct map_session_data *sd,int64 type,int64 val_tmp)
 		// clif_updatestatus(sd, SP_BASELEVEL);  // Gets updated at the bottom
 		clif_updatestatus(sd, SP_NEXTBASEEXP);
 		clif_updatestatus(sd, SP_STATUSPOINT);
+		clif_updatestatus(sd, SP_TRAITPOINT);
 		clif_updatestatus(sd, SP_BASEEXP);
 		status_calc_pc(sd, SCO_FORCE);
 		if(sd->status.party_id)
@@ -9153,22 +9313,22 @@ bool pc_setparam(struct map_session_data *sd,int64 type,int64 val_tmp)
 		sd->status.luk = cap_value(val, 1, pc_maxparameter(sd,PARAM_LUK));
 		break;
 	case SP_POW:
-		sd->status.pow = cap_value(val, 0, pc_maxparameter(sd, PARAM_POW));
+		sd->status.pow = cap_value(val, 0, pc_maxtraitparameter(sd, PARAM_POW));
 		break;
 	case SP_STA:
-		sd->status.sta = cap_value(val, 0, pc_maxparameter(sd, PARAM_STA));
+		sd->status.sta = cap_value(val, 0, pc_maxtraitparameter(sd, PARAM_STA));
 		break;
 	case SP_WIS:
-		sd->status.wis = cap_value(val, 0, pc_maxparameter(sd, PARAM_WIS));
+		sd->status.wis = cap_value(val, 0, pc_maxtraitparameter(sd, PARAM_WIS));
 		break;
 	case SP_SPL:
-		sd->status.spl = cap_value(val, 0, pc_maxparameter(sd, PARAM_SPL));
+		sd->status.spl = cap_value(val, 0, pc_maxtraitparameter(sd, PARAM_SPL));
 		break;
 	case SP_CON:
-		sd->status.con = cap_value(val, 0, pc_maxparameter(sd, PARAM_CON));
+		sd->status.con = cap_value(val, 0, pc_maxtraitparameter(sd, PARAM_CON));
 		break;
 	case SP_CRT:
-		sd->status.crt = cap_value(val, 0, pc_maxparameter(sd, PARAM_CRT));
+		sd->status.crt = cap_value(val, 0, pc_maxtraitparameter(sd, PARAM_CRT));
 		break;
 	case SP_KARMA:
 		sd->status.karma = val;
@@ -9566,6 +9726,7 @@ bool pc_jobchange(struct map_session_data *sd,int job, char upper)
 		sd->status.base_exp=0;
 		pc_resetstate(sd);
 		clif_updatestatus(sd,SP_STATUSPOINT);
+		clif_updatestatus(sd,SP_TRAITPOINT);
 		clif_updatestatus(sd,SP_BASELEVEL);
 		clif_updatestatus(sd,SP_BASEEXP);
 		clif_updatestatus(sd,SP_NEXTBASEEXP);
@@ -13289,12 +13450,6 @@ short pc_maxparameter(struct map_session_data *sd, enum e_params param) {
 			case PARAM_INT: max_param = job_info[idx].max_param.int_; break;
 			case PARAM_DEX: max_param = job_info[idx].max_param.dex; break;
 			case PARAM_LUK: max_param = job_info[idx].max_param.luk; break;
-			case PARAM_POW: max_param = job_info[idx].max_param.pow; break;
-			case PARAM_STA: max_param = job_info[idx].max_param.sta; break;
-			case PARAM_WIS: max_param = job_info[idx].max_param.wis; break;
-			case PARAM_SPL: max_param = job_info[idx].max_param.spl; break;
-			case PARAM_CON: max_param = job_info[idx].max_param.con; break;
-			case PARAM_CRT: max_param = job_info[idx].max_param.crt; break;
 		}
 		if (max_param > 0)
 			return max_param;
@@ -13335,6 +13490,33 @@ short pc_maxparameter(struct map_session_data *sd, enum e_params param) {
 	}
 
 	return battle_config.max_parameter;
+}
+
+/**
+* Get maximum specified trait parameter for specified class
+* @param class_: sd->class
+* @param sex: sd->status.sex
+* @param flag: parameter will be checked
+* @return max_param
+*/
+short pc_maxtraitparameter(struct map_session_data *sd, enum e_params param) {
+	int idx = -1, class_ = sd->class_;
+
+	if ((idx = pc_class2idx(pc_mapid2jobid(class_, sd->status.sex))) >= 0) {
+		short max_param = 0;
+		switch (6+param) {
+		case PARAM_POW: max_param = job_info[idx].max_param.pow; break;
+		case PARAM_STA: max_param = job_info[idx].max_param.sta; break;
+		case PARAM_WIS: max_param = job_info[idx].max_param.wis; break;
+		case PARAM_SPL: max_param = job_info[idx].max_param.spl; break;
+		case PARAM_CON: max_param = job_info[idx].max_param.con; break;
+		case PARAM_CRT: max_param = job_info[idx].max_param.crt; break;
+		}
+		if (max_param > 0)
+			return max_param;
+	}
+
+	return battle_config.max_trait_parameter;
 }
 
 /**
