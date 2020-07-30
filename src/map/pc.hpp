@@ -1223,6 +1223,7 @@ int pc_need_status_point(struct map_session_data *,int,int);
 int pc_maxparameterincrease(struct map_session_data*,int);
 bool pc_statusup(struct map_session_data*,int,int);
 int pc_statusup2(struct map_session_data*,int,int);
+int pc_gets_trait_point(int);
 int pc_need_trait_point(struct map_session_data *, int, int);
 int pc_maxtraitparameterincrease(struct map_session_data*, int);
 bool pc_traitstatusup(struct map_session_data*, int, int);

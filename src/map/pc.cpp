@@ -69,6 +69,7 @@ static inline bool pc_attendance_rewarded_today( struct map_session_data* sd );
 #define MAX_LEVEL_JOB_EXP 999999999 ///< Max Job EXP for player on Max Job Level
 
 static unsigned int statp[MAX_LEVEL+1];
+static unsigned int traitp[MAX_LEVEL + 1];
 #if defined(RENEWAL_DROP) || defined(RENEWAL_EXP)
 static unsigned int level_penalty[3][CLASS_MAX][MAX_LEVEL*2+1];
 #endif
@@ -7150,6 +7151,7 @@ int pc_follow(struct map_session_data *sd,int target_id)
 
 int pc_checkbaselevelup(struct map_session_data *sd) {
 	unsigned int next = pc_nextbaseexp(sd);
+	short trait = 0;
 
 	if (!next || sd->status.base_exp < next || pc_is_maxbaselv(sd))
 		return 0;
@@ -7161,11 +7163,10 @@ int pc_checkbaselevelup(struct map_session_data *sd) {
 			sd->status.base_exp = next-1;
 
 		next = pc_gets_status_point(sd->status.base_level);
+		trait = pc_gets_trait_point(sd->status.base_level);
 		sd->status.base_level++;
 		sd->status.status_point += next;
-
-		if (sd->status.base_level > battle_config.trait_points_start_lv)
-			sd->status.trait_point += battle_config.trait_points_per_lv;
+		sd->status.trait_point += trait;
 
 		if( pc_is_maxbaselv(sd) ){
 			sd->status.base_exp = u32min(sd->status.base_exp,MAX_LEVEL_BASE_EXP);
@@ -7599,6 +7600,15 @@ int pc_gets_status_point(int level)
 		return (statp[level+1] - statp[level]);
 	else //Default increase
 		return ((level+15) / 5);
+}
+
+// Calculates the number of trait points PC gets when leveling up (from level to level+1)
+int pc_gets_trait_point(int level)
+{
+	if (battle_config.use_traitpoint_table) //Use values from "db/traitpoint.txt"
+		return (traitp[level + 1] - traitp[level]);
+	else //Default increase
+		return ((level + 15) / 5);
 }
 
 #ifdef RENEWAL_STAT
@@ -8171,13 +8181,29 @@ int pc_resetstate(struct map_session_data* sd)
 		sd->status.status_point+=add;
 	}
 
+	if (battle_config.use_traitpoint_table)
+	{	// New traitpoint table used here
+		if (sd->status.base_level > MAX_LEVEL)
+		{	//traitp[] goes out of bounds, can't reset!
+			ShowError("pc_resetstate: Can't reset trait stats of %d:%d, the base level (%d) is greater than the max level supported (%d)\n",
+				sd->status.account_id, sd->status.char_id, sd->status.base_level, MAX_LEVEL);
+			return 0;
+		}
 
-	add = 0;
-	if (sd->class_&JOBL_FORTH)// Free points for being a 4th job.
-		add += battle_config.trait_points_job_change;
-	if (sd->status.base_level > battle_config.trait_points_start_lv)// Points given based on base level if above required level.
-		add += (sd->status.base_level - battle_config.trait_points_start_lv) * battle_config.trait_points_per_lv;
-	sd->status.trait_point = add;
+		sd->status.trait_point = traitp[sd->status.base_level] + (sd->class_&JOBL_FORTH ? battle_config.trait_points_job_change : 0);
+	}
+	else
+	{
+		add = 0;
+		add += pc_need_trait_point(sd, SP_POW, 1 - pc_getstat(sd, SP_POW));
+		add += pc_need_trait_point(sd, SP_STA, 1 - pc_getstat(sd, SP_STA));
+		add += pc_need_trait_point(sd, SP_WIS, 1 - pc_getstat(sd, SP_WIS));
+		add += pc_need_trait_point(sd, SP_SPL, 1 - pc_getstat(sd, SP_SPL));
+		add += pc_need_trait_point(sd, SP_CON, 1 - pc_getstat(sd, SP_CON));
+		add += pc_need_trait_point(sd, SP_CRT, 1 - pc_getstat(sd, SP_CRT));
+
+		sd->status.trait_point += add;
+	}
 
 	pc_setstat(sd, SP_STR, 1);
 	pc_setstat(sd, SP_AGI, 1);
@@ -9172,20 +9198,14 @@ bool pc_setparam(struct map_session_data *sd,int64 type,int64 val_tmp)
 		if (val > sd->status.base_level) {
 			int i = 0;
 			int stat=0;
+			short trait = 0;
 			for (i = 0; i < (int)(val - sd->status.base_level); i++)
-				stat += pc_gets_status_point(sd->status.base_level + i);
-			sd->status.status_point += stat;
-
-			if (val > battle_config.trait_points_start_lv)
 			{
-				short level_check = 1 + sd->status.base_level;
-				for (i = 0; i < (int)(val - sd->status.base_level); i++)
-				{
-					if ( level_check > battle_config.trait_points_start_lv )
-						sd->status.trait_point += battle_config.trait_points_per_lv;
-					level_check++;
-				}
+				stat += pc_gets_status_point(sd->status.base_level + i);
+				trait += pc_gets_trait_point(sd->status.base_level + i);
 			}
+			sd->status.status_point += stat;
+			sd->status.trait_point += trait;
 		}
 		sd->status.base_level = val;
 		sd->status.base_exp = 0;
@@ -12652,6 +12672,39 @@ static int pc_read_statsdb(const char *basedir, int last_s, bool silent){
 	return max(last_s,i);
 }
 
+static int pc_read_traitdb(const char *basedir, int last_s, bool silent) {
+	int i = 1;
+	char line[24000]; //FIXME this seem too big
+	FILE *fp;
+
+	sprintf(line, "%s/traitpoint.txt", basedir);
+	fp = fopen(line, "r");
+	if (fp == NULL) {
+		if (silent == 0) ShowWarning("Can't read '" CL_WHITE "%s" CL_RESET "'... Generating DB.\n", line);
+		return max(last_s, i);
+	}
+	else {
+		int entries = 0;
+		while (fgets(line, sizeof(line), fp))
+		{
+			int stat;
+			trim(line);
+			if (line[0] == '\0' || (line[0] == '/' && line[1] == '/'))
+				continue;
+			if ((stat = strtoul(line, NULL, 10))<0)
+				stat = 0;
+			if (i > MAX_LEVEL)
+				break;
+			traitp[i] = stat;
+			i++;
+			entries++;
+		}
+		fclose(fp);
+		ShowStatus("Done reading '" CL_WHITE "%d" CL_RESET "' entries in '" CL_WHITE "%s/%s" CL_RESET "'.\n", entries, basedir, "traitpoint.txt");
+	}
+	return max(last_s, i);
+}
+
 /*==========================================
  * pc DB reading.
  * job_exp.txt		- required experience values
@@ -12662,7 +12715,7 @@ static int pc_read_statsdb(const char *basedir, int last_s, bool silent){
  * job_maxhpsp_db.txt	- strtlvl,maxlvl,job,type,values/lvl (values=hp|sp)
  *------------------------------------------*/
 void pc_readdb(void) {
-	int i, k, s = 1;
+	int i, k, s = 1, t = 1;
 	const char* dbsubpath[] = {
 		"",
 		"/" DBIMPORT,
@@ -12693,6 +12746,7 @@ void pc_readdb(void) {
 
 	 // reset then read statspoint
 	memset(statp,0,sizeof(statp));
+	memset(traitp,0,sizeof(traitp));
 	for(i=0; i<ARRAYLENGTH(dbsubpath); i++){
 		uint8 n1 = (uint8)(strlen(db_path)+strlen(dbsubpath[i])+1);
 		uint8 n2 = (uint8)(strlen(db_path)+strlen(DBPATH)+strlen(dbsubpath[i])+1);
@@ -12709,6 +12763,7 @@ void pc_readdb(void) {
 		}
 
 		s = pc_read_statsdb(dbsubpath2,s,i > 0);
+		t = pc_read_traitdb(dbsubpath2,s,i > 0);
 		if (i == 0)
 #ifdef RENEWAL_ASPD // Paths are hardcoded here to specifically pick the correct database
 			sv_readdb(dbsubpath1, "re/job_db1.txt",',',6+MAX_WEAPON_TYPE,6+MAX_WEAPON_TYPE,CLASS_COUNT,&pc_readdb_job1, false);
@@ -12740,6 +12795,14 @@ void pc_readdb(void) {
 	for (; s <= MAX_LEVEL; s++)
 		statp[s] = statp[s-1] + pc_gets_status_point(s-1);
 	battle_config.use_statpoint_table = k; //restore setting
+
+	// Same for the trait point table.
+	k = battle_config.use_traitpoint_table; //save setting
+	battle_config.use_traitpoint_table = 0; //temporarily disable to force pc_gets_trait_point use default values
+	traitp[0] = 3; // seed value
+	for (; t <= MAX_LEVEL; t++)
+		traitp[t] = traitp[t - 1] + pc_gets_trait_point(t - 1);
+	battle_config.use_traitpoint_table = k; //restore setting
 	
 	//Checking if all class have their data
 	for (i = 0; i < JOB_MAX; i++) {

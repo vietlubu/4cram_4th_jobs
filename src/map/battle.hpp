@@ -688,8 +688,7 @@ struct Battle_Config
 
 	// 4th Jobs Stuff
 	int trait_points_job_change;
-	int trait_points_start_lv;
-	int trait_points_per_lv;
+	int use_traitpoint_table;
 	int max_trait_parameter;
 	int max_ap;
 

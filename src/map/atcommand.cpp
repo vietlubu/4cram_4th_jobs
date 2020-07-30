@@ -1556,18 +1556,10 @@ ACMD_FUNC(baselevelup)
 		if ((unsigned int)level > pc_maxbaselv(sd) || (unsigned int)level > pc_maxbaselv(sd) - sd->status.base_level) // fix positive overflow
 			level = pc_maxbaselv(sd) - sd->status.base_level;
 		for (i = 0; i < level; i++)
-			status_point += pc_gets_status_point(sd->status.base_level + i);
-		if (sd->status.base_level + level > battle_config.trait_points_start_lv)
 		{
-			short level_check = 1 + sd->status.base_level;
-			for (i = 0; i < level; i++)
-			{
-				if ( level_check > battle_config.trait_points_start_lv)
-					trait_point += battle_config.trait_points_per_lv;
-				level_check++;
-			}
+			status_point += pc_gets_status_point(sd->status.base_level + i);
+			trait_point += pc_gets_trait_point(sd->status.base_level + i);
 		}
-
 		sd->status.status_point += status_point;
 		sd->status.trait_point += trait_point;
 		sd->status.base_level += (unsigned int)level;
@@ -1586,10 +1578,10 @@ ACMD_FUNC(baselevelup)
 		if ((unsigned int)level >= sd->status.base_level)
 			level = sd->status.base_level-1;
 		for (i = 0; i > -level; i--)
+		{
 			status_point += pc_gets_status_point(sd->status.base_level + i - 1);
-		if (sd->status.base_level > battle_config.trait_points_start_lv)
-			for (i = 0; i > -level; i--)
-				trait_point += battle_config.trait_points_per_lv;
+			trait_point += pc_gets_trait_point(sd->status.base_level + i - 1);
+		}
 		if (sd->status.status_point < status_point || sd->status.trait_point < trait_point)
 			pc_resetstate(sd);
 		if (sd->status.status_point < status_point)
