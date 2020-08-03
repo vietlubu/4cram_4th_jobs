@@ -113,6 +113,7 @@ static signed short status_calc_hplus(struct block_list *, struct status_change 
 static signed short status_calc_crate(struct block_list *, struct status_change *, int);
 static unsigned int status_calc_maxhp(struct block_list *bl, uint64 maxhp);
 static unsigned int status_calc_maxsp(struct block_list *bl, uint64 maxsp);
+static unsigned int status_calc_maxap(struct block_list *, struct status_change *, unsigned int);
 static unsigned char status_calc_element(struct block_list *bl, struct status_change *sc, int element);
 static unsigned char status_calc_element_lv(struct block_list *bl, struct status_change *sc, int lv);
 static enum e_mode status_calc_mode(struct block_list *bl, struct status_change *sc, enum e_mode mode);
@@ -1754,13 +1755,13 @@ static void initDummyData(void)
 }
 
 /**
- * For copying a status_data structure from b to a, without overwriting current Hp and Sp
+ * For copying a status_data structure from b to a, without overwriting current Hp, Sp, and Ap.
  * @param a: Status data structure to copy from
  * @param b: Status data structure to copy to
  */
 static inline void status_cpy(struct status_data* a, const struct status_data* b)
 {
-	memcpy((void*)&a->max_hp, (const void*)&b->max_hp, sizeof(struct status_data)-(sizeof(a->hp)+sizeof(a->sp)));
+	memcpy((void*)&a->max_hp, (const void*)&b->max_hp, sizeof(struct status_data)-(sizeof(a->hp)+sizeof(a->sp)+sizeof(a->ap)));
 }
 
 /**
@@ -2906,7 +2907,10 @@ void status_calc_misc(struct block_list *bl, struct status_data *status, int lev
 		status->batk =
 		status->hit = status->flee =
 		status->def2 = status->mdef2 =
-		status->cri = status->flee2 = 0;
+		status->cri = status->flee2 =
+		status->patk = status->smatk =
+		status->res = status->mres =
+		status->hplus = status->crate = 0;
 
 #ifdef RENEWAL // Renewal formulas
 	if (bl->type == BL_HOM) {
@@ -3828,6 +3832,7 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 		// Load Hp/SP from char-received data.
 		sd->battle_status.hp = sd->status.hp;
 		sd->battle_status.sp = sd->status.sp;
+		sd->battle_status.ap = sd->status.ap;
 		sd->regen.sregen = &sd->sregen;
 		sd->regen.ssregen = &sd->ssregen;
 	}
@@ -3905,12 +3910,12 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 		sd->special_state.no_gemstone = battle_config.vip_gemstone;
 
 	if (!sd->state.permanent_speed) {
-		memset(&base_status->max_hp, 0, sizeof(struct status_data)-(sizeof(base_status->hp)+sizeof(base_status->sp)));
+		memset(&base_status->max_hp, 0, sizeof(struct status_data)-(sizeof(base_status->hp)+sizeof(base_status->sp)+sizeof(base_status->ap)));
 		base_status->speed = DEFAULT_WALK_SPEED;
 	} else {
 		int pSpeed = base_status->speed;
 
-		memset(&base_status->max_hp, 0, sizeof(struct status_data)-(sizeof(base_status->hp)+sizeof(base_status->sp)));
+		memset(&base_status->max_hp, 0, sizeof(struct status_data)-(sizeof(base_status->hp)+sizeof(base_status->sp)+sizeof(base_status->ap)));
 		base_status->speed = pSpeed;
 	}
 
@@ -4379,12 +4384,24 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 
 	base_status->max_sp = cap_value(base_status->max_sp,1,(unsigned int)battle_config.max_sp);
 
-// ----- RESPAWN HP/SP -----
+// ----- AP MAX CALCULATION -----
+	if (sd->class_&JOBL_FORTH)// Only 4th jobs have access to AP.
+		base_status->max_ap = sd->status.max_ap = 200;
+	else
+		base_status->max_ap = sd->status.max_ap = 0;
+
+	if (battle_config.ap_rate != 100)
+		base_status->max_ap = (unsigned int)(battle_config.ap_rate * (base_status->max_ap / 100.));
+
+	base_status->max_ap = cap_value(base_status->max_ap, 0, (unsigned int)battle_config.max_ap);
+
+// ----- RESPAWN HP/SP/AP -----
 
 	// Calc respawn hp and store it on base_status
 	if (sd->special_state.restart_full_recover) {
 		base_status->hp = base_status->max_hp;
 		base_status->sp = base_status->max_sp;
+		base_status->ap = base_status->max_ap;
 	} else {
 		if((sd->class_&MAPID_BASEMASK) == MAPID_NOVICE && !(sd->class_&JOBL_2)
 			&& battle_config.restart_hp_rate < 50)
@@ -4398,6 +4415,8 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 
 		if( !base_status->sp ) // The minimum for the respawn setting is SP:1
 			base_status->sp = 1;
+
+		base_status->ap = (int64)base_status->max_ap * battle_config.restart_ap_rate / 100;
 	}
 
 // ----- MISC CALCULATION -----
@@ -5927,6 +5946,27 @@ void status_calc_bl_main(struct block_list *bl, /*enum scb_flag*/int64 flag)
 			status->crate = status_calc_crate(bl, sc, b_status->crate + (status->crt - b_status->crt) / 3);
 	}
 
+	if (flag&SCB_MAXAP) {
+		if (bl->type&BL_PC) {
+			if (sd->class_&JOBL_FORTH)
+				status->max_ap = 200;
+			else
+				status->max_ap = 0;
+
+			if (battle_config.ap_rate != 100)
+				status->max_ap = (unsigned int)(battle_config.ap_rate * (status->max_ap / 100.));
+
+			status->max_ap = umin(status->max_ap, (unsigned int)battle_config.max_ap);
+		}
+		else
+			status->max_ap = status_calc_maxap(bl, sc, b_status->max_ap);
+
+		if (status->ap > status->max_ap) {
+			status->ap = status->max_ap;
+			if (sd) clif_updatestatus(sd, SP_AP);
+		}
+	}
+
 	if(flag&(SCB_VIT|SCB_MAXHP|SCB_INT|SCB_MAXSP) && bl->type&BL_REGEN)
 		status_calc_regen(bl, status, status_get_regen_data(bl));
 
@@ -6098,14 +6138,14 @@ void status_calc_bl_(struct block_list* bl, enum scb_flag flag, enum e_status_ca
 			clif_updatestatus(sd,SP_MAXHP);
 		if(b_status.max_sp != status->max_sp)
 			clif_updatestatus(sd,SP_MAXSP);
-		//if (b_status.max_ap != status->max_ap)
-		//	clif_updatestatus(sd, SP_MAXAP);
+		if (b_status.max_ap != status->max_ap)
+			clif_updatestatus(sd, SP_MAXAP);
 		if(b_status.hp != status->hp)
 			clif_updatestatus(sd,SP_HP);
 		if(b_status.sp != status->sp)
 			clif_updatestatus(sd,SP_SP);
-		//if (b_status.ap != status->ap)
-		//	clif_updatestatus(sd, SP_AP);
+		if (b_status.ap != status->ap)
+			clif_updatestatus(sd, SP_AP);
 	} else if( bl->type == BL_HOM ) {
 		TBL_HOM* hd = BL_CAST(BL_HOM, bl);
 
@@ -8234,6 +8274,21 @@ static unsigned int status_calc_maxsp(struct block_list *bl, uint64 maxsp)
 		maxsp = maxsp * rate / 100;
 	
 	return (unsigned int)cap_value(maxsp,1,UINT_MAX);
+}
+
+/**
+* Adds MaxAP modifications based on status changes
+* @param bl: Object to change MaxAP [PC|MOB|HOM|MER|ELEM]
+* @param sc: Object's status change information
+* @param MaxAP: Initial MaxAP
+* @return modified MaxAP with cap_value(maxap,0,USHRT_MAX)
+*/
+static unsigned int status_calc_maxap(struct block_list *bl, struct status_change *sc, unsigned int maxap)
+{
+	if (!sc || !sc->count)
+		return cap_value(maxap, 0, SHRT_MAX);
+
+	return (short)cap_value(maxap, 0, SHRT_MAX);
 }
 
 /**

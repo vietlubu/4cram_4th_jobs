@@ -2502,8 +2502,8 @@ extern unsigned int StatusDisplayType[SC_MAX];
 ///For holding basic status (which can be modified by status changes)
 struct status_data {
 	unsigned int
-		hp, sp,  // see status_cpy before adding members before hp and sp
-		max_hp, max_sp;
+		hp, sp, ap, // see status_cpy before adding members before hp and sp
+		max_hp, max_sp, max_ap;
 	short
 		str, agi, vit, int_, dex, luk,
 		pow, sta, wis, spl, con, crt,

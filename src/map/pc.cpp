@@ -9024,8 +9024,8 @@ int64 pc_readparam(struct map_session_data* sd,int64 type)
 		case SP_MAXHP:           val = sd->battle_status.max_hp; break;
 		case SP_SP:              val = sd->battle_status.sp; break;
 		case SP_MAXSP:           val = sd->battle_status.max_sp; break;
-		//case SP_AP:              val = sd->battle_status.ap; break;
-		//case SP_MAXAP:           val = sd->battle_status.max_ap; break;
+		case SP_AP:              val = sd->battle_status.ap; break;
+		case SP_MAXAP:           val = sd->battle_status.max_ap; break;
 		case SP_STR:             val = sd->status.str; break;
 		case SP_AGI:             val = sd->status.agi; break;
 		case SP_VIT:             val = sd->status.vit; break;
@@ -9302,7 +9302,7 @@ bool pc_setparam(struct map_session_data *sd,int64 type,int64 val_tmp)
 			clif_updatestatus(sd, SP_SP);
 		}
 		break;
-	/*case SP_AP:
+	case SP_AP:
 		sd->battle_status.ap = cap_value(val, 0, (int)sd->battle_status.max_ap);
 		break;
 	case SP_MAXAP:
@@ -9313,7 +9313,7 @@ bool pc_setparam(struct map_session_data *sd,int64 type,int64 val_tmp)
 			sd->battle_status.ap = sd->battle_status.max_ap;
 			clif_updatestatus(sd, SP_AP);
 		}
-		break;*/
+		break;
 	case SP_STR:
 		sd->status.str = cap_value(val, 1, pc_maxparameter(sd,PARAM_STR));
 		break;

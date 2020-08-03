@@ -8999,6 +8999,8 @@ static const struct _battle_data {
 	{ "use_traitpoint_table",               &battle_config.use_traitpoint_table,            1,      0,      1, },
 	{ "trait_points_job_change",            &battle_config.trait_points_job_change,         7,      1,      1000, },
 	{ "max_trait_parameter",                &battle_config.max_trait_parameter,             100,    10,     SHRT_MAX, },
+	{ "ap_rate",                            &battle_config.ap_rate,                         100,    1,      INT_MAX, },
+	{ "restart_ap_rate",                    &battle_config.restart_ap_rate,                 0,      0,      100, },
 	{ "max_ap",                             &battle_config.max_ap,                          200,    100,    1000000000, },
 
 #include "../custom/battle_config_init.inc"

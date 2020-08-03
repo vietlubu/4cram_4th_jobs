@@ -690,6 +690,8 @@ struct Battle_Config
 	int trait_points_job_change;
 	int use_traitpoint_table;
 	int max_trait_parameter;
+	int ap_rate;
+	int restart_ap_rate;
 	int max_ap;
 
 #include "../custom/battle_config_struct.inc"

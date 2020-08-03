@@ -3305,9 +3305,9 @@ void clif_updatestatus(struct map_session_data *sd,int type)
 	case SP_MAXSP:
 		WFIFOL(fd,4)=sd->battle_status.max_sp;
 		break;
-	//case SP_MAXAP:
-	//	WFIFOL(fd, 4) = sd->battle_status.max_ap;
-	//	break;
+	case SP_MAXAP:
+		WFIFOL(fd, 4) = sd->battle_status.max_ap;
+		break;
 	case SP_HP:
 		// On officials the HP never go below 1, even if you die [Lemongrass]
 		// On officials the HP Novice class never go below 50%, even if you die [Napster]
@@ -3316,9 +3316,9 @@ void clif_updatestatus(struct map_session_data *sd,int type)
 	case SP_SP:
 		WFIFOL(fd,4)=sd->battle_status.sp;
 		break;
-	//case SP_AP:
-	//	WFIFOL(fd, 4) = sd->battle_status.ap;
-	//	break;
+	case SP_AP:
+		WFIFOL(fd, 4) = sd->battle_status.ap;
+		break;
 	case SP_ASPD:
 		WFIFOL(fd,4)=sd->battle_status.amotion;
 		break;
