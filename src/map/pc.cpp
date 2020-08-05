@@ -689,7 +689,7 @@ void pc_setrestartvalue(struct map_session_data *sd, char type) {
 
 	if (type&1) {	//Normal resurrection
 		status->hp = 1; //Otherwise status_heal may fail if dead.
-		status_heal(&sd->bl, b_status->hp, 0, 1);
+		status_heal(&sd->bl, b_status->hp, 0, 0, 1);
 		if( status->sp < b_status->sp )
 			status_set_sp(&sd->bl, b_status->sp, 1);
 	} else { //Just for saving on the char-server (with values as if respawned)
@@ -7183,7 +7183,7 @@ int pc_checkbaselevelup(struct map_session_data *sd) {
 	clif_updatestatus(sd,SP_BASEEXP);
 	clif_updatestatus(sd,SP_NEXTBASEEXP);
 	status_calc_pc(sd,SCO_FORCE);
-	status_percent_heal(&sd->bl,100,100);
+	status_percent_heal(&sd->bl,100,100,0);
 
 	if ((sd->class_&MAPID_UPPERMASK) == MAPID_SUPER_NOVICE) {
 		sc_start(&sd->bl,&sd->bl,status_skill2sc(PR_KYRIE),100,1,skill_get_time(PR_KYRIE,1));
@@ -8511,8 +8511,9 @@ static TIMER_FUNC(pc_respawn_timer){
 /*==========================================
  * Invoked when a player has received damage
  *------------------------------------------*/
-void pc_damage(struct map_session_data *sd,struct block_list *src,unsigned int hp, unsigned int sp)
+void pc_damage(struct map_session_data *sd,struct block_list *src,unsigned int hp, unsigned int sp, unsigned int ap)
 {
+	if (ap) clif_updatestatus(sd,SP_AP);
 	if (sp) clif_updatestatus(sd,SP_SP);
 	if (hp) clif_updatestatus(sd,SP_HP);
 	else return;
@@ -8606,7 +8607,7 @@ int pc_dead(struct map_session_data *sd,struct block_list *src)
 		if( exp && get_percentage(sd->status.base_exp,exp) >= 99 ) {
 			sd->state.snovice_dead_flag = 1;
 			pc_setrestartvalue(sd,1);
-			status_percent_heal(&sd->bl, 100, 100);
+			status_percent_heal(&sd->bl, 100, 100, 0);
 			clif_resurrection(&sd->bl, 1);
 			if(battle_config.pc_invincible_time)
 				pc_setinvincibletimer(sd, battle_config.pc_invincible_time);
@@ -8729,7 +8730,7 @@ int pc_dead(struct map_session_data *sd,struct block_list *src)
 				clif_misceffect(&md->bl,0);
 				md->level++;
 				status_calc_mob(md, SCO_NONE);
-				status_percent_heal(src,10,0);
+				status_percent_heal(src,10,0,0);
 
 				if( battle_config.show_mob_info&4 )
 				{// update name with new level
@@ -8941,9 +8942,10 @@ int pc_dead(struct map_session_data *sd,struct block_list *src)
 	return 1;
 }
 
-void pc_revive(struct map_session_data *sd,unsigned int hp, unsigned int sp) {
+void pc_revive(struct map_session_data *sd,unsigned int hp, unsigned int sp, unsigned int ap) {
 	if(hp) clif_updatestatus(sd,SP_HP);
 	if(sp) clif_updatestatus(sd,SP_SP);
+	if(ap) clif_updatestatus(sd,SP_AP);
 
 	pc_setstand(sd, true);
 	if(battle_config.pc_invincible_time > 0)
@@ -8978,7 +8980,7 @@ bool pc_revive_item(struct map_session_data *sd) {
 			return false;
 	}
 
-	if (!status_revive(&sd->bl, hp, sp))
+	if (!status_revive(&sd->bl, hp, sp, 0))
 		return false;
 
 	if (item_position < 0)
@@ -9448,33 +9450,38 @@ bool pc_setparam(struct map_session_data *sd,int64 type,int64 val_tmp)
 }
 
 /*==========================================
- * HP/SP Healing. If flag is passed, the heal type is through clif_heal, otherwise update status.
+ * HP/SP/AP Healing. If flag is passed, the heal type is through clif_heal, otherwise update status.
  *------------------------------------------*/
-void pc_heal(struct map_session_data *sd,unsigned int hp,unsigned int sp, int type)
-{
+void pc_heal(struct map_session_data *sd,unsigned int hp,unsigned int sp, unsigned int ap, int type)
+{// Is there going to be a effect for gaining AP soon??? [Rytech]
 	if (type&2) {
 		if (hp || type&4)
 			clif_heal(sd->fd,SP_HP,hp);
 		if (sp)
 			clif_heal(sd->fd,SP_SP,sp);
+		if (ap)
+			clif_heal(sd->fd,SP_AP,ap);
 	} else {
 		if(hp)
 			clif_updatestatus(sd,SP_HP);
 		if(sp)
 			clif_updatestatus(sd,SP_SP);
+		if (ap)
+			clif_updatestatus(sd,SP_AP);
 	}
 	return;
 }
 
 /**
- * Heal player HP and/or SP linearly. Calculate any bonus based on active statuses.
+ * Heal player HP, SP, and AP linearly. Calculate any bonus based on active statuses.
  * @param sd: Player data
  * @param itemid: Item ID
  * @param hp: HP to heal
  * @param sp: SP to heal
+ * @param ap: AP to heal
  * @return Amount healed to an object
  */
-int pc_itemheal(struct map_session_data *sd, int itemid, int hp, int sp)
+int pc_itemheal(struct map_session_data *sd, int itemid, int hp, int sp, int ap)
 {
 	int bonus, tmp, penalty = 0;
 
@@ -9518,6 +9525,13 @@ int pc_itemheal(struct map_session_data *sd, int itemid, int hp, int sp)
 		if (bonus != 100 && tmp > sp)
 			sp = tmp;
 	}
+	if (ap) {
+		bonus = 100;// No bonuses yet. Set to 100% rate for now.
+
+		tmp = ap * bonus / 100; // Overflow check
+		if (bonus != 100 && tmp > ap)
+			ap = tmp;
+	}
 	if (sd->sc.count) {
 		// Critical Wound and Death Hurt stack
 		if (sd->sc.data[SC_CRITICALWOUND])
@@ -9555,14 +9569,14 @@ int pc_itemheal(struct map_session_data *sd, int itemid, int hp, int sp)
 			hp = 0;
 	}
 
-	return status_heal(&sd->bl, hp, sp, 1);
+	return status_heal(&sd->bl, hp, sp, ap, 1);
 }
 
 /*==========================================
- * HP/SP Recovery
- * Heal player hp nad/or sp by rate
+ * HP/SP/AP Recovery
+ * Heal player hp, sp, and ap by rate
  *------------------------------------------*/
-int pc_percentheal(struct map_session_data *sd,int hp,int sp)
+int pc_percentheal(struct map_session_data *sd,int hp,int sp, int ap)
 {
 	nullpo_ret(sd);
 
@@ -9572,25 +9586,35 @@ int pc_percentheal(struct map_session_data *sd,int hp,int sp)
 	if (sp > 100) sp = 100;
 	else if (sp <-100) sp = -100;
 
-	if(hp >= 0 && sp >= 0) //Heal
-		return status_percent_heal(&sd->bl, hp, sp);
+	if (ap > 100) ap = 100;
+	else if (ap <-100) ap = -100;
 
-	if(hp <= 0 && sp <= 0) //Damage (negative rates indicate % of max rather than current), and only kill target IF the specified amount is 100%
-		return status_percent_damage(NULL, &sd->bl, hp, sp, hp==-100);
+	if(hp >= 0 && sp >= 0 && ap >= 0) //Heal
+		return status_percent_heal(&sd->bl, hp, sp, ap);
+
+	if(hp <= 0 && sp <= 0 && ap <= 0) //Damage (negative rates indicate % of max rather than current), and only kill target IF the specified amount is 100%
+		return status_percent_damage(NULL, &sd->bl, hp, sp, ap, hp==-100);
 
 	//Crossed signs
 	if(hp) {
 		if(hp > 0)
-			status_percent_heal(&sd->bl, hp, 0);
+			status_percent_heal(&sd->bl, hp, 0, 0);
 		else
-			status_percent_damage(NULL, &sd->bl, hp, 0, hp==-100);
+			status_percent_damage(NULL, &sd->bl, hp, 0, 0, hp==-100);
 	}
 
 	if(sp) {
 		if(sp > 0)
-			status_percent_heal(&sd->bl, 0, sp);
+			status_percent_heal(&sd->bl, 0, sp, 0);
 		else
-			status_percent_damage(NULL, &sd->bl, 0, sp, false);
+			status_percent_damage(NULL, &sd->bl, 0, sp, 0, false);
+	}
+
+	if (ap) {
+		if (ap > 0)
+			status_percent_heal(&sd->bl, 0, 0, ap);
+		else
+			status_percent_damage(NULL, &sd->bl, 0, 0, ap, false);
 	}
 	return 0;
 }
@@ -11741,7 +11765,7 @@ void pc_bleeding (struct map_session_data *sd, t_tick diff_tick)
 	}
 
 	if (hp > 0 || sp > 0)
-		status_zap(&sd->bl, hp, sp);
+		status_zap(&sd->bl, hp, sp, 0);
 }
 
 //Character regen. Flag is used to know which types of regen can take place.
@@ -11784,7 +11808,7 @@ void pc_regen (struct map_session_data *sd, t_tick diff_tick)
 	}
 
 	if (hp > 0 || sp > 0)
-		status_heal(&sd->bl, hp, sp, 0);
+		status_heal(&sd->bl, hp, sp, 0, 0);
 }
 
 /*==========================================

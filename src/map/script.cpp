@@ -5682,7 +5682,7 @@ static int buildin_areapercentheal_sub(struct block_list *bl,va_list ap)
 	int hp, sp;
 	hp = va_arg(ap, int);
 	sp = va_arg(ap, int);
-	pc_percentheal((TBL_PC *)bl,hp,sp);
+	pc_percentheal((TBL_PC *)bl,hp,sp,0);
 	return 0;
 }
 
@@ -5900,7 +5900,7 @@ BUILDIN_FUNC(heal)
 
 	hp=script_getnum(st,2);
 	sp=script_getnum(st,3);
-	status_heal(&sd->bl, hp, sp, 1);
+	status_heal(&sd->bl, hp, sp, 0, 1);
 	return SCRIPT_CMD_SUCCESS;
 }
 
@@ -5924,7 +5924,7 @@ BUILDIN_FUNC(itemheal)
 	if (!script_charid2sd(4,sd))
 		return SCRIPT_CMD_SUCCESS;
 
-	pc_itemheal(sd,sd->itemid,hp,sp);
+	pc_itemheal(sd,sd->itemid,hp,sp,0);
 	return SCRIPT_CMD_SUCCESS;
 }
 
@@ -5961,7 +5961,7 @@ BUILDIN_FUNC(percentheal)
 	if (sd->sc.data[SC_BITESCAR])
 		hp = 0;
 
-	pc_percentheal(sd,hp,sp);
+	pc_percentheal(sd,hp,sp,0);
 	return SCRIPT_CMD_SUCCESS;
 }
 
@@ -14790,11 +14790,11 @@ BUILDIN_FUNC(dispbottom)
 int recovery_sub(struct map_session_data* sd, int revive)
 {
 	if(revive&(1|4) && pc_isdead(sd)) {
-		status_revive(&sd->bl, 100, 100);
+		status_revive(&sd->bl, 100, 100, 0);
 		clif_displaymessage(sd->fd,msg_txt(sd,16)); // You've been revived!
 		clif_specialeffect(&sd->bl, EF_RESURRECTION, AREA);
 	} else if(revive&(1|2) && !pc_isdead(sd)) {
-		status_percent_heal(&sd->bl, 100, 100);
+		status_percent_heal(&sd->bl, 100, 100, 0);
 		clif_displaymessage(sd->fd,msg_txt(sd,680)); // You have been recovered!
 	}
 	return SCRIPT_CMD_SUCCESS;
@@ -19408,7 +19408,7 @@ BUILDIN_FUNC(mercenary_heal)
 	hp = script_getnum(st,2);
 	sp = script_getnum(st,3);
 
-	status_heal(&sd->md->bl, hp, sp, 0);
+	status_heal(&sd->md->bl, hp, sp, 0, 0);
 	return SCRIPT_CMD_SUCCESS;
 }
 

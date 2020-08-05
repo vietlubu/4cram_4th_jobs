@@ -711,7 +711,7 @@ void hom_gainexp(struct homun_data *hd,int exp)
 
 	clif_specialeffect(&hd->bl,EF_HO_UP,AREA);
 	status_calc_homunculus(hd, SCO_NONE);
-	status_percent_heal(&hd->bl, 100, 100);
+	status_percent_heal(&hd->bl, 100, 100, 0);
 }
 
 /**
@@ -1149,7 +1149,7 @@ int hom_recv_data(uint32 account_id, struct s_homunculus *sh, int flag)
 
 	hd = sd->hd;
 	if (created)
-		status_percent_heal(&hd->bl, 100, 100);
+		status_percent_heal(&hd->bl, 100, 100, 0);
 
 	if(hd && hd->homunculus.hp && !hd->homunculus.vaporize && hd->bl.prev == NULL && sd->bl.prev != NULL)
 	{
@@ -1246,7 +1246,7 @@ int hom_ressurect(struct map_session_data* sd, unsigned char per, short x, short
 			return 0;
 		clif_spawn(&hd->bl);
 	}
-	return status_revive(&hd->bl, per, 0);
+	return status_revive(&hd->bl, per, 0, 0);
 }
 
 /**
@@ -1346,7 +1346,7 @@ int hom_shuffle(struct homun_data *hd)
 	hd->homunculus.skillpts = skillpts;
 	clif_homskillinfoblock(sd);
 	status_calc_homunculus(hd, SCO_NONE);
-	status_percent_heal(&hd->bl, 100, 100);
+	status_percent_heal(&hd->bl, 100, 100, 0);
 	clif_specialeffect(&hd->bl,EF_HO_UP,AREA);
 
 	return 1;

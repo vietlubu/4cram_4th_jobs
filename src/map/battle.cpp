@@ -1461,7 +1461,7 @@ int64 battle_calc_damage(struct block_list *src,struct block_list *bl,struct Dam
 			int per = 100*status->sp / status->max_sp -1; //100% should be counted as the 80~99% interval
 			per /=20; //Uses 20% SP intervals.
 			//SP Cost: 1% + 0.5% per every 20% SP
-			if (!status_charge(bl, 0, (10+5*per)*status->max_sp/1000))
+			if (!status_charge(bl, 0, (10+5*per)*status->max_sp/1000, 0))
 				status_change_end(bl, SC_ENERGYCOAT, INVALID_TIMER);
 			damage -= damage * 6 * (1 + per) / 100; //Reduction: 6% + 6% every 20%
 		}
@@ -1611,7 +1611,7 @@ int64 battle_calc_damage(struct block_list *src,struct block_list *bl,struct Dam
 			damage += damage * 75 / 100;
 
 		if ((sce = sc->data[SC_BLOODLUST]) && flag&BF_WEAPON && damage > 0 && rnd()%100 < sce->val3)
-			status_heal(src, damage * sce->val4 / 100, 0, 3);
+			status_heal(src, damage * sce->val4 / 100, 0, 0, 3);
 
 		if (flag&BF_MAGIC && bl->type == BL_PC && sc->data[SC_GVG_GIANT] && sc->data[SC_GVG_GIANT]->val4)
 			damage += damage * sc->data[SC_GVG_GIANT]->val4 / 100;
@@ -5468,8 +5468,8 @@ static void battle_calc_weapon_final_atk_modifiers(struct Damage* wd, struct blo
 		clif_skill_damage(target, src, gettick(), status_get_amotion(src), 0, rdamage,
 			1, SR_CRESCENTELBOW_AUTOSPELL, tsc->data[SC_CRESCENTELBOW]->val1, DMG_SINGLE); // This is how official does
 		clif_damage(src, target, gettick(), status_get_amotion(src)+1000, 0, rdamage/10, 1, DMG_NORMAL, 0, false);
-		status_damage(target, src, rdamage, 0, 0, 0, 0);
-		status_damage(src, target, rdamage/10, 0, 0, 1, 0);
+		status_damage(target, src, rdamage, 0, 0, 0, 0, 0);
+		status_damage(src, target, rdamage/10, 0, 0, 0, 1, 0);
 		status_change_end(target, SC_CRESCENTELBOW, INVALID_TIMER);
 	}
 
@@ -5484,7 +5484,7 @@ static void battle_calc_weapon_final_atk_modifiers(struct Damage* wd, struct blo
 					hp = sstatus->hp;
 			} else
 				hp = 2*hp/100; //2% hp loss per hit
-			status_zap(src, hp, 0);
+			status_zap(src, hp, 0, 0);
 		}
 		// Only affecting non-skills
 		if (!skill_id && wd->dmg_lv > ATK_BLOCK) {
@@ -6480,7 +6480,7 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 								skillratio = skill_lv * 400; //MATK [{( Skill Level x 400 ) x ( Caster's Base Level / 120 )} + 2500 ] %
 								RE_LVL_DMOD(120);
 								skillratio += 2500;
-								status_zap(&psd->bl, 0, skill_get_sp(skill_id, skill_lv) / 2);
+								status_zap(&psd->bl, 0, skill_get_sp(skill_id, skill_lv) / 2, 0);
 							}
 						}
 						break;
@@ -7227,7 +7227,7 @@ void battle_vanish_damage(struct map_session_data *sd, struct block_list *target
 	}
 
 	if (vanish_hp > 0 || vanish_sp > 0)
-		status_percent_damage(&sd->bl, target, -vanish_hp, -vanish_sp, false); // Damage HP/SP applied once
+		status_percent_damage(&sd->bl, target, -vanish_hp, -vanish_sp, 0, false); // Damage HP/SP applied once
 }
 
 /*==========================================
@@ -7480,10 +7480,10 @@ void battle_drain(struct map_session_data *sd, struct block_list *tbl, int64 rda
 	if (!thp && !tsp)
 		return;
 
-	status_heal(&sd->bl, thp, tsp, battle_config.show_hp_sp_drain?3:1);
+	status_heal(&sd->bl, thp, tsp, 0, battle_config.show_hp_sp_drain?3:1);
 
 	//if (rhp || rsp)
-	//	status_zap(tbl, rhp, rsp);
+	//	status_zap(tbl, rhp, rsp, 0);
 }
 /*===========================================
  * Deals the same damage to targets in area.
@@ -7681,7 +7681,7 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 			 */
 			ret_val = (damage_lv)skill_attack(BF_WEAPON,src,src,target,PA_SACRIFICE,skill_lv,tick,0);
 
-			status_zap(src, sstatus->max_hp*9/100, 0);//Damage to self is always 9%
+			status_zap(src, sstatus->max_hp*9/100, 0, 0);//Damage to self is always 9%
 			if( ret_val == ATK_NONE )
 				return ATK_MISS;
 			return ret_val;
@@ -7715,12 +7715,12 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 	if (tsc && tsc->data[SC_MTF_MLEATKED] && rnd()%100 < tsc->data[SC_MTF_MLEATKED]->val2)
 		clif_skill_nodamage(target, target, SM_ENDURE, tsc->data[SC_MTF_MLEATKED]->val1, sc_start(src, target, SC_ENDURE, 100, tsc->data[SC_MTF_MLEATKED]->val1, skill_get_time(SM_ENDURE, tsc->data[SC_MTF_MLEATKED]->val1)));
 
-	if(tsc && tsc->data[SC_KAAHI] && tstatus->hp < tstatus->max_hp && status_charge(target, 0, tsc->data[SC_KAAHI]->val3)) {
+	if(tsc && tsc->data[SC_KAAHI] && tstatus->hp < tstatus->max_hp && status_charge(target, 0, tsc->data[SC_KAAHI]->val3, 0)) {
 		int hp_heal = tstatus->max_hp - tstatus->hp;
 		if (hp_heal > tsc->data[SC_KAAHI]->val2)
 			hp_heal = tsc->data[SC_KAAHI]->val2;
 		if (hp_heal)
-			status_heal(target, hp_heal, 0, 2);
+			status_heal(target, hp_heal, 0, 0, 2);
 	}
 
 	wd = battle_calc_attack(BF_WEAPON, src, target, 0, 0, flag);
@@ -7860,7 +7860,7 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 		}
 		sp = skill_get_sp(skill_id,skill_lv) * 2 / 3;
 
-		if (status_charge(src, 0, sp)) {
+		if (status_charge(src, 0, sp, 0)) {
 			struct unit_data *ud = unit_bl2ud(src);
 
 			switch (skill_get_casttype(skill_id)) {
@@ -7948,7 +7948,7 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 		if (wd.flag&BF_WEAPON && sc && sc->data[SC_FALLINGSTAR] && rand()%100 < sc->data[SC_FALLINGSTAR]->val2) {
 			if (sd)
 				sd->state.autocast = 1;
-			if (status_charge(src, 0, skill_get_sp(SJ_FALLINGSTAR_ATK, sc->data[SC_FALLINGSTAR]->val1)))
+			if (status_charge(src, 0, skill_get_sp(SJ_FALLINGSTAR_ATK, sc->data[SC_FALLINGSTAR]->val1), 0))
 				skill_castend_nodamage_id(src, src, SJ_FALLINGSTAR_ATK, sc->data[SC_FALLINGSTAR]->val1, tick, flag);
 			if (sd)
 				sd->state.autocast = 0;

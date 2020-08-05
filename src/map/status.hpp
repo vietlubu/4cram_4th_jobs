@@ -2629,29 +2629,33 @@ int status_sc2skill(sc_type sc);
 uint64 status_sc2scb_flag(sc_type sc);
 int status_type2relevant_bl_types(int type);
 
-int status_damage(struct block_list *src,struct block_list *target,int64 dhp,int64 dsp, t_tick walkdelay, int flag, uint16 skill_id);
+int status_damage(struct block_list *src,struct block_list *target,int64 dhp,int64 dsp, int64 dap, t_tick walkdelay, int flag, uint16 skill_id);
 //Define for standard HP damage attacks.
-#define status_fix_damage(src, target, hp, walkdelay, skill) status_damage(src, target, hp, 0, walkdelay, 0, skill)
+#define status_fix_damage(src, target, hp, walkdelay, skill) status_damage(src, target, hp, 0, 0, walkdelay, 0, skill)
 //Define for standard SP damage attacks.
-#define status_fix_spdamage(src, target, sp, walkdelay, skill) status_damage(src, target, 0, sp, walkdelay, 0, skill)
-//Define for standard HP/SP damage triggers.
-#define status_zap(bl, hp, sp) status_damage(NULL, bl, hp, sp, 0, 1, 0)
-//Define for standard HP/SP skill-related cost triggers (mobs require no HP/SP to use skills)
-int64 status_charge(struct block_list* bl, int64 hp, int64 sp);
-int status_percent_change(struct block_list *src, struct block_list *target, int8 hp_rate, int8 sp_rate, uint8 flag);
+#define status_fix_spdamage(src, target, sp, walkdelay, skill) status_damage(src, target, 0, sp, 0, walkdelay, 0, skill)
+//Define for standard AP damage attacks.
+#define status_fix_apdamage(src, target, ap, walkdelay, skill) status_damage(src, target, 0, 0, ap, walkdelay, 0, skill)
+//Define for standard HP/SP/AP damage triggers.
+#define status_zap(bl, hp, sp, ap) status_damage(NULL, bl, hp, sp, ap, 0, 1, 0)
+//Define for standard HP/SP/AP skill-related cost triggers (mobs require no HP/SP/AP to use skills)
+int64 status_charge(struct block_list* bl, int64 hp, int64 sp, int64 ap);
+int status_percent_change(struct block_list *src, struct block_list *target, int8 hp_rate, int8 sp_rate, int8 ap_rate, uint8 flag);
 //Easier handling of status_percent_change
-#define status_percent_heal(bl, hp_rate, sp_rate) status_percent_change(NULL, bl, -(hp_rate), -(sp_rate), 0)
-/// Deals % damage from 'src' to 'target'. If rate is > 0 is % of current HP/SP, < 0 % of MaxHP/MaxSP
-#define status_percent_damage(src, target, hp_rate, sp_rate, kill) status_percent_change(src, target, hp_rate, sp_rate, (kill)?1:2)
+#define status_percent_heal(bl, hp_rate, sp_rate, ap_rate) status_percent_change(NULL, bl, -(hp_rate), -(sp_rate), -(ap_rate), 0)
+/// Deals % damage from 'src' to 'target'. If rate is > 0 is % of current HP/SP/AP, < 0 % of MaxHP/MaxSP/MaxAP
+#define status_percent_damage(src, target, hp_rate, sp_rate, ap_rate, kill) status_percent_change(src, target, hp_rate, sp_rate, ap_rate, (kill)?1:2)
 //Instant kill with no drops/exp/etc
-#define status_kill(bl) status_percent_damage(NULL, bl, 100, 0, true)
-//Used to set the hp/sp of an object to an absolute value (can't kill)
+#define status_kill(bl) status_percent_damage(NULL, bl, 100, 0, 0, true)
+//Used to set the hp/sp/ap of an object to an absolute value (can't kill)
 int status_set_hp(struct block_list *bl, unsigned int hp, int flag);
 int status_set_maxhp(struct block_list *bl, unsigned int hp, int flag);
 int status_set_sp(struct block_list *bl, unsigned int sp, int flag);
 int status_set_maxsp(struct block_list *bl, unsigned int hp, int flag);
-int status_heal(struct block_list *bl,int64 hhp,int64 hsp, int flag);
-int status_revive(struct block_list *bl, unsigned char per_hp, unsigned char per_sp);
+int status_set_ap(struct block_list *bl, unsigned int ap, int flag);
+int status_set_maxap(struct block_list *bl, unsigned int ap, int flag);
+int status_heal(struct block_list *bl,int64 hhp,int64 hsp, int64 hap, int flag);
+int status_revive(struct block_list *bl, unsigned char per_hp, unsigned char per_sp, unsigned char per_ap);
 
 struct regen_data *status_get_regen_data(struct block_list *bl);
 struct status_data *status_get_status_data(struct block_list *bl);

@@ -1236,7 +1236,7 @@ ACMD_FUNC(kill)
 ACMD_FUNC(alive)
 {
 	nullpo_retr(-1, sd);
-	if (!status_revive(&sd->bl, 100, 100))
+	if (!status_revive(&sd->bl, 100, 100, 0))
 	{
 		clif_displaymessage(fd, msg_txt(sd,667)); // You're not dead.
 		return -1;
@@ -1297,7 +1297,7 @@ ACMD_FUNC(heal)
 	if( sp == INT_MIN ) sp++;
 
 	if ( hp == 0 && sp == 0 ) {
-		if (!status_percent_heal(&sd->bl, 100, 100))
+		if (!status_percent_heal(&sd->bl, 100, 100, 0))
 			clif_displaymessage(fd, msg_txt(sd,157)); // HP and SP have already been recovered.
 		else
 			clif_displaymessage(fd, msg_txt(sd,17)); // HP, SP recovered.
@@ -1305,7 +1305,7 @@ ACMD_FUNC(heal)
 	}
 
 	if ( hp > 0 && sp >= 0 ) {
-		if(!status_heal(&sd->bl, hp, sp, 0))
+		if(!status_heal(&sd->bl, hp, sp, 0, 0))
 			clif_displaymessage(fd, msg_txt(sd,157)); // HP and SP are already with the good value.
 		else
 			clif_displaymessage(fd, msg_txt(sd,17)); // HP, SP recovered.
@@ -1313,7 +1313,7 @@ ACMD_FUNC(heal)
 	}
 
 	if ( hp < 0 && sp <= 0 ) {
-		status_damage(NULL, &sd->bl, -hp, -sp, 0, 0, 0);
+		status_damage(NULL, &sd->bl, -hp, -sp, 0, 0, 0, 0);
 		clif_damage(&sd->bl,&sd->bl, gettick(), 0, 0, -hp, 0, DMG_ENDURE, 0, false);
 		clif_displaymessage(fd, msg_txt(sd,156)); // HP or/and SP modified.
 		return 0;
@@ -1322,21 +1322,67 @@ ACMD_FUNC(heal)
 	//Opposing signs.
 	if ( hp ) {
 		if (hp > 0)
-			status_heal(&sd->bl, hp, 0, 0);
+			status_heal(&sd->bl, hp, 0, 0, 0);
 		else {
-			status_damage(NULL, &sd->bl, -hp, 0, 0, 0, 0);
+			status_damage(NULL, &sd->bl, -hp, 0, 0, 0, 0, 0);
 			clif_damage(&sd->bl,&sd->bl, gettick(), 0, 0, -hp, 0, DMG_ENDURE, 0, false);
 		}
 	}
 
 	if ( sp ) {
 		if (sp > 0)
-			status_heal(&sd->bl, 0, sp, 0);
+			status_heal(&sd->bl, 0, sp, 0, 0);
 		else
-			status_damage(NULL, &sd->bl, 0, -sp, 0, 0, 0);
+			status_damage(NULL, &sd->bl, 0, -sp, 0, 0, 0, 0);
 	}
 
 	clif_displaymessage(fd, msg_txt(sd,156)); // HP or/and SP modified.
+	return 0;
+}
+
+/*==========================================
+* Recover's AP and allows exact adjustments. [Rytech]
+*------------------------------------------*/
+ACMD_FUNC(healap)
+{
+	int ap = 0;
+	nullpo_retr(-1, sd);
+
+	sscanf(message, "%11d", &ap);
+
+	// Overflow check.
+	if (ap == INT_MIN) ap++;
+
+	if (ap == 0) {
+		if (!status_percent_heal(&sd->bl, 0, 0, 100))
+			clif_displaymessage(fd, msg_txt(sd, 2017));// AP have already been recovered.
+		else
+			clif_displaymessage(fd, msg_txt(sd, 2015));// AP recovered.
+		return 0;
+	}
+
+	if (ap > 0) {
+		if (!status_heal(&sd->bl, 0, 0, ap, 0))
+			clif_displaymessage(fd, msg_txt(sd, 2017));// AP have already been recovered.
+		else
+			clif_displaymessage(fd, msg_txt(sd, 2015));// AP recovered.
+		return 0;
+	}
+
+	if (ap < 0) {
+		status_damage(NULL, &sd->bl, 0, 0, -ap, 0, 0, 0);
+		clif_displaymessage(fd, msg_txt(sd, 2016));// AP modified.
+		return 0;
+	}
+
+	if (ap) {
+		if (ap > 0)
+			status_heal(&sd->bl, 0, 0, ap, 0);
+		else
+			status_damage(NULL, &sd->bl, 0, 0, -ap, 0, 0, 0);
+	}
+
+	clif_displaymessage(fd, msg_txt(sd, 2016));// AP modified.
 	return 0;
 }
 
@@ -1564,7 +1610,7 @@ ACMD_FUNC(baselevelup)
 		sd->status.trait_point += trait_point;
 		sd->status.base_level += (unsigned int)level;
 		status_calc_pc(sd, SCO_FORCE);
-		status_percent_heal(&sd->bl, 100, 100);
+		status_percent_heal(&sd->bl, 100, 100, 0);
 		clif_misceffect(&sd->bl, 0);
 		achievement_update_objective(sd, AG_GOAL_LEVEL, 1, sd->status.base_level);
 		achievement_update_objective(sd, AG_GOAL_STATUS, 2, sd->status.base_level, sd->status.class_);
@@ -2272,7 +2318,7 @@ static int atkillmonster_sub(struct block_list *bl, va_list ap)
 		return 0; //Do not touch WoE mobs!
 
 	if (flag)
-		status_zap(bl,md->status.hp, 0);
+		status_zap(bl,md->status.hp, 0, 0);
 	else
 		status_kill(bl);
 	return 1;
@@ -3367,7 +3413,7 @@ ACMD_FUNC(doommap)
  *------------------------------------------*/
 static void atcommand_raise_sub(struct map_session_data* sd) {
 
-	status_revive(&sd->bl, 100, 100);
+	status_revive(&sd->bl, 100, 100, 0);
 
 	clif_skill_nodamage(&sd->bl,&sd->bl,ALL_RESURRECTION,4,1);
 	clif_displaymessage(sd->fd, msg_txt(sd,63)); // Mercy has been shown.
@@ -7662,7 +7708,7 @@ ACMD_FUNC(homlevel)
 	}
 
 	status_calc_homunculus(hd, SCO_NONE);
-	status_percent_heal(&hd->bl, 100, 100);
+	status_percent_heal(&hd->bl, 100, 100, 0);
 	clif_specialeffect(&hd->bl,EF_HO_UP,AREA);
 
 	return 0;
@@ -10450,6 +10496,7 @@ void atcommand_basecommands(void) {
 		ACMD_DEF2("kamic", kami),
 		ACMD_DEF2("lkami", kami),
 		ACMD_DEF(heal),
+		ACMD_DEF(healap),
 		ACMD_DEF(item),
 		ACMD_DEF(item2),
 		ACMD_DEF2("itembound",item),

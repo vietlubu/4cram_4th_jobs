@@ -446,7 +446,7 @@ int elemental_action(struct elemental_data *ed, struct block_list *bl, t_tick ti
 				(status_get_hp(&ed->bl) < req.hp || status_get_sp(&ed->bl) < req.sp) )
 				return 1;
 			else
-				status_zap(&ed->bl, req.hp, req.sp);
+				status_zap(&ed->bl, req.hp, req.sp, 0);
 		}
 	}
 
@@ -661,7 +661,7 @@ static int elemental_ai_sub_timer(struct elemental_data *ed, struct map_session_
 			return 0;
 		}
 
-		status_zap(&sd->bl,0,sp);
+		status_zap(&sd->bl,0,sp,0);
 		ed->last_spdrain_time = tick;
 	}
 

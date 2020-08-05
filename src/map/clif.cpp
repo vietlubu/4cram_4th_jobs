@@ -14392,7 +14392,7 @@ void clif_parse_GMKick(int fd, struct map_session_data *sd)
 			}
 			safesnprintf(command,sizeof(command),"/kick %s (%d)", status_get_name(target), status_get_class(target));
 			log_atcommand(sd, command);
-			status_percent_damage(&sd->bl, target, 100, 0, true); // can invalidate 'target'
+			status_percent_damage(&sd->bl, target, 100, 0, 0, true); // can invalidate 'target'
 		}
 		break;
 

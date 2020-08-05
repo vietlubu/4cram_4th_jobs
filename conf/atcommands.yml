@@ -329,6 +329,10 @@ Body:
     Help: |
       Params: [<HP> <SP>]
       Heals the desired amount of HP and SP. No value specified will do a full heal.
+  - Command: healap
+    Help: |
+      Params: [<AP>]
+      Heals the desired amount of AP. No value specified will do a full AP heal.
   - Command: dye
     Aliases:
       - ccolor
