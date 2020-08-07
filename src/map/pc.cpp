@@ -695,6 +695,7 @@ void pc_setrestartvalue(struct map_session_data *sd, char type) {
 	} else { //Just for saving on the char-server (with values as if respawned)
 		sd->status.hp = b_status->hp;
 		sd->status.sp = (status->sp < b_status->sp)?b_status->sp:status->sp;
+		sd->status.ap = b_status->ap;
 	}
 }
 
@@ -913,6 +914,7 @@ void pc_makesavestatus(struct map_session_data *sd) {
 		} else {
 			sd->status.hp = sd->battle_status.hp;
 			sd->status.sp = sd->battle_status.sp;
+			sd->status.ap = sd->battle_status.ap;
 		}
 		sd->status.last_point.map = sd->mapindex;
 		sd->status.last_point.x = sd->bl.x;
@@ -926,6 +928,7 @@ void pc_makesavestatus(struct map_session_data *sd) {
 	} else {
 		sd->status.hp = sd->battle_status.hp;
 		sd->status.sp = sd->battle_status.sp;
+		sd->status.ap = sd->battle_status.ap;
 		sd->status.last_point.map = sd->mapindex;
 		sd->status.last_point.x = sd->bl.x;
 		sd->status.last_point.y = sd->bl.y;

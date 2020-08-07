@@ -239,6 +239,7 @@ int skill_get_unit_target( uint16 skill_id )                       { skill_get(s
 int skill_get_unit_bl_target( uint16 skill_id )                    { skill_get(skill_id, skill_db.find(skill_id)->unit_target&BL_ALL); }
 int skill_get_unit_layout_type( uint16 skill_id ,uint16 skill_lv ) { skill_get_lv(skill_id, skill_lv, skill_db.find(skill_id)->unit_layout_type); }
 int skill_get_cooldown( uint16 skill_id, uint16 skill_lv )         { skill_get_lv(skill_id, skill_lv, skill_db.find(skill_id)->cooldown); }
+int skill_get_giveap( uint16 skill_id, uint16 skill_lv )           { skill_get_lv(skill_id, skill_lv, skill_db.find(skill_id)->giveap); }
 #ifdef RENEWAL_CAST
 int skill_get_fixed_cast( uint16 skill_id ,uint16 skill_lv )       { skill_get_lv(skill_id, skill_lv, skill_db.find(skill_id)->fixed_cast); }
 #endif
@@ -246,8 +247,10 @@ int skill_get_fixed_cast( uint16 skill_id ,uint16 skill_lv )       { skill_get_l
 int skill_get_hp( uint16 skill_id ,uint16 skill_lv )               { skill_get_lv(skill_id, skill_lv, skill_db.find(skill_id)->require.hp); }
 int skill_get_mhp( uint16 skill_id ,uint16 skill_lv )              { skill_get_lv(skill_id, skill_lv, skill_db.find(skill_id)->require.mhp); }
 int skill_get_sp( uint16 skill_id ,uint16 skill_lv )               { skill_get_lv(skill_id, skill_lv, skill_db.find(skill_id)->require.sp); }
+int skill_get_ap( uint16 skill_id, uint16 skill_lv )               { skill_get_lv(skill_id, skill_lv, skill_db.find(skill_id)->require.ap); }
 int skill_get_hp_rate( uint16 skill_id, uint16 skill_lv )          { skill_get_lv(skill_id, skill_lv, skill_db.find(skill_id)->require.hp_rate); }
 int skill_get_sp_rate( uint16 skill_id, uint16 skill_lv )          { skill_get_lv(skill_id, skill_lv, skill_db.find(skill_id)->require.sp_rate); }
+int skill_get_ap_rate(uint16 skill_id, uint16 skill_lv)            { skill_get_lv(skill_id, skill_lv, skill_db.find(skill_id)->require.ap_rate); }
 int skill_get_zeny( uint16 skill_id ,uint16 skill_lv )             { skill_get_lv(skill_id, skill_lv, skill_db.find(skill_id)->require.zeny); }
 int skill_get_weapontype( uint16 skill_id )                        { skill_get(skill_id, skill_db.find(skill_id)->require.weapon); }
 int skill_get_ammotype( uint16 skill_id )                          { skill_get(skill_id, skill_db.find(skill_id)->require.ammo); }
@@ -5168,6 +5171,7 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case SP_CURSEEXPLOSION:
 	case SP_SHA:
 	case SP_SWHOO:
+	case AG_FROZEN_SLASH:
 		if( flag&1 ) {//Recursive invocation
 			int sflag = skill_area_temp[0] & 0xFFF;
 			int heal = 0;
@@ -5449,6 +5453,7 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case WM_METALICSOUND:
 	case KO_KAIHOU:
 	case MH_ERASER_CUTTER:
+	case AG_ASTRAL_STRIKE_ATK:
 		skill_attack(BF_MAGIC,src,src,bl,skill_id,skill_lv,tick,flag);
 		break;
 
@@ -7534,6 +7539,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case SJ_SOLARBURST:
 	case SJ_STAREMPEROR:
 	case SJ_FALLINGSTAR_ATK:
+	case AG_FROZEN_SLASH:
 	{
 		struct status_change *sc = status_get_sc(src);
 		int starget = BL_CHAR|BL_SKILL;
@@ -11913,6 +11919,8 @@ TIMER_FUNC(skill_castend_id){
 				break;
 			else {
 				skill_consume_requirement(sd,ud->skill_id,ud->skill_lv,1);
+				if (skill_get_giveap(ud->skill_id, ud->skill_lv))// Give AP
+					status_heal(&sd->bl, 0, 0, skill_get_giveap(ud->skill_id, ud->skill_lv), 0);
 				if (src != target && (status_bl_has_mode(target,MD_SKILL_IMMUNE) || (status_get_class(target) == MOBID_EMPERIUM && !skill_get_inf2(ud->skill_id, INF2_TARGETEMPERIUM))) && skill_get_casttype(ud->skill_id) == CAST_DAMAGE) {
 					clif_skill_fail(sd, ud->skill_id, USESKILL_FAIL_LEVEL, 0);
 					break; // Show a skill fail message (Damage type consumes requirements)
@@ -12126,7 +12134,11 @@ TIMER_FUNC(skill_castend_pos){
 			if( ud->skill_id != AL_WARP && !skill_check_condition_castend(sd, ud->skill_id, ud->skill_lv) )
 				break;
 			else
-				skill_consume_requirement(sd,ud->skill_id,ud->skill_lv,1);
+			{
+				skill_consume_requirement(sd, ud->skill_id, ud->skill_lv, 1);
+				if (skill_get_giveap(ud->skill_id, ud->skill_lv))// Give AP
+					status_heal(&sd->bl, 0, 0, skill_get_giveap(ud->skill_id, ud->skill_lv), 0);
+			}
 		}
 
 		if( (src->type == BL_MER || src->type == BL_HOM) && !skill_check_condition_mercenary(src, ud->skill_id, ud->skill_lv, 1) )
@@ -12411,6 +12423,7 @@ int skill_castend_pos2(struct block_list* src, int x, int y, uint16 skill_id, ui
 	case LG_KINGS_GRACE:
 	case SJ_BOOKOFCREATINGSTAR:
 	case RL_B_TRAP:
+	case AG_ASTRAL_STRIKE:
 		flag|=1;//Set flag to 1 to prevent deleting ammo (it will be deleted on group-delete).
 	case GS_GROUNDDRIFT: //Ammo should be deleted right away.
 	case GN_WALLOFTHORN:
@@ -14303,6 +14316,10 @@ int skill_unit_onplace_timer(struct skill_unit *unit, struct block_list *bl, t_t
 				default:
 					skill_attack(skill_get_type(sg->skill_id),ss,&unit->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
 			}
+			break;
+
+		case UNT_ASTRAL_STRIKE:
+			skill_attack(skill_get_type(AG_ASTRAL_STRIKE_ATK), ss, &unit->bl, bl, AG_ASTRAL_STRIKE_ATK, sg->skill_lv, tick, 0);
 			break;
 
 		case UNT_FIREWALL:
@@ -16434,6 +16451,11 @@ bool skill_check_condition_castbegin(struct map_session_data* sd, uint16 skill_i
 		return false;
 	}
 
+	if (require.ap > 0 && status->ap < (unsigned int)require.ap) {
+		clif_skill_fail(sd,skill_id,USESKILL_FAIL_AP_INSUFFICIENT,0);
+		return false;
+	}
+
 	if( require.zeny > 0 && sd->status.zeny < require.zeny ) {
 		clif_skill_fail(sd,skill_id,USESKILL_FAIL_MONEY,0);
 		return false;
@@ -16710,8 +16732,8 @@ void skill_consume_requirement(struct map_session_data *sd, uint16 skill_id, uin
 					require.sp = 0;
 			break;
 		}
-		if(require.hp || require.sp)
-			status_zap(&sd->bl, require.hp, require.sp, 0);
+		if(require.hp || require.sp || require.ap)
+			status_zap(&sd->bl, require.hp, require.sp, require.ap);
 
 		if(require.spiritball > 0) { // Skills that require certain types of spheres to use
 			switch (skill_id) { // Skills that require soul spheres.
@@ -16806,7 +16828,7 @@ struct s_skill_condition skill_get_requirement(struct map_session_data* sd, uint
 	struct s_skill_condition req;
 	struct status_data *status;
 	struct status_change *sc;
-	int i,hp_rate,sp_rate, sp_skill_rate_bonus = 100;
+	int i,hp_rate,sp_rate, ap_rate, sp_skill_rate_bonus = 100;
 	bool level_dependent = false;
 
 	memset(&req,0,sizeof(req));
@@ -16886,6 +16908,13 @@ struct s_skill_condition skill_get_requirement(struct map_session_data* sd, uint
 		if (sc->data[SC_GLOOMYDAY])
 			req.sp += req.sp * (skill_lv * 10) / 100;
 	}
+
+	req.ap = skill->require.ap[skill_lv - 1];
+	ap_rate = skill->require.ap_rate[skill_lv - 1];
+	if (ap_rate > 0)
+		req.ap += (status->ap * ap_rate) / 100;
+	else
+		req.ap += (status->max_ap * (-ap_rate)) / 100;
 
 	req.zeny = skill->require.zeny[skill_lv-1];
 
@@ -17099,10 +17128,14 @@ struct s_skill_condition skill_get_requirement(struct map_session_data* sd, uint
 			req.mhp = 0;
 		if (req_opt & SKILL_REQ_SPCOST)
 			req.sp = 0;
+		if (req_opt & SKILL_REQ_APCOST)
+			req.ap = 0;
 		if (req_opt & SKILL_REQ_HPRATECOST)
 			req.hp_rate = 0;
 		if (req_opt & SKILL_REQ_SPRATECOST)
 			req.sp_rate = 0;
+		if (req_opt & SKILL_REQ_APRATECOST)
+			req.ap_rate = 0;
 		if (req_opt & SKILL_REQ_ZENYCOST)
 			req.zeny = 0;
 		if (req_opt & SKILL_REQ_WEAPON)
@@ -22247,6 +22280,15 @@ uint64 SkillDatabase::parseBodyNode(const YAML::Node &node) {
 				memset(skill->require.sp, 0, sizeof(skill->require.sp));
 		}
 
+		if (this->nodeExists(requireNode, "ApCost")) {
+			if (!this->parseNode("ApCost", "Amount", requireNode, skill->require.ap))
+				return 0;
+		}
+		else {
+			if (!exists)
+				memset(skill->require.ap, 0, sizeof(skill->require.ap));
+		}
+
 		if (this->nodeExists(requireNode, "HpRateCost")) {
 			if (!this->parseNode("HpRateCost", "Amount", requireNode, skill->require.hp_rate))
 				return 0;
@@ -22261,6 +22303,15 @@ uint64 SkillDatabase::parseBodyNode(const YAML::Node &node) {
 		} else {
 			if (!exists)
 				memset(skill->require.sp_rate, 0, sizeof(skill->require.sp_rate));
+		}
+
+		if (this->nodeExists(requireNode, "ApRateCost")) {
+			if (!this->parseNode("ApRateCost", "Amount", requireNode, skill->require.ap_rate))
+				return 0;
+		}
+		else {
+			if (!exists)
+				memset(skill->require.ap_rate, 0, sizeof(skill->require.ap_rate));
 		}
 
 		if (this->nodeExists(requireNode, "MaxHpTrigger")) {
@@ -22470,6 +22521,15 @@ uint64 SkillDatabase::parseBodyNode(const YAML::Node &node) {
 					skill->require.eqItem.erase(equip_exists);
 			}
 		}
+	}
+
+	if (this->nodeExists(node, "GiveAp")) {
+		if (!this->parseNode("GiveAp", "Amount", node, skill->giveap))
+			return 0;
+	}
+	else {
+		if (!exists)
+			memset(skill->giveap, 0, sizeof(skill->giveap));
 	}
 
 	if (this->nodeExists(node, "Unit")) {
