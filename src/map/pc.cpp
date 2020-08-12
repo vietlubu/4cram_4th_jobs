@@ -7168,8 +7168,9 @@ int pc_checkbaselevelup(struct map_session_data *sd) {
 		if( ( !battle_config.multi_level_up || ( battle_config.multi_level_up_base > 0 && sd->status.base_level >= battle_config.multi_level_up_base ) ) && sd->status.base_exp > next-1 )
 			sd->status.base_exp = next-1;
 
-		sd->status.status_point += pc_gets_status_point(sd->status.base_level++);
-		sd->status.trait_point += pc_gets_trait_point(sd->status.base_level++);
+		sd->status.status_point += pc_gets_status_point(sd->status.base_level);
+		sd->status.trait_point += pc_gets_trait_point(sd->status.base_level);
+		sd->status.base_level++;
 
 		if( pc_is_maxbaselv(sd) ){
 			sd->status.base_exp = u64min(sd->status.base_exp,MAX_LEVEL_BASE_EXP);
