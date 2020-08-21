@@ -3233,6 +3233,10 @@ void pc_bonus(struct map_session_data *sd,int type,int val)
 			if(sd->state.lr_flag != 2)
 				sd->sprate+=val;
 			break;
+		case SP_MAXAPRATE:
+			if (sd->state.lr_flag != 2)
+				sd->aprate += val;
+			break;
 		case SP_SPRATE:
 			if(sd->state.lr_flag != 2)
 				sd->dsprate+=val;
@@ -3414,6 +3418,30 @@ void pc_bonus(struct map_session_data *sd,int type,int val)
 			if(sd->state.lr_flag != 2)
 				sd->mdef2_rate += val;
 			break;
+		case SP_PATK_RATE:
+			if (sd->state.lr_flag != 2)
+				sd->patk_rate += val;
+			break;
+		case SP_SMATK_RATE:
+			if (sd->state.lr_flag != 2)
+				sd->smatk_rate += val;
+			break;
+		case SP_RES_RATE:
+			if (sd->state.lr_flag != 2)
+				sd->res_rate += val;
+			break;
+		case SP_MRES_RATE:
+			if (sd->state.lr_flag != 2)
+				sd->mres_rate += val;
+			break;
+		case SP_HPLUS_RATE:
+			if (sd->state.lr_flag != 2)
+				sd->hplus_rate += val;
+			break;
+		case SP_CRATE_RATE:
+			if (sd->state.lr_flag != 2)
+				sd->crate_rate += val;
+			break;
 		case SP_RESTART_FULL_RECOVER:
 			if(sd->state.lr_flag != 2)
 				sd->special_state.restart_full_recover = 1;
@@ -3489,6 +3517,16 @@ void pc_bonus(struct map_session_data *sd,int type,int val)
 				sd->param_bonus[SP_INT-SP_STR]+=val;
 				sd->param_bonus[SP_DEX-SP_STR]+=val;
 				sd->param_bonus[SP_LUK-SP_STR]+=val;
+			}
+			break;
+		case SP_ALL_TRAIT_STATS:
+			if (sd->state.lr_flag != 2) {
+				sd->param_bonus[SP_POW - SP_POW] += val;
+				sd->param_bonus[SP_STA - SP_POW] += val;
+				sd->param_bonus[SP_WIS - SP_POW] += val;
+				sd->param_bonus[SP_SPL - SP_POW] += val;
+				sd->param_bonus[SP_CON - SP_POW] += val;
+				sd->param_bonus[SP_CRT - SP_POW] += val;
 			}
 			break;
 		case SP_AGI_VIT:	// [Valaris]
@@ -7608,7 +7646,7 @@ int pc_gets_trait_point(int level)
 	if (battle_config.use_traitpoint_table) //Use values from "db/traitpoint.txt"
 		return (traitp[level + 1] - traitp[level]);
 	else //Default increase
-		return ((level + 15) / 5);
+		return ((level - 200) * 3 + (level - 200) / 5 * 4);
 }
 
 #ifdef RENEWAL_STAT
@@ -9087,6 +9125,7 @@ int64 pc_readparam(struct map_session_data* sd,int64 type)
 		case SP_DEFELE:		     val = sd->battle_status.def_ele; break;
 		case SP_MAXHPRATE:	     val = sd->hprate; break;
 		case SP_MAXSPRATE:	     val = sd->sprate; break;
+		case SP_MAXAPRATE:	     val = sd->aprate; break;
 		case SP_SPRATE:		     val = sd->dsprate; break;
 		case SP_SPEED_RATE:	     val = sd->bonus.speed_rate; break;
 		case SP_SPEED_ADDRATE:   val = sd->bonus.speed_add_rate; break;
@@ -9118,6 +9157,12 @@ int64 pc_readparam(struct map_session_data* sd,int64 type)
 		case SP_DEF2_RATE:       val = sd->def2_rate; break;
 		case SP_MDEF_RATE:       val = sd->mdef_rate; break;
 		case SP_MDEF2_RATE:      val = sd->mdef2_rate; break;
+		case SP_PATK_RATE:       val = sd->patk_rate; break;
+		case SP_SMATK_RATE:      val = sd->smatk_rate; break;
+		case SP_RES_RATE:        val = sd->res_rate; break;
+		case SP_MRES_RATE:       val = sd->mres_rate; break;
+		case SP_HPLUS_RATE:      val = sd->hplus_rate; break;
+		case SP_CRATE_RATE:      val = sd->crate_rate; break;
 		case SP_RESTART_FULL_RECOVER: val = sd->special_state.restart_full_recover?1:0; break;
 		case SP_NO_CASTCANCEL:   val = sd->special_state.no_castcancel?1:0; break;
 		case SP_NO_CASTCANCEL2:  val = sd->special_state.no_castcancel2?1:0; break;

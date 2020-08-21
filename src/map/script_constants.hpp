@@ -676,6 +676,12 @@
 	export_constant2("bDef2Rate",SP_DEF2_RATE);
 	export_constant2("bMdefRate",SP_MDEF_RATE);
 	export_constant2("bMdef2Rate",SP_MDEF2_RATE);
+	export_constant2("bPAtkRate", SP_PATK_RATE);
+	export_constant2("bSMatkRate", SP_SMATK_RATE);
+	export_constant2("bResRate", SP_RES_RATE);
+	export_constant2("bMResRate", SP_MRES_RATE);
+	export_constant2("bHPlusRate", SP_HPLUS_RATE);
+	export_constant2("bCRateRate", SP_CRATE_RATE);
 	export_constant2("bSplashRange",SP_SPLASH_RANGE);
 	export_constant2("bSplashAddRange",SP_SPLASH_ADD_RANGE);
 	export_constant2("bAutoSpell",SP_AUTOSPELL);
@@ -691,6 +697,7 @@
 	export_constant2("bAddStealRate",SP_ADD_STEAL_RATE);
 	export_constant2("bMagicDamageReturn",SP_MAGIC_DAMAGE_RETURN);
 	export_constant2("bAllStats",SP_ALL_STATS);
+	export_constant2("bAllTraitStats", SP_ALL_TRAIT_STATS);
 	export_constant2("bAgiVit",SP_AGI_VIT);
 	export_constant2("bAgiDexStr",SP_AGI_DEX_STR);
 	export_constant2("bPerfectHide",SP_PERFECT_HIDE);

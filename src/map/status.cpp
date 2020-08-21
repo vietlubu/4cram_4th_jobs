@@ -113,7 +113,7 @@ static signed short status_calc_hplus(struct block_list *, struct status_change 
 static signed short status_calc_crate(struct block_list *, struct status_change *, int);
 static unsigned int status_calc_maxhp(struct block_list *bl, uint64 maxhp);
 static unsigned int status_calc_maxsp(struct block_list *bl, uint64 maxsp);
-static unsigned int status_calc_maxap(struct block_list *, struct status_change *, unsigned int);
+static unsigned int status_calc_maxap(struct block_list *bl, uint64 maxap);
 static unsigned char status_calc_element(struct block_list *bl, struct status_change *sc, int element);
 static unsigned char status_calc_element_lv(struct block_list *bl, struct status_change *sc, int lv);
 static enum e_mode status_calc_mode(struct block_list *bl, struct status_change *sc, enum e_mode mode);
@@ -122,7 +122,9 @@ static unsigned short status_calc_ematk(struct block_list *,struct status_change
 #endif
 static int status_get_hpbonus(struct block_list *bl, enum e_status_bonus type);
 static int status_get_spbonus(struct block_list *bl, enum e_status_bonus type);
+static int status_get_apbonus(struct block_list *bl, enum e_status_bonus type);
 static unsigned int status_calc_maxhpsp_pc(struct map_session_data* sd, unsigned int stat, bool isHP);
+static unsigned int status_calc_maxap_pc(struct map_session_data* sd);
 static int status_get_sc_interval(enum sc_type type);
 
 static bool status_change_isDisabledOnMap_(sc_type type, bool mapIsVS, bool mapIsPVP, bool mapIsGVG, bool mapIsBG, unsigned int mapZone, bool mapIsTE);
@@ -3773,6 +3775,87 @@ static int status_get_spbonus_item(block_list *bl) {
 }
 
 /**
+* Get AP bonus modifiers
+* @param bl: block_list that will be checked
+* @param type: type of e_status_bonus (STATUS_BONUS_FIX or STATUS_BONUS_RATE)
+* @return bonus: total bonus for AP
+*/
+static int status_get_apbonus(struct block_list *bl, enum e_status_bonus type) {
+	int bonus = 0;
+
+	if (type == STATUS_BONUS_FIX) {
+		struct status_change *sc = status_get_sc(bl);
+
+		//Only for BL_PC
+		if (bl->type == BL_PC) {
+			struct map_session_data *sd = map_id2sd(bl->id);
+			//uint16 skill_lv;
+
+			bonus += sd->bonus.ap;
+			//if ((skill_lv = pc_checkskill(sd, NV_BASIC)) > 0)
+			//	bonus += 100 * skill_lv;
+		}
+
+		//Bonus by SC
+		if (sc) {
+			//if (sc->data[SC_NONE])
+			//	bonus += sc->data[SC_NONE]->val1;
+		}
+	}
+	else if (type == STATUS_BONUS_RATE) {
+		struct status_change *sc = status_get_sc(bl);
+
+		//Only for BL_PC
+		if (bl->type == BL_PC) {
+			struct map_session_data *sd = map_id2sd(bl->id);
+			//uint8 i;
+
+			//if ((i = pc_checkskill(sd, NV_BASIC)) > 0)
+			//	bonus += 100 * i;
+		}
+
+		//Bonus by SC
+		if (sc) {
+			//if (sc->data[SC_NONE])
+			//	bonus += sc->data[SC_NONE]->val1;
+		}
+		// Max rate reduce is -100%
+		bonus = cap_value(bonus, -100, INT_MAX);
+	}
+
+	return min(bonus, INT_MAX);
+}
+
+/**
+* AP bonus rate from equipment
+*/
+static int status_get_apbonus_equip(TBL_PC *sd) {
+	int bonus = 0;
+
+	bonus += sd->aprate;
+
+	return bonus -= 100; //Default sprate is 100, so it should be add 0%
+}
+
+/**
+* AP bonus rate from usable items
+*/
+static int status_get_apbonus_item(block_list *bl) {
+	int bonus = 0;
+
+	struct status_change *sc = status_get_sc(bl);
+
+	//Bonus by SC
+	if (sc) {
+		//if (sc->data[SC_NONE])
+		//	bonus += sc->data[SC_NONE]->val1;
+	}
+
+	// Max rate reduce is -100%
+	return cap_value(bonus, -100, INT_MAX);
+}
+
+/**
  * Get final MaxHP or MaxSP for player. References: http://irowiki.org/wiki/Max_HP and http://irowiki.org/wiki/Max_SP
  * The calculation needs base_level, base_status/battle_status (vit or int), additive modifier, and multiplicative modifier
  * @param sd Player
@@ -3813,6 +3896,27 @@ static unsigned int status_calc_maxhpsp_pc(struct map_session_data* sd, unsigned
 	if(dmax < 1) dmax = 1;
 
 	return cap_value((unsigned int)dmax,1,UINT_MAX);
+}
+
+/**
+* Get final MaxAP for player.
+*/
+static unsigned int status_calc_maxap_pc(struct map_session_data* sd) {
+	double dmax = 0, equip_bonus = 0, item_bonus = 0;
+
+	nullpo_ret(sd);
+
+	dmax = (sd->class_&JOBL_FORTH) ? 200 : 0;
+	dmax += status_get_apbonus(&sd->bl, STATUS_BONUS_FIX);
+	equip_bonus = (dmax * status_get_apbonus_equip(sd) / 100);
+	item_bonus = (dmax * status_get_apbonus_item(&sd->bl) / 100);
+	dmax += equip_bonus + item_bonus;
+	dmax += (int64)(dmax * status_get_apbonus(&sd->bl, STATUS_BONUS_RATE) / 100);// Aegis accuracy
+
+	//Make sure it's not negative before casting to unsigned int
+	if (dmax < 0) dmax = 0;
+
+	return cap_value((unsigned int)dmax, 0, UINT_MAX);
 }
 
 /**
@@ -3954,6 +4058,7 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 	// These are not zeroed. [zzo]
 	sd->hprate = 100;
 	sd->sprate = 100;
+	sd->aprate = 100;
 	sd->castrate = 100;
 	sd->delayrate = 100;
 	sd->dsprate = 100;
@@ -3962,6 +4067,9 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 	sd->matk_rate = 100;
 	sd->critical_rate = sd->hit_rate = sd->flee_rate = sd->flee2_rate = 100;
 	sd->def_rate = sd->def2_rate = sd->mdef_rate = sd->mdef2_rate = 100;
+	sd->patk_rate = sd->smatk_rate = 100;
+	sd->res_rate = sd->mres_rate = 100;
+	sd->hplus_rate = sd->crate_rate = 100;
 	sd->regen.state.block = 0;
 	sd->add_max_weight = 0;
 
@@ -4499,10 +4607,7 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 	base_status->max_sp = cap_value(base_status->max_sp,1,(unsigned int)battle_config.max_sp);
 
 // ----- AP MAX CALCULATION -----
-	if (sd->class_&JOBL_FORTH)// Only 4th jobs have access to AP.
-		base_status->max_ap = sd->status.max_ap = 200;
-	else
-		base_status->max_ap = sd->status.max_ap = 0;
+	base_status->max_ap = sd->status.max_ap = status_calc_maxap_pc(sd);
 
 	if (battle_config.ap_rate != 100)
 		base_status->max_ap = (unsigned int)(battle_config.ap_rate * (base_status->max_ap / 100.));
@@ -4576,6 +4681,36 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 		sd->flee2_rate = 0;
 	if(sd->flee2_rate != 100)
 		base_status->flee2 = base_status->flee2 * sd->flee2_rate/100;
+
+	if (sd->patk_rate < 0)
+		sd->patk_rate = 0;
+	if (sd->patk_rate != 100)
+		base_status->patk = base_status->patk * sd->patk_rate / 100;
+
+	if (sd->smatk_rate < 0)
+		sd->smatk_rate = 0;
+	if (sd->smatk_rate != 100)
+		base_status->smatk = base_status->smatk * sd->smatk_rate / 100;
+
+	if (sd->res_rate < 0)
+		sd->res_rate = 0;
+	if (sd->res_rate != 100)
+		base_status->res = base_status->res * sd->res_rate / 100;
+
+	if (sd->mres_rate < 0)
+		sd->mres_rate = 0;
+	if (sd->mres_rate != 100)
+		base_status->mres = base_status->mres * sd->mres_rate / 100;
+
+	if (sd->hplus_rate < 0)
+		sd->hplus_rate = 0;
+	if (sd->hplus_rate != 100)
+		base_status->hplus = base_status->hplus * sd->hplus_rate / 100;
+
+	if (sd->crate_rate < 0)
+		sd->crate_rate = 0;
+	if (sd->crate_rate != 100)
+		base_status->crate = base_status->crate * sd->crate_rate / 100;
 
 // ----- HIT CALCULATION -----
 
@@ -6062,10 +6197,7 @@ void status_calc_bl_main(struct block_list *bl, /*enum scb_flag*/int64 flag)
 
 	if (flag&SCB_MAXAP) {
 		if (bl->type&BL_PC) {
-			if (sd->class_&JOBL_FORTH)
-				status->max_ap = 200;
-			else
-				status->max_ap = 0;
+			status->max_ap = status_calc_maxap_pc(sd);
 
 			if (battle_config.ap_rate != 100)
 				status->max_ap = (unsigned int)(battle_config.ap_rate * (status->max_ap / 100.));
@@ -6073,7 +6205,7 @@ void status_calc_bl_main(struct block_list *bl, /*enum scb_flag*/int64 flag)
 			status->max_ap = umin(status->max_ap, (unsigned int)battle_config.max_ap);
 		}
 		else
-			status->max_ap = status_calc_maxap(bl, sc, b_status->max_ap);
+			status->max_ap = status_calc_maxap(bl, b_status->max_ap);
 
 		if (status->ap > status->max_ap) {
 			status->ap = status->max_ap;
@@ -8391,18 +8523,22 @@ static unsigned int status_calc_maxsp(struct block_list *bl, uint64 maxsp)
 }
 
 /**
-* Adds MaxAP modifications based on status changes
-* @param bl: Object to change MaxAP [PC|MOB|HOM|MER|ELEM]
-* @param sc: Object's status change information
-* @param MaxAP: Initial MaxAP
-* @return modified MaxAP with cap_value(maxap,0,USHRT_MAX)
+* Calculates a max AP based on status changes
+* Values can either be percentages or fixed, bas ed on how equations are formulated
+* @param bl: Object's block_list data
+* @param maxap: Object's current max AP
+* @return modified maxap
 */
-static unsigned int status_calc_maxap(struct block_list *bl, struct status_change *sc, unsigned int maxap)
+static unsigned int status_calc_maxap(struct block_list *bl, uint64 maxap)
 {
-	if (!sc || !sc->count)
-		return cap_value(maxap, 0, SHRT_MAX);
+	int rate = 100;
 
-	return (short)cap_value(maxap, 0, SHRT_MAX);
+	maxap += status_get_apbonus(bl, STATUS_BONUS_FIX);
+
+	if ((rate += status_get_apbonus(bl, STATUS_BONUS_RATE)) != 100)
+		maxap = maxap * rate / 100;
+
+	return (unsigned int)cap_value(maxap, 0, UINT_MAX);
 }
 
 /**

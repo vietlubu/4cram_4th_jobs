@@ -537,10 +537,11 @@ struct map_session_data {
 	} bonus;
 	// zeroed vars end here.
 
-	int castrate,delayrate,hprate,sprate,dsprate;
+	int castrate,delayrate,hprate,sprate,aprate,dsprate;
 	int hprecov_rate,sprecov_rate;
 	int matk_rate;
 	int critical_rate,hit_rate,flee_rate,flee2_rate,def_rate,def2_rate,mdef_rate,mdef2_rate;
+	int patk_rate,smatk_rate,res_rate,mres_rate,hplus_rate,crate_rate;
 
 	t_itemid itemid;
 	short itemindex;	//Used item's index in sd->inventory [Skotlex]
