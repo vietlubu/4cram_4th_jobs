@@ -760,6 +760,11 @@ int skill_calc_heal(struct block_list *src, struct block_list *target, uint16 sk
 #ifdef RENEWAL
 	hp = (int)(hp * global_bonus);
 
+	// Final heal increased by HPlus.
+	// Is this the right place for this??? [Rytech]
+	if ( sd && status_get_hplus(src) > 0 )
+		hp += hp * status_get_hplus(src) / 100;
+
 	return (heal) ? max(1, hp) : hp;
 #else
 	return hp;
@@ -8279,6 +8284,14 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 				hp += hp * j / 100;
 				sp += sp * j / 100;
 			}
+			// Final heal increased by HPlus.
+			// Is this the right place for this??? [Rytech]
+			// Can HPlus also affect SP recovery???
+			if (sd && sstatus->hplus > 0)
+			{
+				hp += hp * sstatus->hplus / 100;
+				sp += sp * sstatus->hplus / 100;
+			}
 			if (tsc && tsc->count) {
 				uint8 penalty = 0;
 
@@ -12198,6 +12211,7 @@ int skill_castend_pos2(struct block_list* src, int x, int y, uint16 skill_id, ui
 	struct status_change* sc;
 	struct status_change_entry *sce;
 	struct skill_unit_group* sg;
+	struct status_data *sstatus;
 	enum sc_type type;
 	int i;
 
@@ -12212,6 +12226,7 @@ int skill_castend_pos2(struct block_list* src, int x, int y, uint16 skill_id, ui
 	sd = BL_CAST(BL_PC, src);
 
 	sc = status_get_sc(src);
+	sstatus = status_get_status_data(src);
 	type = status_skill2sc(skill_id);
 	sce = (sc && type != -1)?sc->data[type]:NULL;
 
@@ -12572,6 +12587,15 @@ int skill_castend_pos2(struct block_list* src, int x, int y, uint16 skill_id, ui
 
 			potion_hp = potion_hp * (100+i_lv)/100;
 			potion_sp = potion_sp * (100+i_lv)/100;
+
+			// Final heal increased by HPlus.
+			// Is this the right place for this??? [Rytech]
+			// Can HPlus also affect SP recovery???
+			if (sd && sstatus->hplus > 0)
+			{
+				potion_hp += potion_hp * sstatus->hplus / 100;
+				potion_sp += potion_sp * sstatus->hplus / 100;
+			}
 
 			if(potion_hp > 0 || potion_sp > 0) {
 				i_lv = skill_get_splash(skill_id, skill_lv);

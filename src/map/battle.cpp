@@ -5725,6 +5725,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src, struct bl
 	struct Damage wd;
 	struct status_change *sc = status_get_sc(src);
 	struct status_change *tsc = status_get_sc(target);
+	struct status_data *sstatus = status_get_status_data(src);
 	struct status_data *tstatus = status_get_status_data(target);
 	int right_element, left_element;
 	bool infdef = false;
@@ -5824,8 +5825,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src, struct bl
 		battle_attack_sc_bonus(&wd, src, target, skill_id, skill_lv);
 
 		if (sd) { //monsters, homuns and pets have their damage computed directly
-			wd.damage = wd.statusAtk + wd.weaponAtk + wd.equipAtk + wd.masteryAtk + bonus_damage;
-			wd.damage2 = wd.statusAtk2 + wd.weaponAtk2 + wd.equipAtk2 + wd.masteryAtk2 + bonus_damage;
+			wd.damage = (wd.statusAtk + wd.weaponAtk + wd.equipAtk) * (100 + sstatus->patk) / 100 + wd.masteryAtk + bonus_damage;
+			wd.damage2 = (wd.statusAtk2 + wd.weaponAtk2 + wd.equipAtk2) * (100 + sstatus->patk) / 100 + wd.masteryAtk2 + bonus_damage;
 			if (wd.flag & BF_SHORT)
 				ATK_ADDRATE(wd.damage, wd.damage2, sd->bonus.short_attack_atk_rate);
 			if(wd.flag&BF_LONG && (skill_id != RA_WUGBITE && skill_id != RA_WUGSTRIKE)) //Long damage rate addition doesn't use weapon + equip attack
@@ -5835,6 +5836,23 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src, struct bl
 		// final attack bonuses that aren't affected by cards
 		battle_attack_sc_bonus(&wd, src, target, skill_id, skill_lv);
 #endif
+
+		// Res reduces physical damage by a percentage and
+		// is calculated before DEF and other reductions.
+		// Official formula not known. Using temp one for now. [Rytech]
+		if (sd && tstatus->res > 0)
+		{// Guessing damage is reduced to no lower then 1???
+			if (tstatus->res >= 1000)
+			{
+				wd.damage = 1;
+				wd.damage2 = 1;
+			}
+			else
+			{
+				wd.damage -= wd.damage * tstatus->res / 1000;
+				wd.damage2 -= wd.damage * tstatus->res / 1000;
+			}
+		}
 
 		if (wd.damage + wd.damage2) { //Check if attack ignores DEF
 			if(!attack_ignores_def(&wd, src, target, skill_id, skill_lv, EQI_HAND_L) || !attack_ignores_def(&wd, src, target, skill_id, skill_lv, EQI_HAND_R))
@@ -5855,9 +5873,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src, struct bl
 #ifdef RENEWAL
 	if (is_attack_critical(&wd, src, target, skill_id, skill_lv, false)) {
 		if (sd) { //Check for player so we don't crash out, monsters don't have bonus crit rates [helvetica]
-			wd.damage = (int64)floor((float)((wd.damage * 140) / 100 * (100 + sd->bonus.crit_atk_rate)) / 100);
+			wd.damage = (int64)floor((float)((wd.damage * (140 + sstatus->crate)) / 100 * (100 + sd->bonus.crit_atk_rate)) / 100);
 			if (is_attack_left_handed(src, skill_id))
-				wd.damage2 = (int64)floor((float)((wd.damage2 * 140) / 100 * (100 + sd->bonus.crit_atk_rate)) / 100);
+				wd.damage2 = (int64)floor((float)((wd.damage2 * (140 + sstatus->crate)) / 100 * (100 + sd->bonus.crit_atk_rate)) / 100);
 		} else
 			wd.damage = (int64)floor((float)(wd.damage * 140) / 100);
 
@@ -6728,6 +6746,20 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 
 		if (tsd && (i = pc_sub_skillatk_bonus(tsd, skill_id)))
 			ad.damage -= (int64)ad.damage*i/100;
+
+		if (sd && sstatus->smatk > 0)
+			ad.damage += ad.damage * sstatus->smatk / 100;
+
+		// MRes reduces magical damage by a percentage and
+		// is calculated before MDEF and other reductions.
+		// Official formula not known. Using temp one for now. [Rytech]
+		if (sd && tstatus->mres > 0)
+		{// Guessing damage is reduced to no lower then 1???
+			if (tstatus->mres >= 1000)
+				ad.damage = 1;
+			else
+				ad.damage -= ad.damage * tstatus->mres / 1000;
+		}
 
 		if(!flag.imdef){
 			defType mdef = tstatus->mdef;

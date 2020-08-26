@@ -2248,65 +2248,53 @@ int pc_calc_skilltree_normalize_job(struct map_session_data *sd)
 
 	skill_point = pc_calc_skillpoint(sd);
 
+	// Novice's skill points for basic skill.
 	novice_skills = job_info[pc_class2idx(JOB_NOVICE)].max_level[1] - 1;
 
-	// limit 1st class and above to novice job levels
-	if(skill_point < novice_skills && (sd->class_&MAPID_BASEMASK) != MAPID_SUMMONER)
+	// 1st Class Job LV Check
+	if (sd->class_&JOBL_2 && (sd->class_&MAPID_UPPERMASK) != MAPID_SUPER_NOVICE && !sd->change_level_2nd)
 	{
+		sd->change_level_2nd = job_info[pc_class2idx(pc_mapid2jobid(sd->class_&MAPID_BASEMASK, sd->status.sex))].max_level[1];
+		pc_setglobalreg(sd, add_str(JOBCHANGE2ND_VAR), sd->change_level_2nd);
+	}
+
+	// 2nd Class Job LV Check
+	if (sd->class_&JOBL_THIRD && (sd->class_&MAPID_THIRDMASK) != MAPID_SUPER_NOVICE_E && !sd->change_level_3rd)
+	{
+		sd->change_level_3rd = job_info[pc_class2idx(pc_mapid2jobid(sd->class_&MAPID_UPPERMASK, sd->status.sex))].max_level[1];
+		pc_setglobalreg(sd, add_str(JOBCHANGE3RD_VAR), sd->change_level_3rd);
+	}
+
+	// 3rd Class Job LV Check
+	if (sd->class_&JOBL_FORTH && !sd->change_level_4th)
+	{
+		sd->change_level_4th = job_info[pc_class2idx(pc_mapid2jobid(sd->class_&MAPID_THIRDMASK, sd->status.sex))].max_level[1];
+		pc_setglobalreg(sd, add_str(JOBCHANGE4TH_VAR), sd->change_level_4th);
+	}
+
+	// Check the skill tree the player has access to depending on the used number of skill points.
+	if (skill_point < novice_skills && (sd->class_&MAPID_BASEMASK) != MAPID_SUMMONER)
+	{// Novice Skill Tree
 		c = MAPID_NOVICE;
 	}
-	// limit 2nd class and above to first class job levels (super novices are exempt)
-	else if (sd->class_&JOBL_2 && (sd->class_&MAPID_UPPERMASK) != MAPID_SUPER_NOVICE)
-	{
-		// regenerate change_level_2nd
-		if (!sd->change_level_2nd)
-		{
-			if (sd->class_&JOBL_THIRD)
-			{
-				// if neither 2nd nor 3rd jobchange levels are known, we have to assume a default for 2nd
-				if (!sd->change_level_3rd)
-					sd->change_level_2nd = job_info[pc_class2idx(pc_mapid2jobid(sd->class_&MAPID_UPPERMASK, sd->status.sex))].max_level[1];
-				else
-					sd->change_level_2nd = 1 + skill_point + sd->status.skill_point
-						- (sd->status.job_level - 1)
-						- (sd->change_level_3rd - 1)
-						- novice_skills;
-			}
-			else
-			{
-				sd->change_level_2nd = 1 + skill_point + sd->status.skill_point
-						- (sd->status.job_level - 1)
-						- novice_skills;
-
-			}
-
-			pc_setglobalreg(sd, add_str(JOBCHANGE2ND_VAR), sd->change_level_2nd);
-		}
-
-		if (skill_point < novice_skills + (sd->change_level_2nd - 1))
-		{
-			c &= MAPID_BASEMASK;
-		}
-		// limit 3rd class to 2nd class/trans job levels
-		else if(sd->class_&JOBL_THIRD)
-		{
-			// regenerate change_level_3rd
-			if (!sd->change_level_3rd)
-			{
-					sd->change_level_3rd = 1 + skill_point + sd->status.skill_point
-						- (sd->status.job_level - 1)
-						- (sd->change_level_2nd - 1)
-						- novice_skills;
-					pc_setglobalreg(sd, add_str(JOBCHANGE3RD_VAR), sd->change_level_3rd);
-			}
-
-			if (skill_point < novice_skills + (sd->change_level_2nd - 1) + (sd->change_level_3rd - 1))
-				c &= MAPID_UPPERMASK;
-		}
+	else if (skill_point < novice_skills + (sd->change_level_2nd - 1))
+	{// 1st Job Skill Tree
+		c &= MAPID_BASEMASK;
+	}
+	else if (skill_point < novice_skills + (sd->change_level_2nd - 1) + (sd->change_level_3rd - 1))
+	{// 2nd Job Skill Tree
+		c &= MAPID_UPPERMASK;
+	}
+	else if (skill_point < novice_skills + (sd->change_level_2nd - 1) + (sd->change_level_3rd - 1) + (sd->change_level_4th - 1))
+	{// 3rd Job Skill Tree
+		c &= MAPID_THIRDMASK;
 	}
 
-	// restore non-limiting flags
-	c |= sd->class_&(JOBL_UPPER|JOBL_BABY);
+	// Special Masks
+	if (sd->class_&JOBL_UPPER)
+		c |= JOBL_UPPER;// Rebirth Job
+	if (sd->class_&JOBL_BABY)
+		c |= JOBL_BABY;// Baby Job
 
 	return c;
 }

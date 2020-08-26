@@ -6072,6 +6072,38 @@ ACMD_FUNC(displayskill)
 }
 
 /*==========================================
+* @displayskillcast by [Rytech]
+* Debug command to view casting animations for skills.
+* Can target self or the ground. Ground target can be
+* useful for seeing casting circle size.
+*------------------------------------------*/
+ACMD_FUNC(displayskillcast)
+{
+	struct status_data * status;
+	t_tick tick;
+	uint16 skill_id;
+	uint16 skill_lv = 1;
+	uint16 cast_time = 5000;
+	uint16 target_type = 0;
+	nullpo_retr(-1, sd);
+
+	if (!message || !*message || sscanf(message, "%6hu %6hu %6hu %6hu", &skill_id, &skill_lv, &target_type, &cast_time) < 1)
+	{
+		clif_displaymessage(fd, msg_txt(sd, 2018));// Usage: @displayskillcast <skill ID> {<skill level> <ground target flag> <cast time>}
+		return -1;
+	}
+	status = status_get_status_data(&sd->bl);
+	tick = gettick();
+
+	if ( target_type == 1)
+		clif_skillcasting(&sd->bl, sd->bl.id, 0, sd->bl.x, sd->bl.y, skill_id, skill_lv, 0, cast_time);
+	else
+		clif_skillcasting(&sd->bl, sd->bl.id, sd->bl.id, 0, 0, skill_id, skill_lv, 0, cast_time);
+
+	return 0;
+}
+
+/*==========================================
  * @skilltree by [MouseJstr]
  * prints the skill tree for a player required to get to a skill
  *------------------------------------------*/
@@ -10639,6 +10671,7 @@ void atcommand_basecommands(void) {
 		ACMD_DEF(skillid),
 		ACMD_DEF(useskill),
 		ACMD_DEF(displayskill),
+		ACMD_DEF(displayskillcast),
 		ACMD_DEF(snow),
 		ACMD_DEF(sakura),
 		ACMD_DEF(clouds),
