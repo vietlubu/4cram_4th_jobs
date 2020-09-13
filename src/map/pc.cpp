@@ -693,7 +693,7 @@ void pc_setrestartvalue(struct map_session_data *sd, char type) {
 	} else { //Just for saving on the char-server (with values as if respawned)
 		sd->status.hp = b_status->hp;
 		sd->status.sp = (status->sp < b_status->sp)?b_status->sp:status->sp;
-		sd->status.ap = b_status->ap;
+		sd->status.ap = (status->ap < b_status->ap)?b_status->ap:status->ap;
 	}
 }
 
@@ -8728,6 +8728,9 @@ int pc_dead(struct map_session_data *sd,struct block_list *src)
 
 	pc_setparam(sd, SP_PCDIECOUNTER, sd->die_counter+1);
 	pc_setparam(sd, SP_KILLERRID, src?src->id:0);
+
+	if (battle_config.loose_ap_on_death == 1)
+		status_percent_damage(0, &sd->bl, 0, 0, 100, 0);
 
 	//Reset menu skills/item skills
 	if ((sd->skillitem) != 0)

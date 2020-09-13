@@ -3889,19 +3889,30 @@ void clif_initialstatus(struct map_session_data *sd) {
 	clif_updatestatus(sd, SP_ATTACKRANGE);
 	clif_updatestatus(sd, SP_ASPD);
 
-
 	// Hack to get the display for trait status points
 	// and trait point requirement's to work until I
 	// can find the new packet. [Rytech]
+	clif_updatestatus(sd, SP_POW);
+	clif_updatestatus(sd, SP_STA);
+	clif_updatestatus(sd, SP_WIS);
+	clif_updatestatus(sd, SP_SPL);
+	clif_updatestatus(sd, SP_CON);
+	clif_updatestatus(sd, SP_CRT);
+	clif_updatestatus(sd, SP_PATK);
+	clif_updatestatus(sd, SP_SMATK);
+	clif_updatestatus(sd, SP_RES);
+	clif_updatestatus(sd, SP_MRES);
+	clif_updatestatus(sd, SP_HPLUS);
+	clif_updatestatus(sd, SP_CRATE);
 	clif_updatestatus(sd, SP_TRAITPOINT);
+	clif_updatestatus(sd, SP_AP);
+	clif_updatestatus(sd, SP_MAXAP);
 	clif_updatestatus(sd, SP_UPOW);
 	clif_updatestatus(sd, SP_USTA);
 	clif_updatestatus(sd, SP_UWIS);
 	clif_updatestatus(sd, SP_USPL);
 	clif_updatestatus(sd, SP_UCON);
 	clif_updatestatus(sd, SP_UCRT);
-
-
 }
 
 

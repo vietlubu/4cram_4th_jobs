@@ -4059,7 +4059,8 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 		// Load Hp/SP from char-received data.
 		sd->battle_status.hp = sd->status.hp;
 		sd->battle_status.sp = sd->status.sp;
-		sd->battle_status.ap = sd->status.ap;
+		if (battle_config.keep_ap_on_logout == 1)
+			sd->battle_status.ap = sd->status.ap;
 		sd->regen.sregen = &sd->sregen;
 		sd->regen.ssregen = &sd->ssregen;
 	}

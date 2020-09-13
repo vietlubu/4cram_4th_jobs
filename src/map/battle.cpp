@@ -5842,16 +5842,22 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src, struct bl
 		// is calculated before DEF and other reductions.
 		// Official formula not known. Using temp one for now. [Rytech]
 		if (sd && tstatus->res > 0)
-		{// Guessing damage is reduced to no lower then 1???
-			if (tstatus->res >= 1000)
+		{
+			short res = tstatus->res;
+			
+			if (res > battle_config.max_res_mres_reduction)
+				res = battle_config.max_res_mres_reduction;
+			
+			// Guessing damage is reduced to no lower then 1???
+			if (res >= 1000)
 			{
 				wd.damage = 1;
 				wd.damage2 = 1;
 			}
 			else
 			{
-				wd.damage -= wd.damage * tstatus->res / 1000;
-				wd.damage2 -= wd.damage * tstatus->res / 1000;
+				wd.damage -= wd.damage * res / 1000;
+				wd.damage2 -= wd.damage * res / 1000;
 			}
 		}
 
@@ -6755,11 +6761,17 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 		// is calculated before MDEF and other reductions.
 		// Official formula not known. Using temp one for now. [Rytech]
 		if (sd && tstatus->mres > 0)
-		{// Guessing damage is reduced to no lower then 1???
-			if (tstatus->mres >= 1000)
+		{
+			short mres = tstatus->mres;
+			
+			if (mres > battle_config.max_res_mres_reduction)
+				mres = battle_config.max_res_mres_reduction;
+			
+			// Guessing damage is reduced to no lower then 1???
+			if (mres >= 1000)
 				ad.damage = 1;
 			else
-				ad.damage -= ad.damage * tstatus->mres / 1000;
+				ad.damage -= ad.damage * mres / 1000;
 		}
 
 		if(!flag.imdef){
@@ -9059,9 +9071,12 @@ static const struct _battle_data {
 	{ "use_traitpoint_table",               &battle_config.use_traitpoint_table,            1,      0,      1, },
 	{ "trait_points_job_change",            &battle_config.trait_points_job_change,         7,      1,      1000, },
 	{ "max_trait_parameter",                &battle_config.max_trait_parameter,             100,    10,     SHRT_MAX, },
+	{ "max_res_mres_reduction",             &battle_config.max_res_mres_reduction,          500,    1,      1000, },
 	{ "ap_rate",                            &battle_config.ap_rate,                         100,    1,      INT_MAX, },
 	{ "restart_ap_rate",                    &battle_config.restart_ap_rate,                 0,      0,      100, },
 	{ "max_ap",                             &battle_config.max_ap,                          200,    100,    1000000000, },
+	{ "keep_ap_on_logout",                  &battle_config.keep_ap_on_logout,               0,      0,      1, },
+	{ "loose_ap_on_death",                  &battle_config.loose_ap_on_death,               1,      0,      1, },
 
 #include "../custom/battle_config_init.inc"
 };

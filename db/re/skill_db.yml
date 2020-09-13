@@ -34207,8 +34207,8 @@ Body:
     Description: From The Abyss Attack
     MaxLevel: 5
   - Id: 5384
-    Name: BO_THROWROCK
-    Description: Throw Rock
+    Name: BO_WOODEN_THROWROCK
+    Description: Wooden Throw Rock
     MaxLevel: 1
   - Id: 5385
     Name: BO_WOODEN_ATTACK
@@ -34219,8 +34219,8 @@ Body:
     Description: Hell Howling
     MaxLevel: 1
   - Id: 5387
-    Name: BO_UNKNOWN
-    Description: Unknown
+    Name: BO_HELL_DUSTY
+    Description: Hell Dusty
     MaxLevel: 1
   - Id: 5388
     Name: BO_FAIRY_DUSTY
