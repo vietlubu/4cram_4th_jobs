@@ -4522,6 +4522,21 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 		}
 	}
 
+	// Job trait bonuses
+	index = pc_class2idx(sd->status.class_);
+	for (i = 0; i<(int)sd->status.job_level && i<MAX_LEVEL; i++) {
+		if (!job_info[index].job_trait_bonus[i])
+			continue;
+		switch (job_info[index].job_trait_bonus[i]) {
+			case 1: base_status->pow++; break;
+			case 2: base_status->sta++; break;
+			case 3: base_status->wis++; break;
+			case 4: base_status->spl++; break;
+			case 5: base_status->con++; break;
+			case 6: base_status->crt++; break;
+		}
+	}
+
 	// If a Super Novice has never died and is at least joblv 70, he gets all stats +10
 	if(((sd->class_&MAPID_UPPERMASK) == MAPID_SUPER_NOVICE && (sd->status.job_level >= 70  || sd->class_&JOBL_THIRD)) && sd->die_counter == 0) {
 		base_status->str += 10;

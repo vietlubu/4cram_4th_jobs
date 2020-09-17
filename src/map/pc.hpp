@@ -898,6 +898,7 @@ struct s_job_info {
 	int hp_factor, hp_multiplicator, sp_factor;
 	int max_weight_base;
 	char job_bonus[MAX_LEVEL];
+	char job_trait_bonus[MAX_LEVEL];
 #ifdef RENEWAL_ASPD
 	int aspd_base[MAX_WEAPON_TYPE+1];
 #else

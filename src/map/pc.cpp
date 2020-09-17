@@ -12496,6 +12496,27 @@ static bool pc_readdb_job2(char* fields[], int columns, int current)
 	return true;
 }
 
+//Reading job_db3.txt line (class,JobLv1,JobLv2,JobLv3,...)
+static bool pc_readdb_job3(char* fields[], int columns, int current)
+{
+	int idx, class_, i;
+
+	class_ = atoi(fields[0]);
+
+	if (!pcdb_checkid(class_))
+	{
+		ShowWarning("status_readdb_job3: Invalid job class %d specified.\n", class_);
+		return false;
+	}
+	idx = pc_class2idx(class_);
+
+	for (i = 1; i < columns; i++)
+	{
+		job_info[idx].job_trait_bonus[i - 1] = atoi(fields[i]);
+	}
+	return true;
+}
+
 //Reading job_exp.txt line
 //Max Level,Class list,Type (0 - Base Exp; 1 - Job Exp),Exp/lvl...
 static bool pc_readdb_job_exp(char* fields[], int columns, int current)
@@ -12786,6 +12807,7 @@ static int pc_read_traitdb(const char *basedir, int last_s, bool silent) {
  * attr_fix.txt		- elemental adjustment table
  * job_db1.txt		- job,weight,hp_factor,hp_multiplicator,sp_factor,aspds/lvl
  * job_db2.txt		- job,stats bonuses/lvl
+ * job_db3.txt		- job,trait stats bonuses/lvl
  * job_maxhpsp_db.txt	- strtlvl,maxlvl,job,type,values/lvl (values=hp|sp)
  *------------------------------------------*/
 void pc_readdb(void) {
@@ -12847,6 +12869,7 @@ void pc_readdb(void) {
 		else
 			sv_readdb(dbsubpath1, "job_db1.txt",',',5+MAX_WEAPON_TYPE,6+MAX_WEAPON_TYPE,CLASS_COUNT,&pc_readdb_job1, true);
 		sv_readdb(dbsubpath1, "job_db2.txt",',',1,1+MAX_LEVEL,CLASS_COUNT,&pc_readdb_job2, i > 0);
+		sv_readdb(dbsubpath1, "job_db3.txt",',',1,1+MAX_LEVEL,CLASS_COUNT,&pc_readdb_job3, i > 0);
 		sv_readdb(dbsubpath2, "job_exp.txt",',',4,1000+3,CLASS_COUNT*2,&pc_readdb_job_exp, i > 0); //support till 1000lvl
 #ifdef HP_SP_TABLES
 		sv_readdb(dbsubpath2, "job_basehpsp_db.txt", ',', 4, 4+500, CLASS_COUNT*2, &pc_readdb_job_basehpsp, i > 0); //Make it support until lvl 500!
