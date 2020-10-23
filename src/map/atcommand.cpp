@@ -2802,8 +2802,13 @@ ACMD_FUNC(param)
 
 	if(value > 0  && *status[i] + value >= max_status[i])
 		new_value = max_status[i];
-	else if(value < 0 && *status[i] <= -value)
-		new_value = 1;
+	else if (value < 0 && *status[i] <= -value)
+	{
+		if (i >= PARAM_STR && i <= PARAM_LUK)
+			new_value = 1;
+		else
+			new_value = 0;
+	}
 	else
 		new_value = *status[i] + value;
 
@@ -2899,7 +2904,12 @@ ACMD_FUNC(stat_all)
 		if (value > 0 && *status[i] + value >= max_status[i])
 			new_value = max_status[i];
 		else if (value < 0 && *status[i] <= -value)
-			new_value = 1;
+		{
+			if (i >= PARAM_STR && i <= PARAM_LUK)
+				new_value = 1;
+			else
+				new_value = 0;
+		}
 		else
 			new_value = *status[i] + value;
 
