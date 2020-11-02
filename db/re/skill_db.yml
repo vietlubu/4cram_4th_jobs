@@ -33494,26 +33494,191 @@ Body:
     Name: DK_SERVANTWEAPON
     Description: Servant Weapon
     MaxLevel: 5
+    TargetType: Self
+    DamageFlags:
+      NoDamage: true
+    Hit: Single
+    HitCount: 1
+    CastCancel: true
+    Duration1:
+      - Level: 1
+        Time: 30000
+      - Level: 2
+        Time: 60000
+      - Level: 3
+        Time: 90000
+      - Level: 4
+        Time: 120000
+      - Level: 5
+        Time: 150000
+    Duration2:
+      - Level: 1
+        Time: 5000
+      - Level: 2
+        Time: 4000
+      - Level: 3
+        Time: 3000
+      - Level: 4
+        Time: 2000
+      - Level: 5
+        Time: 1000
+    Cooldown:
+      - Level: 1
+        Time: 30000
+      - Level: 2
+        Time: 60000
+      - Level: 3
+        Time: 90000
+      - Level: 4
+        Time: 120000
+      - Level: 5
+        Time: 150000
+    Requires:
+      SpCost:
+        - Level: 1
+          Amount: 30
+        - Level: 2
+          Amount: 40
+        - Level: 3
+          Amount: 50
+        - Level: 4
+          Amount: 60
+        - Level: 5
+          Amount: 70
   - Id: 5202
     Name: DK_SERVANTWEAPON_ATK
     Description: Servant Weapon Attack
     MaxLevel: 5
+    Type: Weapon
+    TargetType: Attack
+    DamageFlags:
+      Critical: true
+    Range: 1
+    Hit: Single
+    HitCount: 1
+    Element: Weapon
+    Requires:
+      SpCost: 1
   - Id: 5203
     Name: DK_SERVANT_W_SIGN
     Description: Servant Weapon Sign
     MaxLevel: 5
+    TargetType: Attack
+    DamageFlags:
+      NoDamage: true
+    Range: 9
+    Hit: Single
+    HitCount: 1
+    CastCancel: true
+    Duration1:
+      - Level: 1
+        Time: 2000
+      - Level: 2
+        Time: 4000
+      - Level: 3
+        Time: 6000
+      - Level: 4
+        Time: 8000
+      - Level: 5
+        Time: 10000
+    Requires:
+      SpCost: 15
   - Id: 5204
     Name: DK_SERVANT_W_PHANTOM
     Description: Servant Weapon Phantom
     MaxLevel: 5
+    Type: Weapon
+    TargetType: Attack
+    DamageFlags:
+      Critical: true
+    Range: 9
+    Hit: Single
+    HitCount: 1
+    Element: Weapon
+    CastCancel: true
+    Duration1: 20000
+    Requires:
+      SpCost: 40
   - Id: 5205
     Name: DK_SERVANT_W_DEMOL
     Description: Servant Weapon Demolition
     MaxLevel: 5
+    Type: Weapon
+    TargetType: Self
+    DamageFlags:
+      Splash: true
+      Critical: true
+    Hit: Single
+    HitCount: 1
+    Element: Weapon
+    SplashArea: 6
+    CastCancel: true
+    Requires:
+      SpCost:
+        - Level: 1
+          Amount: 30
+        - Level: 2
+          Amount: 35
+        - Level: 3
+          Amount: 40
+        - Level: 4
+          Amount: 45
+        - Level: 5
+          Amount: 50
   - Id: 5206
     Name: DK_CHARGINGPIERCE
     Description: Charging Pierce
     MaxLevel: 10
+    TargetType: Self
+    DamageFlags:
+      NoDamage: true
+    Hit: Single
+    HitCount: 1
+    CastCancel: true
+    Duration1:
+      - Level: 1
+        Time: 90000
+      - Level: 2
+        Time: 100000
+      - Level: 3
+        Time: 110000
+      - Level: 4
+        Time: 120000
+      - Level: 5
+        Time: 130000
+      - Level: 6
+        Time: 140000
+      - Level: 7
+        Time: 150000
+      - Level: 8
+        Time: 160000
+      - Level: 9
+        Time: 170000
+      - Level: 10
+        Time: 180000
+    Duration2: 5000
+    Requires:
+      SpCost:
+        - Level: 1
+          Amount: 25
+        - Level: 2
+          Amount: 30
+        - Level: 3
+          Amount: 35
+        - Level: 4
+          Amount: 40
+        - Level: 5
+          Amount: 45
+        - Level: 6
+          Amount: 50
+        - Level: 7
+          Amount: 55
+        - Level: 8
+          Amount: 60
+        - Level: 9
+          Amount: 65
+        - Level: 10
+          Amount: 70
   - Id: 5207
     Name: DK_TWOHANDDEF
     Description: Two Hand Def
@@ -33522,26 +33687,140 @@ Body:
     Name: DK_HACKANDSLASHER
     Description: Hack And Slasher
     MaxLevel: 10
+    Type: Weapon
+    TargetType: Attack
+    Range: 2
+    Hit: Single
+    HitCount: 1
+    Element: Weapon
+    CastCancel: true
+    Requires:
+      SpCost:
+        - Level: 1
+          Amount: 34
+        - Level: 2
+          Amount: 38
+        - Level: 3
+          Amount: 42
+        - Level: 4
+          Amount: 46
+        - Level: 5
+          Amount: 50
+        - Level: 6
+          Amount: 54
+        - Level: 7
+          Amount: 58
+        - Level: 8
+          Amount: 62
+        - Level: 9
+          Amount: 66
+        - Level: 10
+          Amount: 70
   - Id: 5209
     Name: DK_HACKANDSLASHER_ATK
     Description: Hack And Slasher Attack
     MaxLevel: 10
+    Type: Weapon
+    TargetType: Attack
+    Range: 2
+    Hit: Single
+    HitCount: 1
+    Element: Weapon
+    Requires:
+      SpCost: 1
   - Id: 5210
     Name: DK_DRAGONIC_AURA
     Description: Dragonic Aura
     MaxLevel: 10
+    Type: Weapon
+    TargetType: Attack
+    Range: 7
+    Hit: Single
+    HitCount: 1
+    Element: Weapon
+    CastCancel: true
+    Duration1: 300000
   - Id: 5211
     Name: DK_MADNESS_CRUSHER
     Description: Madness Crusher
     MaxLevel: 5
+    Type: Weapon
+    TargetType: Attack
+    Range: 4
+    Hit: Single
+    HitCount: 1
+    Element: Weapon
+    CastCancel: true
+    Requires:
+      SpCost:
+        - Level: 1
+          Amount: 34
+        - Level: 2
+          Amount: 38
+        - Level: 3
+          Amount: 42
+        - Level: 4
+          Amount: 46
+        - Level: 5
+          Amount: 50
   - Id: 5212
     Name: DK_VIGOR
     Description: Vigor
     MaxLevel: 10
+    TargetType: Self
+    DamageFlags:
+      NoDamage: true
+    Hit: Single
+    HitCount: 1
+    CastCancel: true
+    Duration1:
+      - Level: 1
+        Time: 30000
+      - Level: 2
+        Time: 60000
+      - Level: 3
+        Time: 90000
+      - Level: 4
+        Time: 120000
+      - Level: 5
+        Time: 150000
+      - Level: 6
+        Time: 180000
+      - Level: 7
+        Time: 210000
+      - Level: 8
+        Time: 240000
+      - Level: 9
+        Time: 270000
+      - Level: 10
+        Time: 300000
+    Requires:
+      SpCost: 100
   - Id: 5213
     Name: DK_STORMSLASH
     Description: Storm Slash
     MaxLevel: 5
+    Type: Weapon
+    TargetType: Attack
+    DamageFlags:
+      Critical: true
+    Range: 2
+    Hit: Single
+    HitCount: 1
+    Element: Weapon
+    CastCancel: true
+    Requires:
+      SpCost:
+        - Level: 1
+          Amount: 30
+        - Level: 2
+          Amount: 35
+        - Level: 3
+          Amount: 40
+        - Level: 4
+          Amount: 45
+        - Level: 5
+          Amount: 50
   - Id: 5214
     Name: AG_DEADLY_PROJECTION
     Description: Deadly Projection
@@ -33942,6 +34221,57 @@ Body:
     Name: ABC_FROM_THE_ABYSS
     Description: From The Abyss
     MaxLevel: 5
+    TargetType: Self
+    DamageFlags:
+      NoDamage: true
+    Hit: Single
+    HitCount: 1
+    CastCancel: true
+    Duration1:
+      - Level: 1
+        Time: 30000
+      - Level: 2
+        Time: 60000
+      - Level: 3
+        Time: 90000
+      - Level: 4
+        Time: 120000
+      - Level: 5
+        Time: 150000
+    Duration2:
+      - Level: 1
+        Time: 10000
+      - Level: 2
+        Time: 8000
+      - Level: 3
+        Time: 6000
+      - Level: 4
+        Time: 4000
+      - Level: 5
+        Time: 2000
+    Cooldown:
+      - Level: 1
+        Time: 30000
+      - Level: 2
+        Time: 60000
+      - Level: 3
+        Time: 90000
+      - Level: 4
+        Time: 120000
+      - Level: 5
+        Time: 150000
+    Requires:
+      SpCost:
+        - Level: 1
+          Amount: 40
+        - Level: 2
+          Amount: 50
+        - Level: 3
+          Amount: 60
+        - Level: 4
+          Amount: 70
+        - Level: 5
+          Amount: 80
   - Id: 5318
     Name: ABC_ABYSS_SLAYER
     Description: Abyss Slayer
@@ -34206,6 +34536,16 @@ Body:
     Name: ABC_FROM_THE_ABYSS_ATK
     Description: From The Abyss Attack
     MaxLevel: 5
+    Type: Magic
+    TargetType: Attack
+    DamageFlags:
+      Splash: true
+    Range: 1
+    Hit: Single
+    HitCount: 1
+    SplashArea: 3
+    Requires:
+      SpCost: 1
   - Id: 5384
     Name: BO_WOODEN_THROWROCK
     Description: Wooden Throw Rock

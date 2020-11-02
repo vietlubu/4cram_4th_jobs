@@ -1111,6 +1111,13 @@ void initChangeTables(void)
 	set_sc( SP_SOULREAPER	, SC_SOULREAPER		, EFST_SOULREAPER	, SCB_NONE );
 	set_sc( SP_SOULCOLLECT	, SC_SOULCOLLECT	, EFST_SOULCOLLECT	, SCB_NONE );
 
+	// Dragon Knight
+	set_sc( DK_SERVANTWEAPON , SC_SERVANTWEAPON, EFST_SERVANTWEAPON, SCB_NONE );
+	set_sc( DK_SERVANT_W_SIGN, SC_SERVANT_SIGN , EFST_SERVANT_SIGN , SCB_NONE );
+
+	// Abyss Chaser
+	set_sc(ABC_FROM_THE_ABYSS, SC_ABYSSFORCEWEAPON, EFST_ABYSSFORCEWEAPON, SCB_NONE);
+
 #ifdef RENEWAL
 	set_sc( NV_HELPANGEL			, SC_HELPANGEL		, EFST_HELPANGEL	, SCB_NONE );
 #endif
@@ -12826,6 +12833,32 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 		case SC_SP_SHA:
 			val2 = 50; // Move speed reduction
 			break;
+		case SC_SERVANTWEAPON:
+			if (sd)
+			{
+				short i;
+				for (i = 0; i < MAX_SERVANTBALL; i++)// Generate 5 servants on start.
+					pc_addservantball(sd, MAX_SERVANTBALL, 1);// Don't send the effect packet yet.
+				clif_servantball(&sd->bl);// Send the effect packet after servant gen. Avoids packet and sound spam.
+			}
+			tick_time = skill_get_time2(DK_SERVANTWEAPON,val1);// Servant Regen Interval
+			if (tick_time < 500)
+				tick_time = 500;// Avoid being brought down to 0.
+			val4 = tick - tick_time;// Remaining Time
+			break;
+		case SC_ABYSSFORCEWEAPON:
+			if (sd)
+			{
+				short i;
+				for (i = 0; i < MAX_ABYSSBALL; i++)// Generate 5 abyss spheres on start.
+					pc_addabyssball(sd, MAX_ABYSSBALL, 1);// Don't send the effect packet yet.
+				clif_abyssball(&sd->bl);// Send the effect packet after abyss gen. Avoids packet and sound spam.
+			}
+			tick_time = skill_get_time2(ABC_FROM_THE_ABYSS, val1);// Abyss Regen Interval
+			if (tick_time < 500)
+				tick_time = 500;// Avoid being brought down to 0.
+			val4 = tick - tick_time;// Remaining Time
+			break;
 
 		default:
 			if( calc_flag == SCB_NONE && StatusSkillChangeTable[type] == -1 && StatusIconChangeTable[type] == EFST_BLANK ) {
@@ -12884,6 +12917,11 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 				if( sd && sd->status.clan_id == 0 ){
 					return 0;
 				}
+				break;
+			case SC_SERVANTWEAPON:
+			case SC_ABYSSFORCEWEAPON:
+				tick_time = tick;
+				tick = tick_time + max(val4, 0);
 				break;
 		}
 
@@ -14247,6 +14285,14 @@ int status_change_end_(struct block_list* bl, enum sc_type type, int tid, const 
 			if (sd)
 				pc_delsoulball(sd, sd->soulball, false);
 			break;
+		case SC_SERVANTWEAPON:
+			if (sd)
+				pc_delservantball(sd, sd->servantball, 0);
+			break;
+		case SC_ABYSSFORCEWEAPON:
+			if (sd)
+				pc_delabyssball(sd, sd->abyssball, 0);
+			break;
 	}
 
 	opt_flag = 1;
@@ -15465,6 +15511,28 @@ TIMER_FUNC(status_change_timer){
 		if (sd->soulball < sce->val2) {
 			sc_timer_next(sce->val3 + tick);
 			return 0;
+		}
+		break;
+	case SC_SERVANTWEAPON:
+		if (sce->val4 >= 0) {
+			if (sd && sd->servantball < MAX_SERVANTBALL)
+				pc_addservantball(sd, MAX_SERVANTBALL, 0);
+			interval = skill_get_time2(DK_SERVANTWEAPON, sce->val1);
+			if (interval < 500)
+				interval = 500;
+			map_freeblock_lock();
+			dounlock = true;
+		}
+		break;
+	case SC_ABYSSFORCEWEAPON:
+		if (sce->val4 >= 0) {
+			if (sd && sd->abyssball < MAX_ABYSSBALL)
+				pc_addabyssball(sd, MAX_ABYSSBALL, 0);
+			interval = skill_get_time2(ABC_FROM_THE_ABYSS, sce->val1);
+			if (interval < 500)
+				interval = 500;
+			map_freeblock_lock();
+			dounlock = true;
 		}
 		break;
 	case SC_HELPANGEL:

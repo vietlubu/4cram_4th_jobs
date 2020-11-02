@@ -614,6 +614,110 @@ int pc_delsoulball(map_session_data *sd, int count, bool type)
 }
 
 /**
+* Adds a servantball to player
+* @param sd
+* @param max
+* @param type 1 = doesn't give client effect
+*/
+void pc_addservantball(struct map_session_data *sd, int max, int type)
+{
+	nullpo_retv(sd);
+
+	if (max > MAX_SERVANTBALL)
+		max = MAX_SERVANTBALL;
+
+	if (sd->servantball < 0)
+		sd->servantball = 0;
+
+	if (sd->servantball < max)
+		sd->servantball++;
+	else if (sd->servantball > max)
+		sd->servantball = max;
+
+	if (!type)
+		clif_servantball(&sd->bl);
+}
+
+/**
+* Removes number of servantball from player
+* @param sd
+* @param count
+* @param type 1 = doesn't give client effect
+*/
+void pc_delservantball(struct map_session_data *sd, int count, int type)
+{
+	nullpo_retv(sd);
+
+	if (sd->servantball <= 0) {
+		sd->servantball = 0;
+		return;
+	}
+
+	if (count == 0)
+		return;
+
+	if (count > sd->servantball)
+		count = sd->servantball;
+
+	sd->servantball -= count;
+
+	if (!type)
+		clif_servantball(&sd->bl);
+}
+
+/**
+* Adds a abyssball to player
+* @param sd
+* @param max
+* @param type 1 = doesn't give client effect
+*/
+void pc_addabyssball(struct map_session_data *sd, int max, int type)
+{
+	nullpo_retv(sd);
+
+	if (max > MAX_ABYSSBALL)
+		max = MAX_ABYSSBALL;
+
+	if (sd->abyssball < 0)
+		sd->abyssball = 0;
+
+	if (sd->abyssball < max)
+		sd->abyssball++;
+	else if (sd->abyssball > max)
+		sd->abyssball = max;
+
+	if (!type)
+		clif_abyssball(&sd->bl);
+}
+
+/**
+* Removes number of abyssball from player
+* @param sd
+* @param count
+* @param type 1 = doesn't give client effect
+*/
+void pc_delabyssball(struct map_session_data *sd, int count, int type)
+{
+	nullpo_retv(sd);
+
+	if (sd->abyssball <= 0) {
+		sd->abyssball = 0;
+		return;
+	}
+
+	if (count == 0)
+		return;
+
+	if (count > sd->abyssball)
+		count = sd->abyssball;
+
+	sd->abyssball -= count;
+
+	if (!type)
+		clif_abyssball(&sd->bl);
+}
+
+/**
 * Increases a player's fame points and displays a notice to him
 * @param sd Player
 * @param count Fame point
@@ -8751,6 +8855,10 @@ int pc_dead(struct map_session_data *sd,struct block_list *src)
 		pc_delspiritball(sd,sd->spiritball,0);
 	if (sd->soulball != 0)
 		pc_delsoulball(sd, sd->soulball, false);
+	if (sd->servantball != 0)
+		pc_delservantball(sd, sd->servantball, 0);
+	if (sd->abyssball != 0)
+		pc_delabyssball(sd, sd->abyssball, 0);
 
 	if (sd->spiritcharm_type != CHARM_TYPE_NONE && sd->spiritcharm > 0)
 		pc_delspiritcharm(sd,sd->spiritcharm,sd->spiritcharm_type);

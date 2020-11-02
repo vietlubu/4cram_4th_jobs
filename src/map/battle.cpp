@@ -4772,6 +4772,10 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			if (sc && sc->data[SC_LIGHTOFSTAR])
 				skillratio += skillratio * sc->data[SC_LIGHTOFSTAR]->val2 / 100;
 			break;
+		case DK_SERVANTWEAPON_ATK:
+			skillratio += 50 + 50 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			break;
 	}
 	return skillratio;
 }
@@ -6713,7 +6717,11 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 						break;
 					case AG_FROZEN_SLASH:
 						skillratio = 750 * skill_lv + 5 * sstatus->spl;
-						RE_LVL_DMOD(100)
+						RE_LVL_DMOD(100);
+						break;
+					case ABC_FROM_THE_ABYSS_ATK:
+						skillratio = 150 + 70 * skill_lv + 5 * sstatus->spl;
+						RE_LVL_DMOD(100);
 						break;
 				}
 
@@ -8020,6 +8028,54 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 				skill_castend_nodamage_id(src, src, SJ_FALLINGSTAR_ATK, sc->data[SC_FALLINGSTAR]->val1, tick, flag);
 			if (sd)
 				sd->state.autocast = 0;
+		}
+		// It has a success chance of triggering even tho the description says nothing about it.
+		// Need to find out what the official success chance is. [Rytech]
+		if (sc && sc->data[SC_SERVANTWEAPON] && sd->servantball > 0 && rnd() % 100 < 20)
+		{
+			uint16 skill_id = DK_SERVANTWEAPON_ATK;
+			uint16 skill_lv = sc->data[SC_SERVANTWEAPON]->val1;
+			struct unit_data *ud = unit_bl2ud(src);
+
+			sd->state.autocast = 1;
+			pc_delservantball(sd, 1, 0);
+			skill_castend_damage_id(src, target, skill_id, skill_lv, tick, flag);
+			sd->state.autocast = 0;
+
+			if (ud)
+			{
+				int autospell_tick = skill_delayfix(src, skill_id, skill_lv);
+
+				if (DIFF_TICK(ud->canact_tick, tick + autospell_tick) < 0)
+				{
+					ud->canact_tick = i64max(tick + autospell_tick, ud->canact_tick);
+					if (battle_config.display_status_timers && sd)
+						clif_status_change(src, EFST_POSTDELAY, 1, autospell_tick, 0, 0, 0);
+				}
+			}
+		}
+		if (sc && sc->data[SC_ABYSSFORCEWEAPON] && sd->abyssball > 0 && rnd() % 100 < 20)
+		{
+			uint16 skill_id = ABC_FROM_THE_ABYSS_ATK;
+			uint16 skill_lv = sc->data[SC_ABYSSFORCEWEAPON]->val1;
+			struct unit_data *ud = unit_bl2ud(src);
+
+			sd->state.autocast = 1;
+			pc_delabyssball(sd, 1, 0);
+			skill_castend_damage_id(src, target, skill_id, skill_lv, tick, flag);
+			sd->state.autocast = 0;
+
+			if (ud)
+			{
+				int autospell_tick = skill_delayfix(src, skill_id, skill_lv);
+
+				if (DIFF_TICK(ud->canact_tick, tick + autospell_tick) < 0)
+				{
+					ud->canact_tick = i64max(tick + autospell_tick, ud->canact_tick);
+					if (battle_config.display_status_timers && sd)
+						clif_status_change(src, EFST_POSTDELAY, 1, autospell_tick, 0, 0, 0);
+				}
+			}
 		}
 		if (wd.flag & BF_WEAPON && src != target && damage > 0) {
 			if (battle_config.left_cardfix_to_right)
