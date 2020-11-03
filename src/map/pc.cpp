@@ -11401,10 +11401,11 @@ bool pc_unequipitem(struct map_session_data *sd, int n, int flag) {
 		if( !battle_config.dancing_weaponswitch_fix )
 			status_change_end(&sd->bl, SC_DANCING, INVALID_TIMER); // Unequipping => stop dancing.
 #ifdef RENEWAL
-		if (battle_config.switch_remove_edp&2) {
+		if (battle_config.switch_remove_edp&2)
 #else
-		if (battle_config.switch_remove_edp&1) {
+		if (battle_config.switch_remove_edp&1)
 #endif
+		{
 			status_change_end(&sd->bl, SC_EDP, INVALID_TIMER);
 		}
 	}

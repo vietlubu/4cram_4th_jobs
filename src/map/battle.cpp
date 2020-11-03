@@ -7667,10 +7667,11 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 					case W_GRENADE:
 						if (sd->inventory_data[index]->look !=
 #ifdef RENEWAL
-							A_BULLET) {
+							A_BULLET)
 #else
-							A_GRENADE) {
+							A_GRENADE)
 #endif
+						{
 							clif_skill_fail(sd,0,USESKILL_FAIL_NEED_MORE_BULLET,0);
 							return ATK_NONE;
 						}
