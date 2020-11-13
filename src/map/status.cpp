@@ -1113,7 +1113,9 @@ void initChangeTables(void)
 
 	// Dragon Knight
 	set_sc( DK_SERVANTWEAPON , SC_SERVANTWEAPON, EFST_SERVANTWEAPON, SCB_NONE );
-	set_sc( DK_SERVANT_W_SIGN, SC_SERVANT_SIGN , EFST_SERVANT_SIGN , SCB_NONE );
+	set_sc_with_vfx( DK_SERVANT_W_SIGN, SC_SERVANT_SIGN , EFST_SERVANT_SIGN , SCB_NONE );
+
+	set_sc( DK_SERVANT_W_PHANTOM, SC_HANDICAPSTATE_DEEPBLIND, EFST_HANDICAPSTATE_DEEPBLIND, SCB_NONE);
 
 	// Abyss Chaser
 	set_sc(ABC_FROM_THE_ABYSS, SC_ABYSSFORCEWEAPON, EFST_ABYSSFORCEWEAPON, SCB_NONE);
@@ -10840,6 +10842,7 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			case SC_LHZ_DUN_N4:
 			case SC_FLASHKICK:
 			case SC_SOULUNITY:
+			case SC_SERVANT_SIGN:
 				break;
 			case SC_GOSPEL:
 				 // Must not override a casting gospel char.
@@ -13887,6 +13890,15 @@ int status_change_end_(struct block_list* bl, enum sc_type type, int tid, const 
 				tsd->united_soul[sce->val3] = 0;
 			}
 			break;
+
+		case SC_SERVANT_SIGN:
+		{
+			struct block_list *d_bl = map_id2bl(sce->val1);
+
+				if (d_bl && d_bl->type == BL_PC)
+					((TBL_PC*)d_bl)->servant_sign[sce->val2] = 0;
+		}
+		break;
 
 		case SC_BLADESTOP:
 			if(sce->val4) {

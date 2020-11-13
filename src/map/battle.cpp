@@ -4776,6 +4776,14 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			skillratio += 50 + 50 * skill_lv + 5 * sstatus->pow;
 			RE_LVL_DMOD(100);
 			break;
+		case DK_SERVANT_W_PHANTOM:
+			skillratio += 100 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			break;
+		case DK_SERVANT_W_DEMOL:
+			skillratio += -100 + 150 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			break;
 	}
 	return skillratio;
 }
@@ -5654,6 +5662,14 @@ static struct Damage initialize_weapon_data(struct block_list *src, struct block
 			case LG_HESPERUSLIT:
 				if( sc && sc->data[SC_BANDING] && sc->data[SC_BANDING]->val2 > 3 )
 					wd.div_ = sc->data[SC_BANDING]->val2;
+				break;
+			case DK_SERVANT_W_PHANTOM:
+			case DK_SERVANT_W_DEMOL:
+				if (sd)
+				{
+					if ((sd->servantball + sd->servantball_old) < wd.div_)
+						wd.div_ = sd->servantball + sd->servantball_old;
+				}
 				break;
 		}
 	} else {

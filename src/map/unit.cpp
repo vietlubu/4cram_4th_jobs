@@ -1803,6 +1803,19 @@ int unit_skilluse_id2(struct block_list *src, int target_id, uint16 skill_id, ui
 					}
 				}
 				break;
+			case DK_SERVANT_W_SIGN: {
+					uint8 i = 0, count = min(skill_lv, MAX_SERVANT_SIGN);
+
+					ARR_FIND(0, count, i, sd->servant_sign[i] == target_id);
+					if (i == count) {
+						ARR_FIND(0, count, i, sd->servant_sign[i] == 0);
+						if (i == count) { // No free slots, skill Fail
+							clif_skill_fail(sd, skill_id, USESKILL_FAIL_LEVEL, 0);
+							return 0;
+						}
+					}
+				}
+				break;
 		}
 
 		if (!skill_check_condition_castbegin(sd, skill_id, skill_lv))
@@ -1922,6 +1935,19 @@ int unit_skilluse_id2(struct block_list *src, int target_id, uint16 skill_id, ui
 		case RA_WUGDASH:
 			if (sc && sc->data[SC_WUGDASH])
 				casttime = -1;
+			break;
+		case DK_SERVANT_W_PHANTOM:
+		{// Stops servants from being consumed on unmarked targets.
+			struct status_change *tsc;
+			tsc = status_get_sc(target);
+
+			// Only allow to attack if the enemy has a sign mark given by the caster.
+			if (!(tsc && tsc->data[SC_SERVANT_SIGN] && tsc->data[SC_SERVANT_SIGN]->val1 == src->id))
+			{
+				clif_skill_fail(sd, skill_id, USESKILL_FAIL, 0);
+				return 0;
+			}
+		}
 			break;
 		case EL_WIND_SLASH:
 		case EL_HURRICANE:
@@ -3012,6 +3038,7 @@ int unit_remove_map_(struct block_list *bl, clr_type clrtype, const char* file, 
 		status_change_end(bl, SC_TINDER_BREAKER, INVALID_TIMER);
 		status_change_end(bl, SC_TINDER_BREAKER2, INVALID_TIMER);
 		status_change_end(bl, SC_FLASHKICK, INVALID_TIMER);
+		status_change_end(bl, SC_SERVANT_SIGN, INVALID_TIMER);
 		status_change_end(bl, SC_HIDING, INVALID_TIMER);
 		// Ensure the bl is a PC; if so, we'll handle the removal of cloaking and cloaking exceed later
 		if ( bl->type != BL_PC ) {

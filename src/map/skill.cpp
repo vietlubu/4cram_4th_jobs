@@ -2014,6 +2014,8 @@ int skill_additional_effect(struct block_list* src, struct block_list *bl, uint1
 					case SC_SOULUNITY:		case SC_SOULSHADOW:		case SC_SOULFAIRY:
 					case SC_SOULFALCON:		case SC_SOULGOLEM:		case SC_USE_SKILL_SP_SPA:
 					case SC_USE_SKILL_SP_SHA:	case SC_SP_SHA:
+					// 4th Jobs
+					case SC_SERVANTWEAPON:	case SC_SERVANT_SIGN:	case SC_ABYSSFORCEWEAPON:
 #ifdef RENEWAL
 					case SC_EXTREMITYFIST2:
 #endif
@@ -2093,6 +2095,9 @@ int skill_additional_effect(struct block_list* src, struct block_list *bl, uint1
 		break;
 	case SP_SHA:
 		sc_start(src, bl, SC_SP_SHA, 100, skill_lv, skill_get_time(skill_id, skill_lv));
+		break;
+	case DK_SERVANT_W_PHANTOM:
+		sc_start(src, bl, SC_HANDICAPSTATE_DEEPBLIND, 30 + 10 * skill_lv, skill_lv, skill_get_time(skill_id, skill_lv));
 		break;
 	} //end switch skill_id
 
@@ -3513,6 +3518,9 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 				if (sc_cur && !sc_cur->data[SC_SMA])
 					sc_start(src,src,SC_SMA,100,skill_lv,skill_get_time(SL_SMA, skill_lv));
 			}
+			break;
+		case DK_SERVANT_W_DEMOL:// Only give servant's per target after damage calculation.
+			pc_addservantball(sd, MAX_SERVANTBALL, 0);
 			break;
 	}
 
@@ -5153,6 +5161,8 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case SP_CURSEEXPLOSION:
 	case SP_SHA:
 	case SP_SWHOO:
+	case DK_SERVANT_W_PHANTOM:
+	case DK_SERVANT_W_DEMOL:
 	case AG_FROZEN_SLASH:
 	case ABC_FROM_THE_ABYSS_ATK:
 		if( flag&1 ) {//Recursive invocation
@@ -5165,6 +5175,10 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 
 			if (skill_id == AB_ADORAMUS && map_getcell(bl->m, bl->x, bl->y, CELL_CHKLANDPROTECTOR))
 				break; // No damage should happen if the target is on Land Protector
+
+			// Servant Weapon - Demol only hits if the target is marked with a sign by the attacking caster.
+			if (skill_id == DK_SERVANT_W_DEMOL && !(tsc && tsc->data[SC_SERVANT_SIGN] && tsc->data[SC_SERVANT_SIGN]->val1 == src->id))
+				break;
 
 			if( flag&SD_LEVEL )
 				sflag |= SD_LEVEL; // -1 will be used in packets instead of the skill level
@@ -5224,6 +5238,16 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 				case SU_LUNATICCARROTBEAT:
 					if (sd && pc_search_inventory(sd, skill_db.find(SU_LUNATICCARROTBEAT)->require.itemid[0]) >= 0)
 						skill_id = SU_LUNATICCARROTBEAT2;
+					break;
+				case DK_SERVANT_W_PHANTOM:
+				{
+					uint8 dir = map_calc_dir(bl, src->x, src->y);
+
+					// Jump to the target before attacking.
+					if (skill_check_unit_movepos(5, src, bl->x, bl->y, 0, 1))
+						skill_blown(src, src, 1, (dir + 4) % 8, BLOWN_NONE);
+					clif_skill_nodamage(src, bl, skill_id, skill_lv, tick);// Trigger animation on servants.
+				}
 					break;
 			}
 
@@ -7385,6 +7409,55 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 		}
 		break;
 
+	case DK_SERVANT_W_SIGN:
+	{// Max allowed targets to be marked.
+		short count = MAX_SERVANT_SIGN;
+
+		// Only players and monsters can be marked....I think??? [Rytech]
+		// Lets only allow players and monsters to use this skill for safety reasons.
+		if ((!dstsd && !dstmd) || !sd && !md)
+		{
+			if (sd)
+				clif_skill_fail(sd, skill_id, USESKILL_FAIL, 0);
+			break;
+		}
+
+		// Check if the target is already marked by another source.
+		if ((dstsd && dstsd->sc.data[type] && dstsd->sc.data[type]->val1 != src->id) || // Cant mark a player that was already marked from another source.
+			(dstmd && dstmd->sc.data[type] && dstmd->sc.data[type]->val1 != src->id))// Same as the above check, but for monsters.
+		{
+			if (sd)
+				clif_skill_fail(sd, skill_id, USESKILL_FAIL, 0);
+			map_freeblock_unlock();
+			return 1;
+		}
+
+		i = 0;
+		if (sd)
+		{// Mark the target.
+			ARR_FIND(0, count, i, sd->servant_sign[i] == bl->id);
+			if (i == count)
+			{
+				ARR_FIND(0, count, i, sd->servant_sign[i] == 0);
+				if (i == count)
+				{// Max number of targets marked. Fail the skill.
+					clif_skill_fail(sd, skill_id, USESKILL_FAIL, 0);
+					map_freeblock_unlock();
+					return 1;
+				}
+			}
+			// Add the ID of the marked target to the player's sign list.
+			sd->servant_sign[i] = bl->id;
+
+			clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
+			sc_start4(src, bl, type, 100, src->id, i, skill_lv, 0, skill_get_time(skill_id, skill_lv));
+		}
+		else if (md)// Monster's cant track with this skill. Just give the status.
+			clif_skill_nodamage(src, bl, skill_id, skill_lv,
+				sc_start4(src, bl, type, 100, 0, 0, skill_lv, 0, skill_get_time(skill_id, skill_lv)));
+	}
+	break;
+
 	case MO_CALLSPIRITS:
 		if(sd) {
 			int limit = skill_lv;
@@ -7507,6 +7580,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case SJ_SOLARBURST:
 	case SJ_STAREMPEROR:
 	case SJ_FALLINGSTAR_ATK:
+	case DK_SERVANT_W_DEMOL:
 	case AG_FROZEN_SLASH:
 	{
 		struct status_change *sc = status_get_sc(src);
@@ -8467,6 +8541,8 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 					case SC_SOULUNITY:		case SC_SOULSHADOW:		case SC_SOULFAIRY:
 					case SC_SOULFALCON:		case SC_SOULGOLEM:		case SC_USE_SKILL_SP_SPA:
 					case SC_USE_SKILL_SP_SHA:	case SC_SP_SHA:
+					// 4th Jobs
+					case SC_SERVANTWEAPON:	case SC_SERVANT_SIGN:	case SC_ABYSSFORCEWEAPON:
 #ifdef RENEWAL
 					case SC_EXTREMITYFIST2:
 #endif
@@ -9967,6 +10043,8 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 					case SC_STRANGELIGHTS:		case SC_DECORATION_OF_MUSIC:	case SC_GN_CARTBOOST:
 					case SC_RECOGNIZEDSPELL:	case SC_CHASEWALK2: case SC_ACTIVE_MONSTER_TRANSFORM:
 					case SC_SPORE_EXPLOSION:
+					// 4th Jobs
+					case SC_SERVANTWEAPON:	case SC_SERVANT_SIGN:	case SC_ABYSSFORCEWEAPON:
 #ifdef RENEWAL
 					case SC_EXTREMITYFIST2:
 #endif
@@ -15523,6 +15601,8 @@ bool skill_check_condition_castbegin(struct map_session_data* sd, uint16 skill_i
 		sd->state.arrow_atk = skill_get_ammotype(skill_id)?1:0; //Need to do arrow state check.
 		sd->spiritball_old = sd->spiritball; //Need to do Spiritball check.
 		sd->soulball_old = sd->soulball; //Need to do Soulball check.
+		sd->servantball_old = sd->servantball; //Need to do Servantball check.
+		sd->abyssball_old = sd->abyssball; //Need to do Abyssball check.
 		return true;
 	}
 
@@ -16254,6 +16334,13 @@ bool skill_check_condition_castbegin(struct map_session_data* sd, uint16 skill_i
 			if (!(sc && sc->data[SC_USE_SKILL_SP_SPA]))
 				return false;
 			break;
+		case DK_SERVANT_W_PHANTOM:
+		case DK_SERVANT_W_DEMOL:
+			if (sd->servantball > 0 && sd->servantball < require.spiritball)
+				sd->servantball_old = require.spiritball = sd->servantball;
+			else
+				sd->servantball_old = require.spiritball;
+			break;
 	}
 
 	/* check state required */
@@ -16514,6 +16601,16 @@ bool skill_check_condition_castbegin(struct map_session_data* sd, uint16 skill_i
 				}
 				break;
 
+			// Skills that requires servants.
+			case DK_SERVANT_W_SIGN:
+			case DK_SERVANT_W_PHANTOM:
+			case DK_SERVANT_W_DEMOL:
+				if (sd->servantball < require.spiritball) {
+					clif_skill_fail(sd, skill_id, USESKILL_FAIL_SPIRITS, 0);
+					return false;
+				}
+				break;
+
 			default: // Skills that require spirit/coin spheres.
 				if (sd->spiritball < require.spiritball) {
 					if ((sd->class_&MAPID_BASEMASK) == MAPID_GUNSLINGER || (sd->class_&MAPID_UPPERMASK) == MAPID_REBELLION)
@@ -16554,6 +16651,8 @@ bool skill_check_condition_castend(struct map_session_data* sd, uint16 skill_id,
 		sd->state.arrow_atk = skill_get_ammotype(skill_id)?1:0; //Need to do arrow state check.
 		sd->spiritball_old = sd->spiritball; //Need to do Spiritball check.
 		sd->soulball_old = sd->soulball; //Need to do Soulball check.
+		sd->servantball_old = sd->servantball; //Need to do Servantball check.
+		sd->abyssball_old = sd->abyssball; //Need to do Abyssball check.
 		return true;
 	}
 
@@ -16783,6 +16882,16 @@ void skill_consume_requirement(struct map_session_data *sd, uint16 skill_id, uin
 				case SP_SOULEXPLOSION:
 				case SP_KAUTE:
 					pc_delsoulball(sd, require.spiritball, false);
+					break;
+
+				// Skills that require servants.
+				// Note: We don't update the servants display here
+				// since using these skills auto trigger a animation
+				// with them in unique ways that makes them vanish.
+				case DK_SERVANT_W_SIGN:
+				case DK_SERVANT_W_PHANTOM:
+				case DK_SERVANT_W_DEMOL:
+					pc_delservantball(sd, require.spiritball, true);
 					break;
 
 				default: // Skills that require spirit/coin spheres.

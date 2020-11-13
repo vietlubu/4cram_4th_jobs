@@ -33583,6 +33583,7 @@ Body:
         Time: 10000
     Requires:
       SpCost: 15
+      SpiritSphereCost: 1
   - Id: 5204
     Name: DK_SERVANT_W_PHANTOM
     Description: Servant Weapon Phantom
@@ -33590,15 +33591,18 @@ Body:
     Type: Weapon
     TargetType: Attack
     DamageFlags:
+      Splash: true
       Critical: true
     Range: 9
-    Hit: Single
-    HitCount: 1
+    Hit: Multi_Hit
+    HitCount: 5
     Element: Weapon
+    SplashArea: 2
     CastCancel: true
     Duration1: 20000
     Requires:
       SpCost: 40
+      SpiritSphereCost: 5
   - Id: 5205
     Name: DK_SERVANT_W_DEMOL
     Description: Servant Weapon Demolition
@@ -33608,8 +33612,8 @@ Body:
     DamageFlags:
       Splash: true
       Critical: true
-    Hit: Single
-    HitCount: 1
+    Hit: Multi_Hit
+    HitCount: 5
     Element: Weapon
     SplashArea: 6
     CastCancel: true
@@ -33625,6 +33629,7 @@ Body:
           Amount: 45
         - Level: 5
           Amount: 50
+      SpiritSphereCost: 5
   - Id: 5206
     Name: DK_CHARGINGPIERCE
     Description: Charging Pierce
