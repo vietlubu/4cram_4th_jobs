@@ -1112,10 +1112,12 @@ void initChangeTables(void)
 	set_sc( SP_SOULCOLLECT	, SC_SOULCOLLECT	, EFST_SOULCOLLECT	, SCB_NONE );
 
 	// Dragon Knight
-	set_sc( DK_SERVANTWEAPON , SC_SERVANTWEAPON, EFST_SERVANTWEAPON, SCB_NONE );
-	set_sc_with_vfx( DK_SERVANT_W_SIGN, SC_SERVANT_SIGN , EFST_SERVANT_SIGN , SCB_NONE );
-
-	set_sc( DK_SERVANT_W_PHANTOM, SC_HANDICAPSTATE_DEEPBLIND, EFST_HANDICAPSTATE_DEEPBLIND, SCB_NONE);
+	set_sc( DK_SERVANTWEAPON          , SC_SERVANTWEAPON          , EFST_SERVANTWEAPON          , SCB_NONE );
+	set_sc_with_vfx( DK_SERVANT_W_SIGN, SC_SERVANT_SIGN           , EFST_SERVANT_SIGN           , SCB_NONE );
+	set_sc( DK_SERVANT_W_PHANTOM      , SC_HANDICAPSTATE_DEEPBLIND, EFST_HANDICAPSTATE_DEEPBLIND, SCB_NONE );
+	set_sc( DK_CHARGINGPIERCE         , SC_CHARGINGPIERCE         , EFST_CHARGINGPIERCE         , SCB_NONE );
+	set_sc_with_vfx(DK_DRAGONIC_AURA  , SC_DRAGONIC_AURA          , EFST_DRAGONIC_AURA          , SCB_NONE );
+	set_sc_with_vfx(DK_VIGOR          , SC_VIGOR                  , EFST_VIGOR                  , SCB_ALL );
 
 	// Abyss Chaser
 	set_sc(ABC_FROM_THE_ABYSS, SC_ABYSSFORCEWEAPON, EFST_ABYSSFORCEWEAPON, SCB_NONE);
@@ -1422,6 +1424,9 @@ void initChangeTables(void)
 	StatusIconChangeTable[SC_EP16_2_BUFF_SC] = EFST_EP16_2_BUFF_SC;
 	StatusIconChangeTable[SC_EP16_2_BUFF_AC] = EFST_EP16_2_BUFF_AC;
 
+	// 4th Jobs
+	StatusIconChangeTable[SC_CHARGINGPIERCE_COUNT] = EFST_CHARGINGPIERCE_COUNT;
+
 	/* Other SC which are not necessarily associated to skills */
 	StatusChangeFlagTable[SC_ASPDPOTION0] |= SCB_ASPD;
 	StatusChangeFlagTable[SC_ASPDPOTION1] |= SCB_ASPD;
@@ -1603,6 +1608,9 @@ void initChangeTables(void)
 	StatusChangeFlagTable[SC_EP16_2_BUFF_SC] |= SCB_CRI;
 	StatusChangeFlagTable[SC_EP16_2_BUFF_AC] |= SCB_NONE;
 
+	// 4th Jobs
+	StatusChangeFlagTable[SC_CHARGINGPIERCE_COUNT] |= SCB_NONE;
+
 #ifdef RENEWAL
 	// renewal EDP increases your weapon atk
 	StatusChangeFlagTable[SC_EDP] |= SCB_WATK;
@@ -1669,6 +1677,9 @@ void initChangeTables(void)
 	// Clans
 	StatusDisplayType[SC_CLAN_INFO] = BL_PC|BL_NPC;
 	StatusDisplayType[SC_DRESSUP] = BL_PC;
+
+	// 4th Jobs
+	StatusDisplayType[SC_CHARGINGPIERCE_COUNT] = BL_PC;
 
 	/* StatusChangeState (SCS_) NOMOVE */
 	StatusChangeStateTable[SC_ANKLE]				|= SCS_NOMOVE;
@@ -4887,6 +4898,16 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 		sd->indexed_bonus.subrace[RC_DEMON] += skill;
 		sd->indexed_bonus.subele[ELE_DARK] += skill;
 	}
+	if ((skill = pc_checkskill(sd, DK_TWOHANDDEF))>0 && (sd->status.weapon == W_2HSWORD || sd->status.weapon == W_2HSPEAR || sd->status.weapon == W_2HAXE))
+	{
+		short small_def[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+		short medium_def[10] = { 2, 3, 5, 6, 8, 9, 11, 12, 14, 15 };
+		short large_def[10] = { 3, 5, 7, 9, 10, 12, 13, 15, 16, 18 };
+
+		sd->indexed_bonus.subsize[SZ_SMALL] += small_def[skill-1];
+		sd->indexed_bonus.subsize[SZ_MEDIUM] += medium_def[skill-1];
+		sd->indexed_bonus.subsize[SZ_BIG] += large_def[skill-1];
+	}
 
 	if(sc->count) {
 		if(sc->data[SC_CONCENTRATE]) { // Update the card-bonus data
@@ -5018,6 +5039,12 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 			sd->bonus.crit_atk_rate += sc->data[SC_LUXANIMA]->val3;
 			sd->bonus.short_attack_atk_rate += sc->data[SC_LUXANIMA]->val3;
 			sd->bonus.long_attack_atk_rate += sc->data[SC_LUXANIMA]->val3;
+		}
+		if (sc->data[SC_VIGOR])
+		{// Skill desc says increases physical damage. Supposed to affect damage from base ATK right???
+			// Because this is only boosting the ATK from the equipped weapon and not from base ATK. [Rytech]
+			sd->right_weapon.addrace[RC_DEMIHUMAN] += 50;
+			sd->left_weapon.addrace[RC_ANGEL] += 50;
 		}
 	}
 	status_cpy(&sd->battle_status, base_status);
@@ -12955,6 +12982,7 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 		case SC_JUMPINGCLAN:
 		case SC_DRESSUP:
 		case SC_MISTY_FROST:
+		case SC_CHARGINGPIERCE_COUNT:
 			val_flag |= 1;
 			break;
 		// Start |1|2 val_flag setting
@@ -14300,6 +14328,9 @@ int status_change_end_(struct block_list* bl, enum sc_type type, int tid, const 
 		case SC_SERVANTWEAPON:
 			if (sd)
 				pc_delservantball(sd, sd->servantball, 0);
+			break;
+		case SC_CHARGINGPIERCE:
+			status_change_end(bl, SC_CHARGINGPIERCE_COUNT, INVALID_TIMER);
 			break;
 		case SC_ABYSSFORCEWEAPON:
 			if (sd)

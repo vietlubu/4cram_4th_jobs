@@ -2292,9 +2292,13 @@ static int battle_range_type(struct block_list *src, struct block_list *target, 
 			// Renewal changes to ranged physical damage
 			return BF_LONG;
 #endif
-		case GC_CROSSIMPACT:
-			// Cast range is 7 cells and player jumps to target but skill is considered melee
-			return BF_SHORT;
+		case GC_CROSSIMPACT:// Cast range is 7 cells and player jumps to target but skill is considered melee
+		case DK_SERVANT_W_PHANTOM:// 9 cell cast range but deals melee damage.
+			return BF_SHORT;// Melee
+
+		case DK_HACKANDSLASHER_ATK:// 2 cell cast range but deals ranged damage.
+		case DK_MADNESS_CRUSHER:// 4 cell cast range but deals ranged damage.
+			return BF_LONG;// Ranged
 	}
 
 	//Skill Range Criteria
@@ -3412,6 +3416,8 @@ static void battle_calc_skill_base_damage(struct Damage* wd, struct block_list *
 					damagevalue = damagevalue * status_get_lv(src) / 150;
 				if(sd)
 					damagevalue = damagevalue * (100 + 5 * (pc_checkskill(sd,RK_DRAGONTRAINING) - 1)) / 100;
+				if (sc && sc->data[SC_DRAGONIC_AURA])// Need official damage increase. [Rytech]
+					damagevalue += damagevalue * 50 / 100;
 				ATK_ADD(wd->damage, wd->damage2, damagevalue);
 #ifdef RENEWAL
 				ATK_ADD(wd->weaponAtk, wd->weaponAtk2, damagevalue);
@@ -3677,6 +3683,8 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			skillratio += 2 * sc->data[SC_TRUESIGHT]->val1;
 		if (sc->data[SC_CONCENTRATION] && (skill_id != RK_DRAGONBREATH && skill_id != RK_DRAGONBREATH_WATER))
 			skillratio += sc->data[SC_CONCENTRATION]->val2;
+		if (sc && sc->data[SC_VIGOR])// Lacking info on how damage is increased. Guessing for now. [Rytech]
+			skillratio += skillratio * 50 / 100;
 #endif
 		if (!skill_id || skill_id == KN_AUTOCOUNTER) {
 			if (sc->data[SC_CRUSHSTRIKE]) {
@@ -3741,6 +3749,10 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			break;
 #endif
 		case KN_PIERCE:
+			skillratio += 10 * skill_lv;
+			if (sc && sc->data[SC_CHARGINGPIERCE_COUNT] && sc->data[SC_CHARGINGPIERCE_COUNT]->val1 >= 10)
+				skillratio *= 2;
+			break;
 		case ML_PIERCE:
 			skillratio += 10 * skill_lv;
 			break;
@@ -3976,6 +3988,11 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 #ifdef RENEWAL
 		// Renewal: skill ratio applies to entire damage [helvetica]
 		case LK_SPIRALPIERCE:
+			skillratio += 50 + 50 * skill_lv;
+			RE_LVL_DMOD(100);
+			if (sc && sc->data[SC_CHARGINGPIERCE_COUNT] && sc->data[SC_CHARGINGPIERCE_COUNT]->val1 >= 10)
+				skillratio *= 2;
+			break;
 		case ML_SPIRALPIERCE:
 			skillratio += 50 + 50 * skill_lv;
 			RE_LVL_DMOD(100);
@@ -4187,6 +4204,13 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			if (sd)
 				skillratio += 50 * pc_checkskill(sd,LK_SPIRALPIERCE);
 			RE_LVL_DMOD(100);
+			if (sc)
+			{
+				if (sc->data[SC_CHARGINGPIERCE_COUNT] && sc->data[SC_CHARGINGPIERCE_COUNT]->val1 >= 10)
+					skillratio *= 2;
+				if (sc->data[SC_DRAGONIC_AURA])// Need official damage increase. [Rytech]
+					skillratio += skillratio * 50 / 100;
+			}
 			break;
 		case RK_WINDCUTTER:
 			if (sd) {
@@ -4783,6 +4807,40 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 		case DK_SERVANT_W_DEMOL:
 			skillratio += -100 + 150 * skill_lv + 5 * sstatus->pow;
 			RE_LVL_DMOD(100);
+			break;
+		case DK_HACKANDSLASHER:
+			skillratio += 600 + 120 * skill_lv;
+			if (sd && sd->status.weapon == W_2HSWORD)
+			{
+				skillratio += 5 * sstatus->pow;
+				RE_LVL_DMOD(100);
+			}
+			break;
+		case DK_HACKANDSLASHER_ATK:
+			skillratio += 600 + 120 * skill_lv;
+			if (sd && sd->status.weapon == W_2HSPEAR)
+			{
+				skillratio += 5 * sstatus->pow;
+				RE_LVL_DMOD(100);
+			}
+			break;
+		case DK_DRAGONIC_AURA:
+			skillratio += 950 * skill_lv + 5 * sstatus->pow;
+			if (tstatus->race == RC_DEMIHUMAN || tstatus->race == RC_ANGEL)
+				skillratio += 450 * skill_lv;
+			RE_LVL_DMOD(100);
+			break;
+		case DK_MADNESS_CRUSHER:// How does weight affect the damage? [Rytech]
+			skillratio += -100 + 450 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			if (sc && sc->data[SC_CHARGINGPIERCE_COUNT] && sc->data[SC_CHARGINGPIERCE_COUNT]->val1 >= 10)
+				skillratio *= 2;
+			break;
+		case DK_STORMSLASH:
+			skillratio += -100 + 120 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			if (sc && sc->data[SC_GIANTGROWTH])
+				skillratio *= 2;
 			break;
 	}
 	return skillratio;
@@ -5527,6 +5585,11 @@ static void battle_calc_weapon_final_atk_modifiers(struct Damage* wd, struct blo
 			} else
 				hp = 2*hp/100; //2% hp loss per hit
 			status_zap(src, hp, 0, 0);
+		}
+		if (sc->data[SC_VIGOR])
+		{
+			short hp_loss[10] = { 15, 14, 12, 11, 9, 8, 6, 5, 3, 2 };
+			status_zap(src, hp_loss[sc->data[SC_VIGOR]->val1-1], 0, 0);
 		}
 		// Only affecting non-skills
 		if (!skill_id && wd->dmg_lv > ATK_BLOCK) {

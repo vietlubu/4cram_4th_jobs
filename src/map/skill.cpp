@@ -3522,6 +3522,29 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 		case DK_SERVANT_W_DEMOL:// Only give servant's per target after damage calculation.
 			pc_addservantball(sd, MAX_SERVANTBALL, 0);
 			break;
+		case KN_PIERCE:
+		case LK_SPIRALPIERCE:
+		case RK_HUNDREDSPEAR:
+		case DK_MADNESS_CRUSHER:
+			if (sc && sc->data[SC_CHARGINGPIERCE])
+			{
+				if (sc->data[SC_CHARGINGPIERCE_COUNT])
+				{
+					if (sc->data[SC_CHARGINGPIERCE_COUNT]->val1 < 10)
+					{// If the charge count is below 10, add 1.
+						short charge_count = sc->data[SC_CHARGINGPIERCE_COUNT]->val1;
+						sc_start(src, src, SC_CHARGINGPIERCE_COUNT, 100, charge_count + 1, skill_get_time2(DK_CHARGINGPIERCE, 1));
+					}
+					else
+					{// If charge count is 10, bonus damage is applied for 1 attack and then the count status ends.
+						clif_specialeffect(bl, 1767, AREA);
+						status_change_end(src, SC_CHARGINGPIERCE_COUNT, INVALID_TIMER);
+					}
+				}
+				else// No count status detected? Start charge count at 1.
+					sc_start(src, src, SC_CHARGINGPIERCE_COUNT, 100, 1, skill_get_time2(DK_CHARGINGPIERCE, 1));
+			}
+			break;
 	}
 
 	//combo handling
@@ -3660,6 +3683,9 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 			break;
 		case SJ_NOVAEXPLOSING:
 			dmg.dmotion = clif_skill_damage(dsrc,bl,tick, dmg.amotion, dmg.dmotion, damage, dmg.div_, skill_id, -2, DMG_SINGLE);
+			break;
+		case DK_HACKANDSLASHER_ATK:
+			dmg.dmotion = clif_skill_damage(dsrc, bl, tick, dmg.amotion, dmg.dmotion, damage, dmg.div_, skill_id, -1, dmg_type);
 			break;
 		case AB_DUPLELIGHT_MELEE:
 		case AB_DUPLELIGHT_MAGIC:
@@ -4862,6 +4888,14 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 		skill_attack(BF_WEAPON,src,src,bl,skill_id,skill_lv,tick,flag);
 		break;
 
+	case DK_DRAGONIC_AURA:
+	case DK_STORMSLASH:
+		clif_skill_nodamage(src, bl, skill_id, skill_lv, tick);
+		skill_attack(BF_WEAPON, src, src, bl, skill_id, skill_lv, tick, flag);
+		if (skill_id == DK_DRAGONIC_AURA)
+			sc_start(src, src, SC_DRAGONIC_AURA, 100, skill_lv, skill_get_time(skill_id,skill_lv));
+		break;
+
 	case MO_TRIPLEATTACK:
 		skill_attack(BF_WEAPON,src,src,bl,skill_id,skill_lv,tick,flag|SD_ANIMATION);
 		break;
@@ -5163,6 +5197,7 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case SP_SWHOO:
 	case DK_SERVANT_W_PHANTOM:
 	case DK_SERVANT_W_DEMOL:
+	case DK_MADNESS_CRUSHER:
 	case AG_FROZEN_SLASH:
 	case ABC_FROM_THE_ABYSS_ATK:
 		if( flag&1 ) {//Recursive invocation
@@ -5266,6 +5301,24 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 				map_freeblock_unlock(); // Don't consume a second gemstone.
 				return 0;
 			}
+		}
+		break;
+
+	case DK_HACKANDSLASHER:
+	case DK_HACKANDSLASHER_ATK:
+		if( flag&1 )
+		{
+			skill_addtimerskill(src, tick + (200 + status_get_amotion(src)), bl->id, 0, 0, skill_id, skill_lv, BF_WEAPON, flag);
+		}
+		else
+		{
+			skill_area_temp[0] = 0;
+			skill_area_temp[1] = bl->id;
+			skill_area_temp[2] = 0;
+
+			clif_skill_nodamage(src, bl, skill_id, skill_lv, tick);
+			skill_attack(skill_get_type(skill_id), src, src, bl, skill_id, skill_lv, tick, flag);
+			map_foreachinrange(skill_area_sub, bl, skill_get_splash(DK_HACKANDSLASHER_ATK, skill_lv), BL_CHAR|BL_SKILL, src, DK_HACKANDSLASHER_ATK, skill_lv, tick, flag|BCT_ENEMY|SD_SPLASH|1, skill_castend_damage_id);
 		}
 		break;
 
@@ -7114,6 +7167,8 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case SJ_FALLINGSTAR:
 	case SJ_LIGHTOFSUN:
 	case SJ_BOOKOFDIMENSION:
+	case DK_CHARGINGPIERCE:
+	case DK_VIGOR:
 		clif_skill_nodamage(src,bl,skill_id,skill_lv,
 			sc_start(src,bl,type,100,skill_lv,skill_get_time(skill_id,skill_lv)));
 		break;
