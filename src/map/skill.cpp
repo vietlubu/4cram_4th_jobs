@@ -2099,6 +2099,9 @@ int skill_additional_effect(struct block_list* src, struct block_list *bl, uint1
 	case DK_SERVANT_W_PHANTOM:
 		sc_start(src, bl, SC_HANDICAPSTATE_DEEPBLIND, 30 + 10 * skill_lv, skill_lv, skill_get_time(skill_id, skill_lv));
 		break;
+	case AG_DEADLY_PROJECTION:
+		sc_start(src, bl, SC_DEADLY_DEFEASANCE, 100, skill_lv, skill_get_time(skill_id, skill_lv));
+		break;
 	} //end switch skill_id
 
 	if (md && battle_config.summons_trigger_autospells && md->master_id && md->special_state.ai)
@@ -2901,6 +2904,10 @@ static int skill_magic_reflect(struct block_list* src, struct block_list* bl, in
 {
 	struct status_change *sc = status_get_sc(bl);
 	struct map_session_data* sd = BL_CAST(BL_PC, bl);
+
+	// Deadly Projection null's all magic reflection.
+	if (sc && sc->data[SC_DEADLY_DEFEASANCE])
+		return 0;
 
 	if (!sc || !sc->data[SC_KYOMU]) { // Kyomu doesn't reflect
 		// Item-based reflection - Bypasses Boss check
@@ -5198,6 +5205,7 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case DK_SERVANT_W_PHANTOM:
 	case DK_SERVANT_W_DEMOL:
 	case DK_MADNESS_CRUSHER:
+	case AG_SOUL_VC_STRIKE:
 	case AG_FROZEN_SLASH:
 	case ABC_FROM_THE_ABYSS_ATK:
 		if( flag&1 ) {//Recursive invocation
@@ -5510,6 +5518,8 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case WM_METALICSOUND:
 	case KO_KAIHOU:
 	case MH_ERASER_CUTTER:
+	case AG_DEADLY_PROJECTION:
+	case AG_ASTRAL_STRIKE:
 	case AG_ASTRAL_STRIKE_ATK:
 		skill_attack(BF_MAGIC,src,src,bl,skill_id,skill_lv,tick,flag);
 		break;
@@ -12565,13 +12575,21 @@ int skill_castend_pos2(struct block_list* src, int x, int y, uint16 skill_id, ui
 	case LG_KINGS_GRACE:
 	case SJ_BOOKOFCREATINGSTAR:
 	case RL_B_TRAP:
-	case AG_ASTRAL_STRIKE:
+	case AG_MYSTERY_ILLUSION:
 		flag|=1;//Set flag to 1 to prevent deleting ammo (it will be deleted on group-delete).
 	case GS_GROUNDDRIFT: //Ammo should be deleted right away.
 	case GN_WALLOFTHORN:
 	case GN_DEMONIC_FIRE:
 		skill_unitsetting(src,skill_id,skill_lv,x,y,0);
 		break;
+
+	case AG_ASTRAL_STRIKE:
+		i = skill_get_splash(skill_id, skill_lv);
+		map_foreachinallarea(skill_area_sub, src->m, x-i, y-i, x+i, y+i, BL_CHAR, src, skill_id, skill_lv, tick, flag|BCT_ENEMY|1, skill_castend_damage_id);
+		flag |= 1;
+		skill_unitsetting(src, skill_id, skill_lv, x, y, 0);
+		break;
+
 	case WZ_ICEWALL:
 		flag|=1;
 		if(skill_unitsetting(src,skill_id,skill_lv,x,y,0))
@@ -14473,6 +14491,10 @@ int skill_unit_onplace_timer(struct skill_unit *unit, struct block_list *bl, t_t
 				default:
 					skill_attack(skill_get_type(sg->skill_id),ss,&unit->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
 			}
+			break;
+
+		case UNT_MYSTERY_ILLUSION:
+			skill_attack(skill_get_type(sg->skill_id), ss, &unit->bl, bl, sg->skill_id, sg->skill_lv, tick, 0);
 			break;
 
 		case UNT_ASTRAL_STRIKE:

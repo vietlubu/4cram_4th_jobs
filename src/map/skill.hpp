@@ -461,19 +461,19 @@ public:
 	uint64 parseBodyNode(const YAML::Node& node);
 };
 
-struct s_skill_improvise_db {
-	uint16 skill_id, per;
-};
+//struct s_skill_improvise_db {
+//	uint16 skill_id, per;
+//};
 
-class ImprovisedSongDatabase : public TypesafeYamlDatabase<uint16, s_skill_improvise_db> {
-public:
-	ImprovisedSongDatabase() : TypesafeYamlDatabase("IMPROVISED_SONG_DB", 1) {
-
-	}
-
-	const std::string getDefaultLocation();
-	uint64 parseBodyNode(const YAML::Node& node);
-};
+//class ImprovisedSongDatabase : public TypesafeYamlDatabase<uint16, s_skill_improvise_db> {
+//public:
+//	ImprovisedSongDatabase() : TypesafeYamlDatabase("IMPROVISED_SONG_DB", 1) {
+//
+//	}
+//
+//	const std::string getDefaultLocation();
+//	uint64 parseBodyNode(const YAML::Node& node);
+//};
 
 void do_init_skill(void);
 void do_final_skill(void);

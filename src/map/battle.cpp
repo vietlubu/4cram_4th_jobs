@@ -1163,11 +1163,10 @@ bool battle_status_block_damage(struct block_list *src, struct block_list *targe
 
 	if ((sc->data[SC_PNEUMA] && (flag&(BF_MAGIC | BF_LONG)) == BF_LONG) ||
 #ifdef RENEWAL
-		(sc->data[SC_BASILICA_CELL]
+		(sc->data[SC_BASILICA_CELL] && !status_bl_has_mode(src, MD_STATUS_IMMUNE) && skill_id != SP_SOULEXPLOSION) ||
 #else
-		(sc->data[SC_BASILICA]
+		(sc->data[SC_BASILICA] && !status_bl_has_mode(src, MD_STATUS_IMMUNE) && skill_id != SP_SOULEXPLOSION) ||
 #endif
-		&& !status_bl_has_mode(src, MD_STATUS_IMMUNE) && skill_id != SP_SOULEXPLOSION) ||
 		(sc->data[SC_ZEPHYR] && !(flag&BF_MAGIC && skill_id) && !(skill_get_inf(skill_id)&(INF_GROUND_SKILL | INF_SELF_SKILL))) ||
 		sc->data[SC__MANHOLE] ||
 		sc->data[SC_KINGS_GRACE] ||
@@ -1182,6 +1181,7 @@ bool battle_status_block_damage(struct block_list *src, struct block_list *targe
 		if (skill_id == MG_NAPALMBEAT ||
 			skill_id == MG_SOULSTRIKE ||
 			skill_id == WL_SOULEXPANSION ||
+			skill_id == AG_SOUL_VC_STRIKE ||
 			(skill_id && skill_get_ele(skill_id, skill_lv) == ELE_GHOST) ||
 			(skill_id == 0 && (status_get_status_data(src))->rhw.ele == ELE_GHOST))
 		{
@@ -6790,16 +6790,39 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 						skillratio += 1000 + 200 * skill_lv;
 						RE_LVL_DMOD(100);
 						break;
+					case AG_DEADLY_PROJECTION:
+						skillratio += -100 + 600 * skill_lv + 5 * sstatus->spl;
+						RE_LVL_DMOD(100);
+						break;
+					case AG_MYSTERY_ILLUSION:
+						skillratio += -100 + 250 * skill_lv + 5 * sstatus->spl;
+						RE_LVL_DMOD(100);
+						break;
+					case AG_SOUL_VC_STRIKE:
+						skillratio += -100 + 180 * skill_lv + 3 * sstatus->spl;
+						RE_LVL_DMOD(100);
+						break;
+					case AG_ASTRAL_STRIKE:
+						skillratio += -100 + 500 * skill_lv + 10 * sstatus->spl;
+						if (tstatus->race == RC_UNDEAD || tstatus->race == RC_DRAGON)
+							skillratio += 600 * skill_lv;
+						RE_LVL_DMOD(100);
+						break;
 					case AG_ASTRAL_STRIKE_ATK:
-						skillratio = 500 * skill_lv + 5 * sstatus->spl;
+						skillratio += -100 + 200 * skill_lv + 10 * sstatus->spl;
+						// Not confirmed, but if the main hit deal additional damage
+						// on certain races then the repeated damage should too right?
+						// Guessing a formula here for now. [Rytech]
+						if (tstatus->race == RC_UNDEAD || tstatus->race == RC_DRAGON)
+							skillratio += 200 * skill_lv;
 						RE_LVL_DMOD(100);
 						break;
 					case AG_FROZEN_SLASH:
-						skillratio = 750 * skill_lv + 5 * sstatus->spl;
+						skillratio += -100 + 750 * skill_lv + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
 						break;
 					case ABC_FROM_THE_ABYSS_ATK:
-						skillratio = 150 + 70 * skill_lv + 5 * sstatus->spl;
+						skillratio += 150 + 70 * skill_lv + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
 						break;
 				}

@@ -1119,6 +1119,9 @@ void initChangeTables(void)
 	set_sc_with_vfx(DK_DRAGONIC_AURA  , SC_DRAGONIC_AURA          , EFST_DRAGONIC_AURA          , SCB_NONE );
 	set_sc_with_vfx(DK_VIGOR          , SC_VIGOR                  , EFST_VIGOR                  , SCB_ALL );
 
+	// Arch Mage
+	set_sc_with_vfx(AG_DEADLY_PROJECTION, SC_DEADLY_DEFEASANCE, EFST_DEADLY_DEFEASANCE, SCB_NONE);
+
 	// Abyss Chaser
 	set_sc(ABC_FROM_THE_ABYSS, SC_ABYSSFORCEWEAPON, EFST_ABYSSFORCEWEAPON, SCB_NONE);
 
@@ -1679,7 +1682,11 @@ void initChangeTables(void)
 	StatusDisplayType[SC_DRESSUP] = BL_PC;
 
 	// 4th Jobs
+	StatusDisplayType[SC_SERVANT_SIGN] = BL_PC;
 	StatusDisplayType[SC_CHARGINGPIERCE_COUNT] = BL_PC;
+	StatusDisplayType[SC_DRAGONIC_AURA] = BL_PC;
+	StatusDisplayType[SC_VIGOR] = BL_PC;
+	StatusDisplayType[SC_DEADLY_DEFEASANCE] = BL_PC;
 
 	/* StatusChangeState (SCS_) NOMOVE */
 	StatusChangeStateTable[SC_ANKLE]				|= SCS_NOMOVE;
@@ -9040,8 +9047,15 @@ int status_isdead(struct block_list *bl)
 int status_isimmune(struct block_list *bl)
 {
 	struct status_change *sc =status_get_sc(bl);
-	if (sc && sc->data[SC_HERMODE])
-		return 100;
+
+	if (sc)
+	{
+		if (sc->data[SC_HERMODE])
+			return 100;
+
+		if (sc->data[SC_DEADLY_DEFEASANCE])
+			return 0;
+	}
 
 	if (bl->type == BL_PC &&
 		((TBL_PC*)bl)->special_state.no_magic_damage >= battle_config.gtb_sc_immunity)
