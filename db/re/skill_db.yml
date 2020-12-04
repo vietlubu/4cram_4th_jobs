@@ -34110,7 +34110,43 @@ Body:
     Range: 9
     Hit: Single
     HitCount: 1
+    Element: Fire
+    SplashArea:
+      - Level: 1
+        Area: 3
+      - Level: 2
+        Area: 3
+      - Level: 3
+        Area: 4
+      - Level: 4
+        Area: 4
+      - Level: 5
+        Area: 4
     CastCancel: true
+    AfterCastActDelay: 1000
+    Duration1:
+      - Level: 1
+        Time: 1200
+      - Level: 2
+        Time: 2400
+      - Level: 3
+        Time: 3600
+      - Level: 4
+        Time: 4800
+      - Level: 5
+        Time: 6000
+    Cooldown:
+      - Level: 1
+        Time: 1200
+      - Level: 2
+        Time: 2400
+      - Level: 3
+        Time: 3600
+      - Level: 4
+        Time: 4800
+      - Level: 5
+        Time: 6000
+    FixedCastTime: 2000
     Requires:
       SpCost:
         - Level: 1
@@ -34123,6 +34159,24 @@ Body:
           Amount: 110
         - Level: 5
           Amount: 120
+    Unit:
+      Id: All_Bloom
+      Range:
+        - Level: 1
+          Size: 3
+        - Level: 2
+          Size: 3
+        - Level: 3
+          Size: 4
+        - Level: 4
+          Size: 4
+        - Level: 5
+          Size: 4
+      Interval: 300
+      Target: Enemy
+      Flag:
+        NoOverlap: true
+        PathCheck: true
   - Id: 5223
     Name: AG_ALL_BLOOM_ATK
     Description: All Bloom Attack
@@ -34132,8 +34186,17 @@ Body:
     Range: 9
     Hit: Single
     HitCount: 1
+    Element: Fire
+    Duration1: 100
     Requires:
       SpCost: 1
+    Unit:
+      Id: Dummyskill
+      Range: 3
+      Interval: 300
+      Target: Enemy
+      Flag:
+        PathCheck: true
   - Id: 5224
     Name: AG_ALL_BLOOM_ATK2
     Description: All Bloom Attack 2
@@ -34143,8 +34206,27 @@ Body:
     Range: 9
     Hit: Single
     HitCount: 1
+    Element: Fire
+    Duration1: 100
     Requires:
       SpCost: 1
+    Unit:
+      Id: Dummyskill
+      Range:
+        - Level: 1
+          Size: 3
+        - Level: 2
+          Size: 3
+        - Level: 3
+          Size: 4
+        - Level: 4
+          Size: 4
+        - Level: 5
+          Size: 4
+      Interval: 1000
+      Target: Enemy
+      Flag:
+        PathCheck: true
   - Id: 5225
     Name: AG_CRYSTAL_IMPACT
     Description: Crystal Impact
@@ -34210,9 +34292,14 @@ Body:
     Type: Magic
     TargetType: Ground
     Range: 9
-    Hit: Single
-    HitCount: 1
+    Hit: Multi_Hit
+    HitCount: -2
+    Element: Fire
     CastCancel: true
+    AfterCastActDelay: 500
+    Duration1: 5000
+    Cooldown: 5000
+    FixedCastTime: 2000
     Requires:
       SpCost:
         - Level: 1
@@ -34225,6 +34312,24 @@ Body:
           Amount: 60
         - Level: 5
           Amount: 70
+    Unit:
+      Id: Floral_Flare_Road
+      Range:
+        - Level: 1
+          Size: 1
+        - Level: 2
+          Size: 2
+        - Level: 3
+          Size: 3
+        - Level: 4
+          Size: 4
+        - Level: 5
+          Size: 5
+      Interval: 500
+      Target: Enemy
+      Flag:
+        NoOverlap: true
+        PathCheck: true
   - Id: 5230
     Name: AG_ASTRAL_STRIKE
     Description: Astral Strike

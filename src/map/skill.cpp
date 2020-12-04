@@ -12576,6 +12576,7 @@ int skill_castend_pos2(struct block_list* src, int x, int y, uint16 skill_id, ui
 	case SJ_BOOKOFCREATINGSTAR:
 	case RL_B_TRAP:
 	case AG_MYSTERY_ILLUSION:
+	case AG_FLORAL_FLARE_ROAD:
 		flag|=1;//Set flag to 1 to prevent deleting ammo (it will be deleted on group-delete).
 	case GS_GROUNDDRIFT: //Ammo should be deleted right away.
 	case GN_WALLOFTHORN:
@@ -12673,6 +12674,30 @@ int skill_castend_pos2(struct block_list* src, int x, int y, uint16 skill_id, ui
 			}
 		}
 		break;
+
+	case AG_ALL_BLOOM:
+	{
+		int area = skill_get_splash(skill_id, skill_lv);
+		short tmpx = 0, tmpy = 0;
+
+		// Displays the flower garden.
+		skill_unitsetting(src, skill_id, skill_lv, x, y, 0);
+
+		// Spawn the rose buds at seperate intervals.
+		for (i = 1; i <= skill_get_time(skill_id, skill_lv) / skill_get_unit_interval(skill_id); i++)
+		{
+			// Creates a random Cell in the Splash Area
+			tmpx = x - area + rnd() % (area * 2 + 1);
+			tmpy = y - area + rnd() % (area * 2 + 1);
+			skill_unitsetting(src, AG_ALL_BLOOM_ATK, skill_lv, tmpx, tmpy, flag + i*skill_get_unit_interval(skill_id));
+		}
+
+		// One final attack the size of the flower garden is dealt after
+		// all rose buds explode if Climax level 5 is active.
+		// Note: Disabled until Climax is coded in.
+		//skill_unitsetting(src, AG_ALL_BLOOM_ATK2, skill_lv, x, y, flag + i*skill_get_unit_interval(skill_id));
+	}
+	break;
 
 	case AL_WARP:
 		if(sd)
@@ -13554,6 +13579,8 @@ struct skill_unit_group *skill_unitsetting(struct block_list *src, uint16 skill_
 	case WZ_METEOR:
 	case SU_CN_METEOR:
 	case SU_CN_METEOR2:
+	case AG_ALL_BLOOM_ATK:
+	case AG_ALL_BLOOM_ATK2:
 		limit = flag;
 		flag = 0; // Flag should not influence anything else for these skills
 		break;
@@ -14449,6 +14476,8 @@ int skill_unit_onplace_timer(struct skill_unit *unit, struct block_list *bl, t_t
 		case UNT_ICEMINE:
 		case UNT_FLAMECROSS:
 		case UNT_HELLBURNING:
+		case UNT_MYSTERY_ILLUSION:
+		case UNT_FLORAL_FLARE_ROAD:
 			skill_attack(skill_get_type(sg->skill_id),ss,&unit->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
 			break;
 
@@ -14491,10 +14520,6 @@ int skill_unit_onplace_timer(struct skill_unit *unit, struct block_list *bl, t_t
 				default:
 					skill_attack(skill_get_type(sg->skill_id),ss,&unit->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
 			}
-			break;
-
-		case UNT_MYSTERY_ILLUSION:
-			skill_attack(skill_get_type(sg->skill_id), ss, &unit->bl, bl, sg->skill_id, sg->skill_lv, tick, 0);
 			break;
 
 		case UNT_ASTRAL_STRIKE:
@@ -19586,7 +19611,7 @@ static int skill_unit_timer_sub(DBKey key, DBData *data, va_list ap)
 				break;
 
 			default:
-				if (group->val2 == 1 && (group->skill_id == WZ_METEOR || group->skill_id == SU_CN_METEOR || group->skill_id == SU_CN_METEOR2)) {
+				if (group->val2 == 1 && (group->skill_id == WZ_METEOR || group->skill_id == SU_CN_METEOR || group->skill_id == SU_CN_METEOR2 || group->skill_id == AG_ALL_BLOOM_ATK || group->skill_id == AG_ALL_BLOOM_ATK2)) {
 					// Deal damage before expiration
 					break;
 				}
@@ -19641,12 +19666,16 @@ static int skill_unit_timer_sub(DBKey key, DBData *data, va_list ap)
 				}
 				break;
 			default:
-				if (group->skill_id == WZ_METEOR || group->skill_id == SU_CN_METEOR || group->skill_id == SU_CN_METEOR2) {
+				if (group->skill_id == WZ_METEOR || group->skill_id == SU_CN_METEOR || group->skill_id == SU_CN_METEOR2 || group->skill_id == AG_ALL_BLOOM_ATK || group->skill_id == AG_ALL_BLOOM_ATK2) {
 					if (group->val2 == 0 && (DIFF_TICK(tick, group->tick) >= group->limit - group->interval || DIFF_TICK(tick, group->tick) >= unit->limit - group->interval)) {
 						// Unit will expire the next interval, start dropping Meteor
 						struct block_list* src;
-						if ((src = map_id2bl(group->src_id)) != NULL) {
-							clif_skill_poseffect(src, group->skill_id, group->skill_lv, bl->x, bl->y, tick);
+						if ((src = map_id2bl(group->src_id)) != NULL)
+						{
+							if (group->skill_id == AG_ALL_BLOOM_ATK || group->skill_id == AG_ALL_BLOOM_ATK2)
+								clif_skill_poseffect(src, group->skill_id, -1, bl->x, bl->y, tick);// Don't yell a blank skill name.
+							else
+								clif_skill_poseffect(src, group->skill_id, group->skill_lv, bl->x, bl->y, tick);
 							group->val2 = 1;
 						}
 					}
@@ -19677,7 +19706,7 @@ static int skill_unit_timer_sub(DBKey key, DBData *data, va_list ap)
 				group->bl_flag= BL_NUL;
 			}
 		}
-		else if (group->skill_id == WZ_METEOR || group->skill_id == SU_CN_METEOR || group->skill_id == SU_CN_METEOR2) {
+		else if (group->skill_id == WZ_METEOR || group->skill_id == SU_CN_METEOR || group->skill_id == SU_CN_METEOR2 || group->skill_id == AG_ALL_BLOOM_ATK || group->skill_id == AG_ALL_BLOOM_ATK2) {
 			skill_delunit(unit);
 			return 0;
 		}
