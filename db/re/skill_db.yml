@@ -33937,8 +33937,13 @@ Body:
     Type: Magic
     TargetType: Self
     Hit: Single
-    HitCount: 1
+    HitCount: -2
+    Element: Water
     CastCancel: true
+    AfterCastActDelay: 500
+    Duration1: 4000
+    Cooldown: 5000
+    FixedCastTime: 2000
     Requires:
       SpCost:
         - Level: 1
@@ -33951,6 +33956,24 @@ Body:
           Amount: 70
         - Level: 5
           Amount: 80
+    Unit:
+      Id: Rain_Of_Crystal
+      Range:
+        - Level: 1
+          Size: 6
+        - Level: 2
+          Size: 7
+        - Level: 3
+          Size: 8
+        - Level: 4
+          Size: 9
+        - Level: 5
+          Size: 10
+      Interval: 500
+      Target: Enemy
+      Flag:
+        NoOverlap: true
+        PathCheck: true
   - Id: 5217
     Name: AG_MYSTERY_ILLUSION
     Description: Mystery Illusion
@@ -34005,7 +34028,43 @@ Body:
     Range: 9
     Hit: Single
     HitCount: 1
+    Element: Earth
+    SplashArea:
+      - Level: 1
+        Area: 3
+      - Level: 2
+        Area: 3
+      - Level: 3
+        Area: 4
+      - Level: 4
+        Area: 4
+      - Level: 5
+        Area: 4
     CastCancel: true
+    AfterCastActDelay: 1000
+    Duration1:
+      - Level: 1
+        Time: 1200
+      - Level: 2
+        Time: 2400
+      - Level: 3
+        Time: 3600
+      - Level: 4
+        Time: 4800
+      - Level: 5
+        Time: 6000
+    Cooldown:
+      - Level: 1
+        Time: 1200
+      - Level: 2
+        Time: 2400
+      - Level: 3
+        Time: 3600
+      - Level: 4
+        Time: 4800
+      - Level: 5
+        Time: 6000
+    FixedCastTime: 2000
     Requires:
       SpCost:
         - Level: 1
@@ -34018,6 +34077,24 @@ Body:
           Amount: 110
         - Level: 5
           Amount: 120
+    Unit:
+      Id: Violent_Quake
+      Range:
+        - Level: 1
+          Size: 3
+        - Level: 2
+          Size: 3
+        - Level: 3
+          Size: 4
+        - Level: 4
+          Size: 4
+        - Level: 5
+          Size: 4
+      Interval: 300
+      Target: Enemy
+      Flag:
+        NoOverlap: true
+        PathCheck: true
   - Id: 5219
     Name: AG_VIOLENT_QUAKE_ATK
     Description: Violent Quake Attack
@@ -34027,8 +34104,17 @@ Body:
     Range: 9
     Hit: Single
     HitCount: 1
+    Element: Earth
+    Duration1: 100
     Requires:
       SpCost: 1
+    Unit:
+      Id: Dummyskill
+      Range: 3
+      Interval: 300
+      Target: Enemy
+      Flag:
+        PathCheck: true
   - Id: 5220
     Name: AG_SOUL_VC_STRIKE
     Description: Soul Vulcan Strike
@@ -34086,9 +34172,14 @@ Body:
     Type: Magic
     TargetType: Ground
     Range: 9
-    Hit: Single
-    HitCount: 1
+    Hit: Multi_Hit
+    HitCount: -2
+    Element: Earth
     CastCancel: true
+    AfterCastActDelay: 500
+    Duration1: 4000
+    Cooldown: 4000
+    FixedCastTime: 2000
     Requires:
       SpCost:
         - Level: 1
@@ -34101,6 +34192,24 @@ Body:
           Amount: 65
         - Level: 5
           Amount: 75
+    Unit:
+      Id: Strantum_Tremor
+      Range:
+        - Level: 1
+          Size: 2
+        - Level: 2
+          Size: 2
+        - Level: 3
+          Size: 3
+        - Level: 4
+          Size: 3
+        - Level: 5
+          Size: 4
+      Interval: 400
+      Target: Enemy
+      Flag:
+        NoOverlap: true
+        PathCheck: true
   - Id: 5222
     Name: AG_ALL_BLOOM
     Description: All Bloom
@@ -34233,9 +34342,26 @@ Body:
     MaxLevel: 5
     Type: Magic
     TargetType: Self
+    DamageFlags:
+      Splash: true
     Hit: Single
     HitCount: 1
+    Element: Water
+    SplashArea:
+      - Level: 1
+        Area: 3
+      - Level: 2
+        Area: 4
+      - Level: 3
+        Area: 5
+      - Level: 4
+        Area: 6
+      - Level: 5
+        Area: 7
     CastCancel: true
+    AfterCastActDelay: 1000
+    Cooldown: 6000
+    FixedCastTime: 1000
     Requires:
       SpCost:
         - Level: 1
@@ -34254,8 +34380,11 @@ Body:
     MaxLevel: 5
     Type: Magic
     TargetType: Attack
+    DamageFlags:
+      Splash: true
     Hit: Single
     HitCount: 1
+    Element: Water
     Requires:
       SpCost: 1
   - Id: 5227
@@ -34426,10 +34555,17 @@ Body:
     MaxLevel: 5
     Type: Magic
     TargetType: Attack
+    DamageFlags:
+      Splash: true
     Range: 9
-    Hit: Single
-    HitCount: 1
+    Hit: Multi_Hit
+    HitCount: -5
+    Element: Earth
+    SplashArea: 1
     CastCancel: true
+    AfterCastActDelay: 1000
+    Cooldown: 3500
+    FixedCastTime: 2000
     Requires:
       SpCost:
         - Level: 1
@@ -34503,9 +34639,26 @@ Body:
     MaxLevel: 5
     Type: Magic
     TargetType: Self
+    DamageFlags:
+      Splash: true
     Hit: Single
     HitCount: 1
+    Element: Water
+    SplashArea:
+      - Level: 1
+        Area: 2
+      - Level: 2
+        Area: 2
+      - Level: 3
+        Area: 3
+      - Level: 4
+        Area: 3
+      - Level: 5
+        Area: 4
     CastCancel: true
+    AfterCastActDelay: 1000
+    Cooldown: 4000
+    FixedCastTime: 1000
     Requires:
       SpCost:
         - Level: 1

@@ -350,7 +350,7 @@ struct skill_timerskill {
 	int flag;
 };
 
-#define MAX_SKILLUNITGROUP 25 /// Maximum skill unit group (for same skill each source)
+#define MAX_SKILLUNITGROUP 50 /// Maximum skill unit group (for same skill each source)
 /// Skill unit group
 struct skill_unit_group {
 	int src_id; /// Caster ID/RID, if player is account_id
@@ -2481,8 +2481,8 @@ enum e_skill_unit_id : uint16 {
 	UNT_RAIN_OF_CRYSTAL,
 	UNT_MYSTERY_ILLUSION,
 	UNT_UNKNOWN_1,// No idea. Makes a old style plant appear for a second.
+	UNT_STRANTUM_TREMOR,
 	UNT_VIOLENT_QUAKE,
-	UNT_STRANTUM_TREMOR,// Need confirm.
 	UNT_ALL_BLOOM,
 	UNT_TORNADO_STORM,
 	UNT_FLORAL_FLARE_ROAD,

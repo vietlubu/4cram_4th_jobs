@@ -6794,12 +6794,24 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 						skillratio += -100 + 600 * skill_lv + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
 						break;
+					case AG_RAIN_OF_CRYSTAL:
+						skillratio += -100 + 150 * skill_lv + 5 * sstatus->spl;
+						RE_LVL_DMOD(100);
+						break;
 					case AG_MYSTERY_ILLUSION:
 						skillratio += -100 + 250 * skill_lv + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
 						break;
+					case AG_VIOLENT_QUAKE_ATK:
+						skillratio += -100 + 120 * skill_lv + 5 * sstatus->spl;
+						RE_LVL_DMOD(100);
+						break;
 					case AG_SOUL_VC_STRIKE:
 						skillratio += -100 + 180 * skill_lv + 3 * sstatus->spl;
+						RE_LVL_DMOD(100);
+						break;
+					case AG_STRANTUM_TREMOR:
+						skillratio += -100 + 250 * skill_lv + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
 						break;
 					case AG_ALL_BLOOM_ATK:
@@ -6808,6 +6820,11 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 						break;
 					case AG_ALL_BLOOM_ATK2:// Is this affected by BaseLV and SPL too??? [Rytech]
 						skillratio += -100 + 7000 + 5 * sstatus->spl;
+						RE_LVL_DMOD(100);
+						break;
+					case AG_CRYSTAL_IMPACT:
+					case AG_CRYSTAL_IMPACT_ATK:// Said to deal the same damage as the main attack.
+						skillratio += -100 + 800 * skill_lv + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
 						break;
 					case AG_FLORAL_FLARE_ROAD:
@@ -6827,6 +6844,10 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 						// Guessing a formula here for now. [Rytech]
 						if (tstatus->race == RC_UNDEAD || tstatus->race == RC_DRAGON)
 							skillratio += 200 * skill_lv;
+						RE_LVL_DMOD(100);
+						break;
+					case AG_ROCK_DOWN:
+						skillratio += -100 + 750 * skill_lv + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
 						break;
 					case AG_FROZEN_SLASH:

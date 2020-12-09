@@ -2381,11 +2381,11 @@ int pc_calc_skilltree_normalize_job(struct map_session_data *sd)
 	{// Novice Skill Tree
 		c = MAPID_NOVICE;
 	}
-	else if (skill_point < novice_skills + (sd->change_level_2nd - 1))
+	else if (skill_point < novice_skills + (sd->change_level_2nd - 1) && (sd->class_&MAPID_UPPERMASK) != MAPID_SUPER_NOVICE)
 	{// 1st Job Skill Tree
 		c &= MAPID_BASEMASK;
 	}
-	else if (skill_point < novice_skills + (sd->change_level_2nd - 1) + (sd->change_level_3rd - 1))
+	else if (skill_point < novice_skills + (sd->change_level_2nd - 1) + (sd->change_level_3rd - 1) && (sd->class_&MAPID_THIRDMASK) != MAPID_SUPER_NOVICE_E)
 	{// 2nd Job Skill Tree
 		c &= MAPID_UPPERMASK;
 	}

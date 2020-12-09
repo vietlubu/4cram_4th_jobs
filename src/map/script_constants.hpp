@@ -7987,8 +7987,8 @@
 	export_constant(UNT_RAIN_OF_CRYSTAL);
 	export_constant(UNT_MYSTERY_ILLUSION);
 	export_constant(UNT_UNKNOWN_1);
-	export_constant(UNT_VIOLENT_QUAKE);
 	export_constant(UNT_STRANTUM_TREMOR);
+	export_constant(UNT_VIOLENT_QUAKE);
 	export_constant(UNT_ALL_BLOOM);
 	export_constant(UNT_TORNADO_STORM);
 	export_constant(UNT_FLORAL_FLARE_ROAD);

@@ -1120,7 +1120,9 @@ void initChangeTables(void)
 	set_sc_with_vfx(DK_VIGOR          , SC_VIGOR                  , EFST_VIGOR                  , SCB_ALL );
 
 	// Arch Mage
-	set_sc_with_vfx(AG_DEADLY_PROJECTION, SC_DEADLY_DEFEASANCE, EFST_DEADLY_DEFEASANCE, SCB_NONE);
+	set_sc_with_vfx( AG_DEADLY_PROJECTION, SC_DEADLY_DEFEASANCE, EFST_DEADLY_DEFEASANCE, SCB_NONE);
+	set_sc( AG_CRYSTAL_IMPACT            , SC_CRYSTAL_IMPACT   , EFST_CRYSTAL_IMPACT   , SCB_NONE);
+	set_sc_with_vfx( AG_CLIMAX           , SC_CLIMAX           , EFST_CLIMAX           , SCB_NONE);
 
 	// Abyss Chaser
 	set_sc(ABC_FROM_THE_ABYSS, SC_ABYSSFORCEWEAPON, EFST_ABYSSFORCEWEAPON, SCB_NONE);
@@ -1687,6 +1689,7 @@ void initChangeTables(void)
 	StatusDisplayType[SC_DRAGONIC_AURA] = BL_PC;
 	StatusDisplayType[SC_VIGOR] = BL_PC;
 	StatusDisplayType[SC_DEADLY_DEFEASANCE] = BL_PC;
+	StatusDisplayType[SC_CLIMAX] = BL_PC;
 
 	/* StatusChangeState (SCS_) NOMOVE */
 	StatusChangeStateTable[SC_ANKLE]				|= SCS_NOMOVE;
@@ -12997,6 +13000,7 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 		case SC_DRESSUP:
 		case SC_MISTY_FROST:
 		case SC_CHARGINGPIERCE_COUNT:
+		case SC_CLIMAX:
 			val_flag |= 1;
 			break;
 		// Start |1|2 val_flag setting
