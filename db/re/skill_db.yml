@@ -33915,9 +33915,26 @@ Body:
     MaxLevel: 5
     Type: Magic
     TargetType: Self
+    DamageFlags:
+      Splash: true
     Hit: Single
     HitCount: 1
+    Element: Wind
+    SplashArea:
+      - Level: 1
+        Area: 3
+      - Level: 2
+        Area: 3
+      - Level: 3
+        Area: 4
+      - Level: 4
+        Area: 4
+      - Level: 5
+        Area: 5
     CastCancel: true
+    AfterCastActDelay: 1000
+    Cooldown: 6000
+    FixedCastTime: 2000
     Requires:
       SpCost:
         - Level: 1
@@ -34361,7 +34378,7 @@ Body:
     CastCancel: true
     AfterCastActDelay: 1000
     Cooldown: 6000
-    FixedCastTime: 1000
+    FixedCastTime: 2000
     Requires:
       SpCost:
         - Level: 1
@@ -34396,7 +34413,12 @@ Body:
     Range: 9
     Hit: Single
     HitCount: 1
+    Element: Wind
     CastCancel: true
+    AfterCastActDelay: 500
+    Duration1: 3000
+    Cooldown: 5000
+    FixedCastTime: 2000
     Requires:
       SpCost:
         - Level: 1
@@ -34409,6 +34431,24 @@ Body:
           Amount: 75
         - Level: 5
           Amount: 85
+    Unit:
+      Id: Tornado_Storm
+      Range:
+        - Level: 1
+          Size: 2
+        - Level: 2
+          Size: 2
+        - Level: 3
+          Size: 3
+        - Level: 4
+          Size: 3
+        - Level: 5
+          Size: 4
+      Interval: 300
+      Target: Enemy
+      Flag:
+        NoOverlap: true
+        PathCheck: true
   - Id: 5228
     Name: AG_TWOHANDSTAFF
     Description: Two Hand Staff Mastery
@@ -34544,9 +34584,15 @@ Body:
     MaxLevel: 5
     Type: Magic
     TargetType: Self
+    DamageFlags:
+      NoDamage: true
     Hit: Single
     HitCount: 1
     CastCancel: true
+    AfterCastActDelay: 500
+    Duration1: 300000
+    Cooldown: 300000
+    FixedCastTime: 4000
     Requires:
       SpCost: 60
   - Id: 5233
@@ -34587,7 +34633,13 @@ Body:
     Range: 9
     Hit: Single
     HitCount: 1
+    Element: Wind
+    SplashArea: 1
+    ActiveInstance: 14
     CastCancel: true
+    AfterCastActDelay: 1000
+    Cooldown: 4000
+    FixedCastTime: 2000
     Requires:
       SpCost:
         - Level: 1
@@ -34609,7 +34661,13 @@ Body:
     Range: 9
     Hit: Single
     HitCount: 1
+    Element: Fire
+    SplashArea: 1
+    ActiveInstance: 14
     CastCancel: true
+    AfterCastActDelay: 1000
+    Cooldown: 4000
+    FixedCastTime: 2000
     Requires:
       SpCost:
         - Level: 1
@@ -34629,8 +34687,9 @@ Body:
     Type: Magic
     TargetType: Attack
     Range: 9
-    Hit: Single
-    HitCount: 1
+    Hit: Multi_Hit
+    HitCount: -2
+    Element: Fire
     Requires:
       SpCost: 1
   - Id: 5237
@@ -34658,7 +34717,7 @@ Body:
     CastCancel: true
     AfterCastActDelay: 1000
     Cooldown: 4000
-    FixedCastTime: 1000
+    FixedCastTime: 2000
     Requires:
       SpCost:
         - Level: 1

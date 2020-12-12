@@ -3697,6 +3697,10 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 		case DK_HACKANDSLASHER_ATK:
 			dmg.dmotion = clif_skill_damage(dsrc, bl, tick, dmg.amotion, dmg.dmotion, damage, dmg.div_, skill_id, -1, dmg_type);
 			break;
+		case AG_STORM_CANNON:
+		case AG_CRIMSON_ARROW:
+			dmg.dmotion = clif_skill_damage(dsrc, bl, tick, dmg.amotion, dmg.dmotion, damage, dmg.div_, skill_id, skill_lv, DMG_SPLASH);
+			break;
 		case AB_DUPLELIGHT_MELEE:
 		case AB_DUPLELIGHT_MAGIC:
 			dmg.amotion = 300;/* makes the damage value not overlap with previous damage (when displayed by the client) */
@@ -4985,7 +4989,11 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case NPC_FIREBREATH:
 	case NPC_ICEBREATH:
 	case NPC_THUNDERBREATH:
+	case AG_STORM_CANNON:
+	case AG_CRIMSON_ARROW:
 		skill_area_temp[1] = bl->id;
+		if (skill_id == AG_STORM_CANNON || skill_id == AG_CRIMSON_ARROW)
+			clif_skill_nodamage(src, bl, skill_id, skill_lv, tick);
 		if (battle_config.skill_eightpath_algorithm) {
 			//Use official AoE algorithm
 			if (!(map_foreachindir(skill_attack_area, src->m, src->x, src->y, bl->x, bl->y,
@@ -5001,6 +5009,8 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 		}
 		if (skill_id == SN_SHARPSHOOTING)
 			status_change_end(src, SC_CAMOUFLAGE, INVALID_TIMER);
+		if (skill_id == AG_CRIMSON_ARROW)
+			skill_attack(skill_get_type(AG_CRIMSON_ARROW_ATK), src, src, bl, AG_CRIMSON_ARROW_ATK, skill_lv, tick, flag|SD_LEVEL|SD_ANIMATION);
 		break;
 
 	case MO_INVESTIGATE:
@@ -5208,6 +5218,7 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case DK_SERVANT_W_PHANTOM:
 	case DK_SERVANT_W_DEMOL:
 	case DK_MADNESS_CRUSHER:
+	case AG_DESTRUCTIVE_HURRICANE:
 	case AG_SOUL_VC_STRIKE:
 	case AG_CRYSTAL_IMPACT:
 	case AG_CRYSTAL_IMPACT_ATK:
@@ -7188,6 +7199,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case SJ_BOOKOFDIMENSION:
 	case DK_CHARGINGPIERCE:
 	case DK_VIGOR:
+	case AG_CLIMAX:
 		clif_skill_nodamage(src,bl,skill_id,skill_lv,
 			sc_start(src,bl,type,100,skill_lv,skill_get_time(skill_id,skill_lv)));
 		break;
@@ -7655,6 +7667,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case SJ_STAREMPEROR:
 	case SJ_FALLINGSTAR_ATK:
 	case DK_SERVANT_W_DEMOL:
+	case AG_DESTRUCTIVE_HURRICANE:
 	case AG_CRYSTAL_IMPACT:
 	case AG_FROZEN_SLASH:
 	{
@@ -12589,6 +12602,7 @@ int skill_castend_pos2(struct block_list* src, int x, int y, uint16 skill_id, ui
 	case AG_RAIN_OF_CRYSTAL:
 	case AG_MYSTERY_ILLUSION:
 	case AG_STRANTUM_TREMOR:
+	case AG_TORNADO_STORM:
 	case AG_FLORAL_FLARE_ROAD:
 		flag|=1;//Set flag to 1 to prevent deleting ammo (it will be deleted on group-delete).
 	case GS_GROUNDDRIFT: //Ammo should be deleted right away.
@@ -12714,8 +12728,8 @@ int skill_castend_pos2(struct block_list* src, int x, int y, uint16 skill_id, ui
 		// One final attack the size of the flower garden is dealt after
 		// all rose buds explode if Climax level 5 is active.
 		// Note: Disabled until Climax is coded in.
-		// if (skill_id == AG_ALL_BLOOM)
-		//	skill_unitsetting(src, AG_ALL_BLOOM_ATK2, skill_lv, x, y, flag + i*skill_get_unit_interval(skill_id));
+		 if (skill_id == AG_ALL_BLOOM && sc && sc->data[SC_CLIMAX] && sc->data[SC_CLIMAX]->val1 == 5)
+			skill_unitsetting(src, AG_ALL_BLOOM_ATK2, skill_lv, x, y, flag + i*skill_get_unit_interval(skill_id));
 	}
 	break;
 
@@ -14500,6 +14514,7 @@ int skill_unit_onplace_timer(struct skill_unit *unit, struct block_list *bl, t_t
 		case UNT_RAIN_OF_CRYSTAL:
 		case UNT_MYSTERY_ILLUSION:
 		case UNT_STRANTUM_TREMOR:
+		case UNT_TORNADO_STORM:
 		case UNT_FLORAL_FLARE_ROAD:
 			skill_attack(skill_get_type(sg->skill_id),ss,&unit->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
 			break;
