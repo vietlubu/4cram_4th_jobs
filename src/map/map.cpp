@@ -120,7 +120,7 @@ static struct block_list *bl_list[BL_LIST_MAX];
 static int bl_list_count = 0;
 
 #ifndef MAP_MAX_MSG
-	#define MAP_MAX_MSG 2020
+	#define MAP_MAX_MSG 2030
 #endif
 
 struct map_data map[MAX_MAP_PER_SERVER];

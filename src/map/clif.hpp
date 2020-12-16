@@ -734,6 +734,8 @@ void clif_getareachar_skillunit(struct block_list *bl, struct skill_unit *unit, 
 void clif_skill_delunit(struct skill_unit *unit);
 void clif_skillunit_update(struct block_list* bl);
 
+void clif_skill_unit_test(struct block_list *bl, short x, short y, int unit_id, short range, short skill_lv);
+
 void clif_autospell(struct map_session_data *sd,uint16 skill_lv);
 void clif_devotion(struct block_list *src, struct map_session_data *tsd);
 void clif_spiritball(struct block_list *bl);

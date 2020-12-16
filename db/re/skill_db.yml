@@ -119,7 +119,7 @@
 #       - Item                Item name.
 #         Amount              Item amount.
 #     Equipment:              Equipped item required to cast. (Default: nullptr)
-#   GiveAP:                   Amount of AP to give on successful casting. (Default: 0)
+#   GiveAp:                   AP given on successful casting. (Default: 0)
 #     - Level                 Skill level.
 #       Amount                AP amount given at specific skill level.
 #   Unit:                     Skill unit values. (Optional)
@@ -33545,6 +33545,17 @@ Body:
           Amount: 60
         - Level: 5
           Amount: 70
+    GiveAp:
+      - Level: 1
+        Amount: 6
+      - Level: 2
+        Amount: 12
+      - Level: 3
+        Amount: 18
+      - Level: 4
+        Amount: 24
+      - Level: 5
+        Amount: 30
   - Id: 5202
     Name: DK_SERVANTWEAPON_ATK
     Description: Servant Weapon Attack
@@ -33599,7 +33610,10 @@ Body:
     Element: Weapon
     SplashArea: 2
     CastCancel: true
+    AfterCastActDelay: 800
     Duration1: 20000
+    Cooldown: 2000
+    FixedCastTime: 500
     Requires:
       SpCost: 40
       SpiritSphereCost: 5
@@ -33617,6 +33631,8 @@ Body:
     Element: Weapon
     SplashArea: 6
     CastCancel: true
+    AfterCastActDelay: 800
+    Cooldown: 3000
     Requires:
       SpCost:
         - Level: 1
@@ -33630,6 +33646,7 @@ Body:
         - Level: 5
           Amount: 50
       SpiritSphereCost: 5
+    GiveAp: 3
   - Id: 5206
     Name: DK_CHARGINGPIERCE
     Description: Charging Pierce
@@ -33640,6 +33657,7 @@ Body:
     Hit: Single
     HitCount: 1
     CastCancel: true
+    AfterCastActDelay: 500
     Duration1:
       - Level: 1
         Time: 90000
@@ -33662,6 +33680,7 @@ Body:
       - Level: 10
         Time: 180000
     Duration2: 5000
+    Cooldown: 60000
     Requires:
       SpCost:
         - Level: 1
@@ -33684,6 +33703,10 @@ Body:
           Amount: 65
         - Level: 10
           Amount: 70
+      Weapon:
+        2hSword: true
+        1hSpear: true
+        2hSpear: true
   - Id: 5207
     Name: DK_TWOHANDDEF
     Description: Two Hand Def
@@ -33699,6 +33722,7 @@ Body:
     HitCount: 1
     Element: Weapon
     CastCancel: true
+    AfterCastActDelay: 800
     Requires:
       SpCost:
         - Level: 1
@@ -33721,6 +33745,9 @@ Body:
           Amount: 66
         - Level: 10
           Amount: 70
+      Weapon:
+        2hSword: true
+        2hSpear: true
   - Id: 5209
     Name: DK_HACKANDSLASHER_ATK
     Description: Hack And Slasher Attack
@@ -33767,7 +33794,12 @@ Body:
     HitCount: 1
     Element: Weapon
     CastCancel: true
+    AfterCastActDelay: 1000
     Duration1: 300000
+    Cooldown: 60000
+    Requires:
+      SpCost: 100
+      ApCost: 150
   - Id: 5211
     Name: DK_MADNESS_CRUSHER
     Description: Madness Crusher
@@ -33792,6 +33824,9 @@ Body:
       - Level: 5
         Area: 3
     CastCancel: true
+    AfterCastActDelay: 500
+    Cooldown: 2000
+    FixedCastTime: 500
     Requires:
       SpCost:
         - Level: 1
@@ -33804,6 +33839,10 @@ Body:
           Amount: 46
         - Level: 5
           Amount: 50
+      Weapon:
+        2hSword: true
+        2hSpear: true
+    GiveAp: 2
   - Id: 5212
     Name: DK_VIGOR
     Description: Vigor
@@ -33835,8 +33874,10 @@ Body:
         Time: 270000
       - Level: 10
         Time: 300000
+    Cooldown: 60000
     Requires:
       SpCost: 100
+      ApCost: 150
   - Id: 5213
     Name: DK_STORMSLASH
     Description: Storm Slash
@@ -33860,6 +33901,8 @@ Body:
         Count: 5
     Element: Weapon
     CastCancel: true
+    AfterCastActDelay: 800
+    Cooldown: 1000
     Requires:
       SpCost:
         - Level: 1
@@ -33872,6 +33915,10 @@ Body:
           Amount: 45
         - Level: 5
           Amount: 50
+      Weapon:
+        2hSword: true
+        2hAxe: true
+    GiveAp: 1
   - Id: 5214
     Name: AG_DEADLY_PROJECTION
     Description: Deadly Projection
@@ -34539,6 +34586,7 @@ Body:
     FixedCastTime: 1000
     Requires:
       SpCost: 150
+      ApCost: 150
     Unit:
       Id: Astral_Strike
       Range:
@@ -34595,6 +34643,7 @@ Body:
     FixedCastTime: 4000
     Requires:
       SpCost: 60
+      ApCost: 200
   - Id: 5233
     Name: AG_ROCK_DOWN
     Description: Rock Down
@@ -34624,6 +34673,7 @@ Body:
           Amount: 80
         - Level: 5
           Amount: 85
+    GiveAp: 4
   - Id: 5234
     Name: AG_STORM_CANNON
     Description: Storm Cannon
@@ -34652,6 +34702,7 @@ Body:
           Amount: 90
         - Level: 5
           Amount: 100
+    GiveAp: 4
   - Id: 5235
     Name: AG_CRIMSON_ARROW
     Description: Crimson Arrow
@@ -34680,6 +34731,7 @@ Body:
           Amount: 95
         - Level: 5
           Amount: 105
+    GiveAp: 4
   - Id: 5236
     Name: AG_CRIMSON_ARROW_ATK
     Description: Crimson Arrow Attack
@@ -34730,6 +34782,7 @@ Body:
           Amount: 75
         - Level: 5
           Amount: 85
+    GiveAp: 4
   - Id: 5238
     Name: IQ_POWERFUL_FAITH
     Description: Powerful Faith
@@ -35005,6 +35058,22 @@ Body:
   - Id: 5306
     Name: AG_DESTRUCTIVE_HURRICANE_CLIMAX
     Description: Destructive Hurricane Climax
+    MaxLevel: 5
+  - Id: 5307
+    Name: BO_ACIDIFIED_ZONE_WATER_ATK
+    Description: Actified Zone Water Attack
+    MaxLevel: 5
+  - Id: 5308
+    Name: BO_ACIDIFIED_ZONE_GROUND_ATK
+    Description: Actified Zone Ground Attack
+    MaxLevel: 5
+  - Id: 5309
+    Name: BO_ACIDIFIED_ZONE_WIND_ATK
+    Description: Actified Zone Wind Attack
+    MaxLevel: 5
+  - Id: 5310
+    Name: BO_ACIDIFIED_ZONE_FIRE_ATK
+    Description: Actified Zone Fire Attack
     MaxLevel: 5
   - Id: 5311
     Name: ABC_DAGGER_AND_BOW_M

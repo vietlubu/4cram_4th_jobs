@@ -6108,8 +6108,6 @@ ACMD_FUNC(displayskill)
 *------------------------------------------*/
 ACMD_FUNC(displayskillcast)
 {
-	struct status_data * status;
-	t_tick tick;
 	uint16 skill_id;
 	uint16 skill_lv = 1;
 	uint16 cast_time = 5000;
@@ -6121,13 +6119,34 @@ ACMD_FUNC(displayskillcast)
 		clif_displaymessage(fd, msg_txt(sd, 2018));// Usage: @displayskillcast <skill ID> {<skill level> <ground target flag> <cast time>}
 		return -1;
 	}
-	status = status_get_status_data(&sd->bl);
-	tick = gettick();
 
 	if ( target_type == 1)
 		clif_skillcasting(&sd->bl, sd->bl.id, 0, sd->bl.x, sd->bl.y, skill_id, skill_lv, 0, cast_time);
 	else
 		clif_skillcasting(&sd->bl, sd->bl.id, sd->bl.id, 0, 0, skill_id, skill_lv, 0, cast_time);
+
+	return 0;
+}
+
+/*==========================================
+* @displayskillunit by [Rytech]
+* Debug command to view unit animations for skills.
+*------------------------------------------*/
+ACMD_FUNC(displayskillunit)
+{
+	uint16 unit_id;
+	uint16 range = 0;
+	uint16 skill_lv = 1;
+
+	nullpo_retr(-1, sd);
+
+	if (!message || !*message || sscanf(message, "%6hu %6hu %6hu", &unit_id, &skill_lv, &range) < 1)
+	{
+		clif_displaymessage(fd, msg_txt(sd, 2020));// Usage: @displayskillunit <unit ID> {<skill level> <range>}
+		return -1;
+	}
+
+	clif_skill_unit_test(&sd->bl, sd->bl.x, sd->bl.y, unit_id, range, skill_lv);
 
 	return 0;
 }
@@ -10722,6 +10741,7 @@ void atcommand_basecommands(void) {
 		ACMD_DEF(useskill),
 		ACMD_DEF(displayskill),
 		ACMD_DEF(displayskillcast),
+		ACMD_DEF(displayskillunit),
 		ACMD_DEF(snow),
 		ACMD_DEF(sakura),
 		ACMD_DEF(clouds),
