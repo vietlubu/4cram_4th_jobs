@@ -2105,6 +2105,18 @@ int skill_additional_effect(struct block_list* src, struct block_list *bl, uint1
 	case AG_CRYSTAL_IMPACT:// Targets hit are dealt aftershock damage.
 		skill_castend_damage_id(src, bl, AG_CRYSTAL_IMPACT_ATK, skill_lv, tick, 0);
 		break;
+	case WH_DEEPBLINDTRAP:// Need official success chances for all 4 Windhawk traps.
+		sc_start(src, bl, SC_HANDICAPSTATE_DEEPBLIND, 50, skill_lv, skill_get_time2(skill_id, skill_lv));
+		break;
+	case WH_SOLIDTRAP:
+		sc_start(src, bl, SC_HANDICAPSTATE_CRYSTALLIZATION, 50, skill_lv, skill_get_time2(skill_id, skill_lv));
+		break;
+	case WH_SWIFTTRAP:
+		sc_start(src, bl, SC_HANDICAPSTATE_LIGHTNINGSTRIKE, 50, skill_lv, skill_get_time2(skill_id, skill_lv));
+		break;
+	case WH_FLAMETRAP:
+		sc_start(src, bl, SC_HANDICAPSTATE_CONFLAGRATION, 50, skill_lv, skill_get_time2(skill_id, skill_lv));
+		break;
 	} //end switch skill_id
 
 	if (md && battle_config.summons_trigger_autospells && md->master_id && md->special_state.ai)
@@ -12076,7 +12088,8 @@ TIMER_FUNC(skill_castend_id){
 		{
 			if( !skill_check_condition_castend(sd, ud->skill_id, ud->skill_lv) )
 				break;
-			else {
+			else
+			{
 				skill_consume_requirement(sd,ud->skill_id,ud->skill_lv,1);
 				if (skill_get_giveap(ud->skill_id, ud->skill_lv))// Give AP
 					status_heal(&sd->bl, 0, 0, skill_get_giveap(ud->skill_id, ud->skill_lv), 0);
@@ -12301,9 +12314,22 @@ TIMER_FUNC(skill_castend_pos){
 				break;
 			else
 			{
+				short add_ap;
 				skill_consume_requirement(sd, ud->skill_id, ud->skill_lv, 1);
-				if (skill_get_giveap(ud->skill_id, ud->skill_lv))// Give AP
-					status_heal(&sd->bl, 0, 0, skill_get_giveap(ud->skill_id, ud->skill_lv), 0);
+				if (add_ap = skill_get_giveap(ud->skill_id, ud->skill_lv))// Give AP
+				{
+					switch (ud->skill_id)
+					{
+						case WH_DEEPBLINDTRAP:
+						case WH_SOLIDTRAP:
+						case WH_SWIFTTRAP:
+						case WH_FLAMETRAP:
+							if (pc_checkskill(sd, WH_ADVANCED_TRAP) >= 3)
+								add_ap += 1;
+							break;
+					}
+					status_heal(&sd->bl, 0, 0, add_ap, 0);
+				}
 			}
 		}
 
@@ -12604,6 +12630,10 @@ int skill_castend_pos2(struct block_list* src, int x, int y, uint16 skill_id, ui
 	case AG_STRANTUM_TREMOR:
 	case AG_TORNADO_STORM:
 	case AG_FLORAL_FLARE_ROAD:
+	case WH_DEEPBLINDTRAP:
+	case WH_SOLIDTRAP:
+	case WH_SWIFTTRAP:
+	case WH_FLAMETRAP:
 		flag|=1;//Set flag to 1 to prevent deleting ammo (it will be deleted on group-delete).
 	case GS_GROUNDDRIFT: //Ammo should be deleted right away.
 	case GN_WALLOFTHORN:
@@ -13899,6 +13929,12 @@ struct skill_unit_group *skill_unitsetting(struct block_list *src, uint16 skill_
 		if (!map_flag_vs(src->m))
 			target = BCT_ENEMY;
 		break;
+	case WH_DEEPBLINDTRAP:
+	case WH_SOLIDTRAP:
+	case WH_SWIFTTRAP:
+	case WH_FLAMETRAP:
+		limit += 3000 * (sd ? pc_checkskill(sd, WH_ADVANCED_TRAP) : 5);
+		break;
 	}
 
 	// Init skill unit group
@@ -14516,6 +14552,10 @@ int skill_unit_onplace_timer(struct skill_unit *unit, struct block_list *bl, t_t
 		case UNT_STRANTUM_TREMOR:
 		case UNT_TORNADO_STORM:
 		case UNT_FLORAL_FLARE_ROAD:
+		case UNT_DEEPBLINDTRAP:
+		case UNT_SOLIDTRAP:
+		case UNT_SWIFTTRAP:
+		case UNT_FLAMETRAP:
 			skill_attack(skill_get_type(sg->skill_id),ss,&unit->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
 			break;
 

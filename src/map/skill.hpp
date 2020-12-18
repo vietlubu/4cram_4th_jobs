@@ -2502,6 +2502,11 @@ enum e_skill_unit_id : uint16 {
 	UNT_VENOM_SWAMP,
 	UNT_CONFLAGRATION,
 
+	UNT_DEEPBLINDTRAP = 20852,
+	UNT_SOLIDTRAP,
+	UNT_SWIFTTRAP,
+	UNT_FLAMETRAP,
+
 	/**
 	 * Guild Auras
 	 **/
