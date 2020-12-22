@@ -2903,6 +2903,8 @@ short skill_blown(struct block_list* src, struct block_list* target, char count,
 			status_change_end(target, SC_SU_STOOP, INVALID_TIMER);
 		if (tsc->data[SC_ROLLINGCUTTER])
 			status_change_end(target, SC_ROLLINGCUTTER, INVALID_TIMER);
+		if (tsc->data[SC_CRESCIVEBOLT])
+			status_change_end(target, SC_CRESCIVEBOLT, INVALID_TIMER);
 		if (tsc->data[SC_SV_ROOTTWIST]) // Shouldn't move.
 			return 0;
 	}
@@ -3844,6 +3846,12 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 			battle_drain(sd, bl, dmg.damage, dmg.damage, tstatus->race, tstatus->class_);
 		else
 			battle_drain(sd, bl, dmg.damage, dmg.damage2, tstatus->race, tstatus->class_);
+	}
+
+	if (sd && tsc)
+	{
+		if (skill_get_range2(src, skill_id, skill_lv, true) > 3 && tsc->data[SC_WINDSIGN] && rand() % 100 < tsc->data[SC_WINDSIGN]->val2)
+			status_heal(src, 0, 0, 1, 0);
 	}
 
 	if( damage > 0 ) { // Post-damage effects
@@ -4922,6 +4930,22 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 			sc_start(src, src, SC_DRAGONIC_AURA, 100, skill_lv, skill_get_time(skill_id,skill_lv));
 		break;
 
+	case WH_CRESCIVE_BOLT:
+		clif_skill_nodamage(src, bl, skill_id, skill_lv, tick);
+		skill_attack(BF_WEAPON, src, src, bl, skill_id, skill_lv, tick, flag);
+		if (sc && sc->data[SC_CRESCIVEBOLT])
+		{
+			short count = 1 + sc->data[SC_CRESCIVEBOLT]->val1;
+
+			if (count > 3)
+				count = 3;
+
+			sc_start(src, src, SC_CRESCIVEBOLT, 100, count, skill_get_time(skill_id, skill_lv));
+		}
+		else
+			sc_start(src, src, SC_CRESCIVEBOLT, 100, 1, skill_get_time(skill_id, skill_lv));
+		break;
+
 	case MO_TRIPLEATTACK:
 		skill_attack(BF_WEAPON,src,src,bl,skill_id,skill_lv,tick,flag|SD_ANIMATION);
 		break;
@@ -5236,6 +5260,7 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case AG_CRYSTAL_IMPACT_ATK:
 	case AG_ROCK_DOWN:
 	case AG_FROZEN_SLASH:
+	case WH_GALESTORM:
 	case ABC_FROM_THE_ABYSS_ATK:
 		if( flag&1 ) {//Recursive invocation
 			int sflag = skill_area_temp[0] & 0xFFF;
@@ -5323,6 +5348,10 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 					break;
 				case AG_ROCK_DOWN:
 					clif_skill_nodamage(src, bl, skill_id, skill_lv, tick);
+					break;
+				case WH_GALESTORM:// Give AP if 3 or more targets are hit.
+					if (sd && map_foreachinallrange(skill_area_sub, bl, skill_get_splash(skill_id, skill_lv), BL_CHAR, src, skill_id, skill_lv, tick, BCT_ENEMY, skill_area_sub_count) >= 3)
+						status_heal(src, 0, 0, 10, 0);
 					break;
 			}
 
@@ -7212,6 +7241,8 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case DK_CHARGINGPIERCE:
 	case DK_VIGOR:
 	case AG_CLIMAX:
+	case WH_WIND_SIGN:
+	case WH_CALAMITYGALE:
 		clif_skill_nodamage(src,bl,skill_id,skill_lv,
 			sc_start(src,bl,type,100,skill_lv,skill_get_time(skill_id,skill_lv)));
 		break;
@@ -17228,6 +17259,8 @@ struct s_skill_condition skill_get_requirement(struct map_session_data* sd, uint
 #endif
 		if (sc->data[SC_GLOOMYDAY])
 			req.sp += req.sp * (skill_lv * 10) / 100;
+		if (sc->data[SC_CRESCIVEBOLT])
+			req.sp += req.sp * (20 * sc->data[SC_CRESCIVEBOLT]->val1) / 100;
 	}
 
 	req.ap = skill->require.ap[skill_lv - 1];

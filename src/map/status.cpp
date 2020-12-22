@@ -1125,10 +1125,13 @@ void initChangeTables(void)
 	set_sc_with_vfx( AG_CLIMAX           , SC_CLIMAX           , EFST_CLIMAX           , SCB_NONE);
 
 	// Windhawk
-	set_sc_with_vfx(WH_DEEPBLINDTRAP, SC_HANDICAPSTATE_DEEPBLIND      , EFST_HANDICAPSTATE_DEEPBLIND      , SCB_NONE);
-	set_sc_with_vfx(WH_SOLIDTRAP    , SC_HANDICAPSTATE_CRYSTALLIZATION, EFST_HANDICAPSTATE_CRYSTALLIZATION, SCB_NONE);
-	set_sc_with_vfx(WH_SWIFTTRAP    , SC_HANDICAPSTATE_LIGHTNINGSTRIKE, EFST_HANDICAPSTATE_LIGHTNINGSTRIKE, SCB_NONE);
-	set_sc_with_vfx(WH_FLAMETRAP    , SC_HANDICAPSTATE_CONFLAGRATION  , EFST_HANDICAPSTATE_CONFLAGRATION  , SCB_NONE);
+	set_sc_with_vfx( WH_WIND_SIGN    , SC_WINDSIGN                     , EFST_WINDSIGN                     , SCB_NONE);
+	set_sc_with_vfx( WH_CALAMITYGALE , SC_CALAMITYGALE                 , EFST_CALAMITYGALE                 , SCB_NONE);
+	set_sc ( WH_CRESCIVE_BOLT        , SC_CRESCIVEBOLT                 , EFST_CRESCIVEBOLT                 , SCB_NONE);
+	set_sc_with_vfx( WH_DEEPBLINDTRAP, SC_HANDICAPSTATE_DEEPBLIND      , EFST_HANDICAPSTATE_DEEPBLIND      , SCB_NONE);
+	set_sc_with_vfx( WH_SOLIDTRAP    , SC_HANDICAPSTATE_CRYSTALLIZATION, EFST_HANDICAPSTATE_CRYSTALLIZATION, SCB_NONE);
+	set_sc_with_vfx( WH_SWIFTTRAP    , SC_HANDICAPSTATE_LIGHTNINGSTRIKE, EFST_HANDICAPSTATE_LIGHTNINGSTRIKE, SCB_NONE);
+	set_sc_with_vfx( WH_FLAMETRAP    , SC_HANDICAPSTATE_CONFLAGRATION  , EFST_HANDICAPSTATE_CONFLAGRATION  , SCB_NONE);
 
 	// Abyss Chaser
 	set_sc(ABC_FROM_THE_ABYSS, SC_ABYSSFORCEWEAPON, EFST_ABYSSFORCEWEAPON, SCB_NONE);
@@ -1703,6 +1706,8 @@ void initChangeTables(void)
 	StatusDisplayType[SC_VIGOR] = BL_PC;
 	StatusDisplayType[SC_DEADLY_DEFEASANCE] = BL_PC;
 	StatusDisplayType[SC_CLIMAX] = BL_PC;
+	StatusDisplayType[SC_WINDSIGN] = BL_PC;
+	StatusDisplayType[SC_CALAMITYGALE] = BL_PC;
 
 	/* StatusChangeState (SCS_) NOMOVE */
 	StatusChangeStateTable[SC_ANKLE]				|= SCS_NOMOVE;
@@ -12918,6 +12923,14 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			if (tick_time < 500)
 				tick_time = 500;// Avoid being brought down to 0.
 			val4 = tick - tick_time;// Remaining Time
+			break;
+		case SC_WINDSIGN:
+			val2 = 8 + 6 * val1;// Chance to gain AP on attack.
+			if (val1 = 5)// Its 40% on level 5.
+				val2 += 2;
+			break;
+		case SC_CALAMITYGALE:// Unlimit runs along with this.
+			sc_start(bl, bl, SC_UNLIMIT, 100, 5, skill_get_time(RA_UNLIMIT, 5));
 			break;
 
 		default:

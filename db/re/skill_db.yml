@@ -35189,6 +35189,18 @@ Body:
     Hit: Single
     HitCount: 1
     CastCancel: true
+    Duration1:
+      - Level: 1
+        Time: 20000
+      - Level: 2
+        Time: 30000
+      - Level: 3
+        Time: 40000
+      - Level: 4
+        Time: 50000
+      - Level: 5
+        Time: 60000
+    Cooldown: 30000
     Requires:
       SpCost:
         - Level: 1
@@ -35211,10 +35223,13 @@ Body:
     MaxLevel: 5
     Type: Weapon
     TargetType: Attack
+    DamageFlags:
+      Critical: true
     Range: 9
     Hit: Single
     HitCount: 1
     CastCancel: true
+    AfterCastActDelay: 200
     Requires:
       SpCost:
         - Level: 1
@@ -35227,6 +35242,8 @@ Body:
           Amount: 52
         - Level: 5
           Amount: 56
+      Weapon:
+        Bow: true
       State: Falcon
   - Id: 5327
     Name: WH_HAWK_M
@@ -35250,20 +35267,33 @@ Body:
     Hit: Single
     HitCount: 1
     CastCancel: true
+    AfterCastActDelay: 200
+    Duration1: 60000
+    Cooldown: 300000
+    FixedCastTime: 1000
     Requires:
       SpCost: 300
+      ApCost: 200
   - Id: 5329
     Name: WH_HAWKBOOMERANG
     Description: Hawk Boomerang
     MaxLevel: 5
     Type: Weapon
     TargetType: Attack
+    DamageFlags:
+      Critical: true
     Range: 9
     Hit: Single
     HitCount: 1
     CastCancel: true
+    CastTime: 800
+    AfterCastActDelay: 200
+    Cooldown: 30000
+    FixedCastTime: 200
     Requires:
       SpCost: 120
+      Weapon:
+        Bow: true
       State: Falcon
   - Id: 5330
     Name: WH_GALESTORM
@@ -35273,9 +35303,10 @@ Body:
     TargetType: Attack
     DamageFlags:
       Splash: true
+      Critical: true
     Range: 9
-    Hit: Single
-    HitCount: 1
+    Hit: Multi_Hit
+    HitCount: -5
     Element: Weapon
     SplashArea:
       - Level: 1
@@ -35299,6 +35330,10 @@ Body:
       - Level: 10
         Area: 5
     CastCancel: true
+    CastTime: 3500
+    AfterCastActDelay: 200
+    Cooldown: 2000
+    FixedCastTime: 500
     Requires:
       SpCost:
         - Level: 1
@@ -35371,7 +35406,7 @@ Body:
     Unit:
       Id: Deepblindtrap
       Range: 1
-      Interval: 1000
+      Interval: 3000
       Target: Enemy
       Flag:
         NoOverlap: true
@@ -35421,7 +35456,7 @@ Body:
     Unit:
       Id: Solidtrap
       Range: 1
-      Interval: 1000
+      Interval: 3000
       Target: Enemy
       Flag:
         NoOverlap: true
@@ -35471,7 +35506,7 @@ Body:
     Unit:
       Id: Swifttrap
       Range: 1
-      Interval: 1000
+      Interval: 3000
       Target: Enemy
       Flag:
         NoOverlap: true
@@ -35482,11 +35517,17 @@ Body:
     MaxLevel: 10
     Type: Weapon
     TargetType: Attack
+    DamageFlags:
+      Critical: true
     Range: 9
     Hit: Single
     HitCount: 1
     Element: Weapon
     CastCancel: true
+    CastTime: 800
+    AfterCastActDelay: 200
+    Duration1: 10000
+    FixedCastTime: 200
     Requires:
       SpCost:
         - Level: 1
@@ -35559,7 +35600,7 @@ Body:
     Unit:
       Id: Flametrap
       Range: 1
-      Interval: 1000
+      Interval: 3000
       Target: Enemy
       Flag:
         NoOverlap: true

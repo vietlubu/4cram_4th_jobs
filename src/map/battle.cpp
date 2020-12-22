@@ -2639,6 +2639,9 @@ static bool is_attack_critical(struct Damage* wd, struct block_list *src, struct
 			case GC_CROSSIMPACT:
 				cri /= 2;
 				break;
+			case WH_GALESTORM:
+				if (sc && !sc->data[SC_CALAMITYGALE])
+					return false;
 		}
 		if(tsd && tsd->bonus.critical_def)
 			cri = cri * ( 100 - tsd->bonus.critical_def ) / 100;
@@ -4841,6 +4844,39 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			RE_LVL_DMOD(100);
 			if (sc && sc->data[SC_GIANTGROWTH])
 				skillratio *= 2;
+			break;
+		case WH_HAWKRUSH:
+			skillratio += -100 + 100 * skill_lv + 5 * sstatus->con;
+			RE_LVL_DMOD(100);
+			break;
+		case WH_HAWKBOOMERANG:
+			skillratio += -100 + 500 * skill_lv + 5 * sstatus->con;
+			RE_LVL_DMOD(100);
+			if (tstatus->race == RC_BRUTE || tstatus->race == RC_FISH)
+				skillratio += 250 * skill_lv;
+			break;
+		case WH_GALESTORM:
+			skillratio += -100 + 250 * skill_lv + 5 * sstatus->con;
+			RE_LVL_DMOD(100);
+			if (sc && sc->data[SC_CALAMITYGALE] && (tstatus->race == RC_BRUTE || tstatus->race == RC_FISH))
+					skillratio += skillratio * 50 / 100;
+			break;
+		case WH_CRESCIVE_BOLT:
+			skillratio += -100 + 300 * skill_lv + 5 * sstatus->con;
+			RE_LVL_DMOD(100);
+			if (sc)
+			{// At level 10 the SP usage of 100 increased by 20 on each count. So maybe damage increase is 20%??? [Rytech]
+				if (sc->data[SC_CRESCIVEBOLT])
+					skillratio += skillratio * (20 * sc->data[SC_CRESCIVEBOLT]->val1) / 100;
+
+				if (sc->data[SC_CALAMITYGALE])
+				{
+					skillratio += skillratio * 20 / 100;
+
+					if (tstatus->race == RC_BRUTE || tstatus->race == RC_FISH)
+						skillratio += skillratio * 50 / 100;
+				}
+			}
 			break;
 		case WH_DEEPBLINDTRAP:
 		case WH_SOLIDTRAP:
@@ -8265,6 +8301,13 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 				status_change_end(target, SC_POISONREACT, INVALID_TIMER);
 		}
 	}
+
+	if (sd && tsc)
+	{
+		if (wd.flag&BF_LONG && tsc->data[SC_WINDSIGN] && rand()%100 < tsc->data[SC_WINDSIGN]->val2)
+			status_heal(src, 0, 0, 1, 0);
+	}
+
 	map_freeblock_unlock();
 	return wd.dmg_lv;
 }
