@@ -33808,7 +33808,7 @@ Body:
     TargetType: Attack
     DamageFlags:
       Splash: true
-    Range: 4
+    Range: 7
     Hit: Single
     HitCount: 1
     Element: Weapon
@@ -35226,10 +35226,9 @@ Body:
     DamageFlags:
       Critical: true
     Range: 9
-    Hit: Single
-    HitCount: 1
+    Hit: Multi_Hit
+    HitCount: -2
     CastCancel: true
-    AfterCastActDelay: 200
     Requires:
       SpCost:
         - Level: 1
@@ -35255,6 +35254,7 @@ Body:
     Hit: Single
     HitCount: 1
     CastCancel: true
+    AfterCastActDelay: 1000
     Requires:
       SpCost: 5
   - Id: 5328
@@ -35292,6 +35292,7 @@ Body:
     FixedCastTime: 200
     Requires:
       SpCost: 120
+      ApCost: 50
       Weapon:
         Bow: true
       State: Falcon

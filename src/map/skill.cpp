@@ -1320,16 +1320,39 @@ int skill_additional_effect(struct block_list* src, struct block_list *bl, uint1
 			{ // Normal attacks (no skill used)
 				if( attack_type&BF_SKILL )
 					break; // If a normal attack is a skill, it's splash damage. [Inkfish]
-				if(sd) {
+				if(sd)
+				{
 					// Automatic trigger of Blitz Beat
-					if (pc_isfalcon(sd) && sd->status.weapon == W_BOW && (skill=pc_checkskill(sd,HT_BLITZBEAT))>0 &&
-						rnd()%1000 <= sstatus->luk*10/3+1 ) {
-						rate=(sd->status.job_level+9)/10;
-						skill_castend_damage_id(src,bl,HT_BLITZBEAT,(skill<rate)?skill:rate,tick,SD_LEVEL);
+					if (pc_isfalcon(sd) && sd->status.weapon == W_BOW && (skill = pc_checkskill(sd, HT_BLITZBEAT))>0 && rnd()%1000 <= sstatus->luk * 10 / 3 + 1)
+					{
+						if ((sd->class_&MAPID_THIRDMASK) == MAPID_RANGER)
+							rate = 5;
+						else
+							rate = (sd->status.job_level + 9) / 10;
+
+						skill_castend_damage_id(src, bl, HT_BLITZBEAT, (skill<rate) ? skill : rate, tick, SD_LEVEL);
 					}
-					// Automatic trigger of Warg Strike [Jobbie]
-					if( pc_iswug(sd) && (skill = pc_checkskill(sd,RA_WUGSTRIKE)) > 0 && rnd()%1000 <= sstatus->luk*10/3+1 )
-						skill_castend_damage_id(src,bl,RA_WUGSTRIKE,skill,tick,0);
+					// Automatic trigger of Warg Strike
+					if (pc_iswug(sd) && (skill = pc_checkskill(sd, RA_WUGSTRIKE)) > 0)
+					{
+						rate = sstatus->luk * 10 / 3 + 1;
+
+						if (pc_isfalcon(sd))
+							rate = rate / 3;
+
+						if (rnd()%1000 <= rate)
+							skill_castend_damage_id(src, bl, RA_WUGSTRIKE, skill, tick, 0);
+					}
+					// Automatic trigger of Hawk Rush
+					if (pc_isfalcon(sd) && sd->status.weapon == W_BOW && (skill = pc_checkskill(sd, WH_HAWKRUSH)) > 0)
+					{
+						rate = sstatus->con * 10 / 3 + 1;
+
+						rate += rate * (20 * pc_checkskill(sd, WH_NATUREFRIENDLY)) / 100;
+
+						if (rnd()%1000 <= rate)
+							skill_castend_damage_id(src, bl, WH_HAWKRUSH, skill, tick, 0);
+					}
 					// Gank
 					if(dstmd && sd->status.weapon != W_BOW &&
 						(skill=pc_checkskill(sd,RG_SNATCHER)) > 0 &&
@@ -4924,6 +4947,8 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 
 	case DK_DRAGONIC_AURA:
 	case DK_STORMSLASH:
+	case WH_HAWKRUSH:
+	case WH_HAWKBOOMERANG:
 		clif_skill_nodamage(src, bl, skill_id, skill_lv, tick);
 		skill_attack(BF_WEAPON, src, src, bl, skill_id, skill_lv, tick, flag);
 		if (skill_id == DK_DRAGONIC_AURA)
@@ -10380,6 +10405,16 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 			else
 				pc_setoption(sd,sd->sc.option&~OPTION_WUG);
 			clif_skill_nodamage(src,bl,skill_id,skill_lv,1);
+		}
+		break;
+
+	case WH_HAWK_M:
+		if (sd) {
+			if (!pc_isfalcon(sd))
+				pc_setoption(sd, sd->sc.option | OPTION_FALCON);
+			else
+				pc_setoption(sd, sd->sc.option&~OPTION_FALCON);
+			clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
 		}
 		break;
 
@@ -16345,7 +16380,7 @@ bool skill_check_condition_castbegin(struct map_session_data* sd, uint16 skill_i
 			}
 			break;
 		case RA_WUGMASTERY:
-			if( (pc_isfalcon(sd) && !battle_config.warg_can_falcon) || pc_isridingwug(sd) || sd->sc.data[SC__GROOMY]) {
+			if( (pc_isfalcon(sd) && (!pc_checkskill(sd, WH_HAWK_M) && !battle_config.warg_can_falcon)) || pc_isridingwug(sd) || sd->sc.data[SC__GROOMY]) {
 				clif_skill_fail(sd,skill_id,USESKILL_FAIL_LEVEL,0);
 				return false;
 			}
@@ -16357,7 +16392,7 @@ bool skill_check_condition_castbegin(struct map_session_data* sd, uint16 skill_i
 			}
 			break;
 		case RA_WUGRIDER:
-			if( (pc_isfalcon(sd) && !battle_config.warg_can_falcon) || ( !pc_isridingwug(sd) && !pc_iswug(sd) ) ) {
+			if( (pc_isfalcon(sd) && (!pc_checkskill(sd, WH_HAWK_M) && !battle_config.warg_can_falcon)) || ( !pc_isridingwug(sd) && !pc_iswug(sd) ) ) {
 				clif_skill_fail(sd,skill_id,USESKILL_FAIL_LEVEL,0);
 				return false;
 			}

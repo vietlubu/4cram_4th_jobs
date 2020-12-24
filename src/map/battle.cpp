@@ -2297,7 +2297,6 @@ static int battle_range_type(struct block_list *src, struct block_list *target, 
 			return BF_SHORT;// Melee
 
 		case DK_HACKANDSLASHER_ATK:// 2 cell cast range but deals ranged damage.
-		case DK_MADNESS_CRUSHER:// 4 cell cast range but deals ranged damage.
 			return BF_LONG;// Ranged
 	}
 
@@ -4828,7 +4827,7 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			}
 			break;
 		case DK_DRAGONIC_AURA:
-			skillratio += 950 * skill_lv + 5 * sstatus->pow;
+			skillratio += 950 * skill_lv + 10 * sstatus->pow;
 			if (tstatus->race == RC_DEMIHUMAN || tstatus->race == RC_ANGEL)
 				skillratio += 450 * skill_lv;
 			RE_LVL_DMOD(100);
@@ -4849,8 +4848,8 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			skillratio += -100 + 100 * skill_lv + 5 * sstatus->con;
 			RE_LVL_DMOD(100);
 			break;
-		case WH_HAWKBOOMERANG:
-			skillratio += -100 + 500 * skill_lv + 5 * sstatus->con;
+		case WH_HAWKBOOMERANG:// Affected by trait stats??? CON for sure but the other one unknown. Likely POW. [Rytech]
+			skillratio += -100 + 500 * skill_lv + 10 * sstatus->pow + 10 * sstatus->con;
 			RE_LVL_DMOD(100);
 			if (tstatus->race == RC_BRUTE || tstatus->race == RC_FISH)
 				skillratio += 250 * skill_lv;
