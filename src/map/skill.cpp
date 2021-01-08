@@ -17575,14 +17575,10 @@ struct s_skill_condition skill_get_requirement(struct map_session_data* sd, uint
 			req.mhp = 0;
 		if (req_opt & SKILL_REQ_SPCOST)
 			req.sp = 0;
-		if (req_opt & SKILL_REQ_APCOST)
-			req.ap = 0;
 		if (req_opt & SKILL_REQ_HPRATECOST)
 			req.hp_rate = 0;
 		if (req_opt & SKILL_REQ_SPRATECOST)
 			req.sp_rate = 0;
-		if (req_opt & SKILL_REQ_APRATECOST)
-			req.ap_rate = 0;
 		if (req_opt & SKILL_REQ_ZENYCOST)
 			req.zeny = 0;
 		if (req_opt & SKILL_REQ_WEAPON)
@@ -17607,6 +17603,10 @@ struct s_skill_condition skill_get_requirement(struct map_session_data* sd, uint
 			req.eqItem.clear();
 			req.eqItem.shrink_to_fit();
 		}
+		if (req_opt & SKILL_REQ_APCOST)
+			req.ap = 0;
+		if (req_opt & SKILL_REQ_APRATECOST)
+			req.ap_rate = 0;
 	}
 
 	return req;

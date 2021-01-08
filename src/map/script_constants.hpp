@@ -7808,10 +7808,8 @@
 	/* skill require cost flags */
 	export_constant(SKILL_REQ_HPCOST);
 	export_constant(SKILL_REQ_SPCOST);
-	export_constant(SKILL_REQ_APCOST);
 	export_constant(SKILL_REQ_HPRATECOST);
 	export_constant(SKILL_REQ_SPRATECOST);
-	export_constant(SKILL_REQ_APRATECOST);
 	export_constant(SKILL_REQ_MAXHPTRIGGER);
 	export_constant(SKILL_REQ_ZENYCOST);
 	export_constant(SKILL_REQ_WEAPON);
@@ -7821,6 +7819,8 @@
 	export_constant(SKILL_REQ_SPIRITSPHERECOST);
 	export_constant(SKILL_REQ_ITEMCOST);
 	export_constant(SKILL_REQ_EQUIPMENT);
+	export_constant(SKILL_REQ_APCOST);
+	export_constant(SKILL_REQ_APRATECOST);
 
 	/* skill require state */
 	export_constant(ST_NONE);
