@@ -1,0 +1,11 @@
+Header:
+  Type: ITEM_DB
+  Version: 1
+
+Body:
+  - Id: 7940
+    AegisName: Special_Alloy_Trap
+    Name: Special Alloy Trap
+    Type: Etc
+    Buy: 300
+    Weight: 2

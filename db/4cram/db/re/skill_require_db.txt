@@ -1,0 +1,94 @@
+// Skill Requirements Database
+//
+// Structure of Database:
+// SkillID,HPCost,MaxHPTrigger,SPCost,HPRateCost,SPRateCost,ZenyCost,RequiredWeapons,RequiredAmmoTypes,RequiredAmmoAmount,RequiredState,RequiredStatuses,SpiritSphereCost,RequiredItemID1,RequiredItemAmount1,RequiredItemID2,RequiredItemAmount2,RequiredItemID3,RequiredItemAmount3,RequiredItemID4,RequiredItemAmount4,RequiredItemID5,RequiredItemAmount5,RequiredItemID6,RequiredItemAmount6,RequiredItemID7,RequiredItemAmount7,RequiredItemID8,RequiredItemAmount8,RequiredItemID9,RequiredItemAmount9,RequiredItemID10,RequiredItemAmount10,RequiredEquipment,APCost,APRateCost
+//
+// If HP/SP/APratecost is positive, it is a percent of your current life, otherwise it is a percent of your max life.
+//
+// Legend for 'RequiredState' field:
+//  none = Nothing special
+//  hidden = Requires on hidden status by using Hiding, Cloaking, or maybe Chasewalk
+//  riding = Requires to ride either a peco or a dragon
+//  falcon = Requires a Falcon
+//  cart = Requires a Pushcart (for renewal can replace this state by SC_PUSH_CART in 'RequiredStatuses' field)
+//  shield = Requires a 0,shield equipped
+//  recover_weight_rate = Requires to be less than 50% weight
+//  move_enable = Requires to be able to move
+//  water = Requires to be standing on a water cell
+//  dragon = Requires to ride a Dragon
+//  warg = Requires a Warg
+//  ridingwarg = Requires to ride a Warg
+//  mado = Requires to have an active mado
+//  elementalspirit = Requires to have an Elemental Spirit summoned.
+//  elementalspirit2 = Requires to have an Elemental Spirit summoned, and will be removed.
+//  peco = Requires riding a peco
+//
+// 'RequiredStatuses'
+//	Fill the value only with SC_STATUS (see db/const.txt for more details)
+//	Usage for multiple status requirements: SC_STATUS1:SC_STATUS2:SC_STATUS3
+//	Max. multiple value is 3 (skill.hpp: MAX_SKILL_STATUS_REQUIRE)
+//	Use any number or SC_ALL will disable status requirements
+// 'RequiredEquipment'
+//	Specified equipment to be equipped. For multiple values, use : as delimiter.
+//	Max. multiple value is 10 (skill.hpp: MAX_SKILL_EQUIP_REQUIRE)
+
+// Dragon Knight
+5201,0,0,30:40:50:60:70,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//DK_SERVANTWEAPON
+5202,0,0,1,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//DK_SERVANTWEAPON_ATK
+5203,0,0,15,0,0,0,99,0,0,none,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//DK_SERVANT_W_SIGN
+5204,0,0,40,0,0,0,99,0,0,none,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//DK_SERVANT_W_PHANTOM
+5205,0,0,30:35:40:45:50,0,0,0,99,0,0,none,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//DK_SERVANT_W_DEMOL
+5206,0,0,25:30:35:40:45:50:55:60:65:70,0,0,0,3:4:5,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//DK_CHARGINGPIERCE
+
+5208,0,0,34:38:42:46:50:54:58:62:66:70,0,0,0,3:5,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//DK_HACKANDSLASHER
+5209,0,0,1,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//DK_HACKANDSLASHER_ATK
+5210,0,0,100,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,150,0	//DK_DRAGONIC_AURA
+5211,0,0,34:38:42:46:50,0,0,0,3:5,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//DK_MADNESS_CRUSHER
+5212,0,0,100,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,150,0	//DK_VIGOR
+5213,0,0,30:35:40:45:50,0,0,0,3:7,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//DK_STORMSLASH
+
+// Arch Mage
+5214,0,0,80:90:100:110:120,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//AG_DEADLY_PROJECTION
+5215,0,0,80:90:100:110:120,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//AG_DESTRUCTIVE_HURRICANE
+5216,0,0,40:50:60:70:80,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//AG_RAIN_OF_CRYSTAL
+5217,0,0,80:90:100:110:120,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//AG_MYSTERY_ILLUSION
+5218,0,0,80:90:100:110:120,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//AG_VIOLENT_QUAKE
+5219,0,0,1,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//AG_VIOLENT_QUAKE_ATK
+5220,0,0,80:90:100:110:120,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//AG_SOUL_VC_STRIKE
+5221,0,0,35:45:55:65:75,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//AG_STRANTUM_TREMOR
+5222,0,0,80:90:100:110:120,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//AG_ALL_BLOOM
+5223,0,0,1,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//AG_ALL_BLOOM_ATK
+5224,0,0,1,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//AG_ALL_BLOOM_ATK2
+5225,0,0,80:90:100:110:120,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//AG_CRYSTAL_IMPACT
+5226,0,0,1,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//AG_CRYSTAL_IMPACT_ATK
+5227,0,0,45:55:65:75:85,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//AG_TORNADO_STORM
+
+5229,0,0,30:40:50:60:70,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//AG_FLORAL_FLARE_ROAD
+5230,0,0,150,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,150,0	//AG_ASTRAL_STRIKE
+5231,0,0,1,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//AG_ASTRAL_STRIKE_ATK
+5232,0,0,60,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,200,0	//AG_CLIMAX
+5233,0,0,65:70:75:80:85,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//AG_ROCK_DOWN
+5234,0,0,60:70:80:90:100,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//AG_STORM_CANNON
+5235,0,0,65:75:85:95:105,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//AG_CRIMSON_ARROW
+5236,0,0,1,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//AG_CRIMSON_ARROW_ATK
+5237,0,0,45:55:65:75:85,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//AG_FROZEN_SLASH
+
+// Abyss Chaser
+5317,0,0,40:50:60:70:80,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//ABC_FROM_THE_ABYSS
+
+// Windhawk
+5324,0,0,100:90:80:70:60,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//WH_WIND_SIGN
+
+5326,0,0,40:44:48:52:56,0,0,0,11,0,0,falcon,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//WH_HAWKRUSH
+5327,0,0,5,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//WH_HAWK_M
+5328,0,0,300,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,200,0	//WH_CALAMITYGALE
+5329,0,0,120,0,0,0,11,0,0,falcon,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,50,0	//WH_HAWKBOOMERANG
+5330,0,0,80:91:102:113:124:135:146:157:168:179,0,0,0,11,1,5,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//WH_GALESTORM
+5331,0,0,50:53:56:59:62,0,0,0,99,0,0,none,0,0,7940,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//WH_DEEPBLINDTRAP
+5332,0,0,70:80:90:100:110,0,0,0,99,0,0,none,0,0,7940,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//WH_SOLIDTRAP
+5333,0,0,60:62:64:66:68,0,0,0,99,0,0,none,0,0,7940,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//WH_SWIFTTRAP
+5334,0,0,55:60:65:70:75:80:85:90:95:100,0,0,0,11,1,1,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//WH_CRESCIVE_BOLT
+5335,0,0,40:44:48:52:56,0,0,0,99,0,0,none,0,0,7940,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//WH_FLAMETRAP
+
+// Extra 4th Job Skills
+5383,0,0,1,0,0,0,99,0,0,none,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	//ABC_FROM_THE_ABYSS_ATK

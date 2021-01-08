@@ -1,0 +1,9 @@
+// Items Database
+//
+// Structure of Database:
+// ID,AegisName,Name,Type,Buy,Sell,Weight,ATK[:MATK],DEF,Range,Slots,Job,Class,Gender,Loc,wLV,eLV[:maxLevel],Refineable,View,{ Script },{ OnEquip_Script },{ OnUnequip_Script }
+//
+// 4CrAM Items
+//=============================================================
+7940,Special_Alloy_Trap,Special Alloy Trap,3,300,,2,,,,,,,,,,,,,{},{},{}
+//=============================================================

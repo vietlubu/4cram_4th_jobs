@@ -487,14 +487,14 @@ int do_init( int argc, char** argv ){
 
 	skill_txt_data( path_db_mode, path_db );
 	if (!process("SKILL_DB", 1, { path_db_mode }, "skill_db", [](const std::string& path, const std::string& name_ext) -> bool {
-		return sv_readdb(path.c_str(), name_ext.c_str(), ',', 18, 18, -1, &skill_parse_row_skilldb, false);
+		return sv_readdb(path.c_str(), name_ext.c_str(), ',', 19, 19, -1, &skill_parse_row_skilldb, false);
 	})){
 		return 0;
 	}
 
 	skill_txt_data( path_db_import, path_db_import );
 	if (!process("SKILL_DB", 1, { path_db_import }, "skill_db", [](const std::string& path, const std::string& name_ext) -> bool {
-		return sv_readdb(path.c_str(), name_ext.c_str(), ',', 18, 18, -1, &skill_parse_row_skilldb, false);
+		return sv_readdb(path.c_str(), name_ext.c_str(), ',', 19, 19, -1, &skill_parse_row_skilldb, false);
 	})){
 		return 0;
 	}
@@ -2049,12 +2049,12 @@ static bool skill_parse_row_skilldb(char* split[], int columns, int current) {
 	if (arr_size != 0) {
 		if (arr_size == 1) {
 			if (arr[0] != 0) {
-				body << YAML::Key << "ApGain";
+				body << YAML::Key << "GiveAp";
 				body << YAML::Value << arr[0];
 			}
 		}
 		else {
-			body << YAML::Key << "ApGain";
+			body << YAML::Key << "GiveAp";
 			body << YAML::BeginSeq;
 
 			for (int i = 0; i < arr_size; i++) {
@@ -2365,6 +2365,26 @@ static bool skill_parse_row_skilldb(char* split[], int columns, int current) {
 			body << YAML::EndSeq;
 		}
 		
+		if (!isMultiLevel(it_req->second.ap)) {
+			if (it_req->second.ap[0] > 0)
+				body << YAML::Key << "ApCost" << YAML::Value << it_req->second.ap[0];
+		}
+		else {
+			body << YAML::Key << "ApCost";
+			body << YAML::BeginSeq;
+
+			for (size_t i = 0; i < ARRAYLENGTH(it_req->second.ap); i++) {
+				if (it_req->second.ap[i] > 0) {
+					body << YAML::BeginMap;
+					body << YAML::Key << "Level" << YAML::Value << i + 1;
+					body << YAML::Key << "Amount" << YAML::Value << it_req->second.ap[i];
+					body << YAML::EndMap;
+				}
+			}
+
+			body << YAML::EndSeq;
+		}
+
 		if (!isMultiLevel(it_req->second.hp_rate)) {
 			if (it_req->second.hp_rate[0] != 0)
 				body << YAML::Key << "HpRateCost" << YAML::Value << it_req->second.hp_rate[0];
@@ -2403,6 +2423,26 @@ static bool skill_parse_row_skilldb(char* split[], int columns, int current) {
 			body << YAML::EndSeq;
 		}
 		
+		if (!isMultiLevel(it_req->second.ap_rate)) {
+			if (it_req->second.ap_rate[0] != 0)
+				body << YAML::Key << "ApRateCost" << YAML::Value << it_req->second.ap_rate[0];
+		}
+		else {
+			body << YAML::Key << "ApRateCost";
+			body << YAML::BeginSeq;
+
+			for (size_t i = 0; i < ARRAYLENGTH(it_req->second.ap_rate); i++) {
+				if (it_req->second.ap_rate[i] != 0) {
+					body << YAML::BeginMap;
+					body << YAML::Key << "Level" << YAML::Value << i + 1;
+					body << YAML::Key << "Amount" << YAML::Value << it_req->second.ap_rate[i];
+					body << YAML::EndMap;
+				}
+			}
+
+			body << YAML::EndSeq;
+		}
+
 		if (!isMultiLevel(it_req->second.mhp)) {
 			if (it_req->second.mhp[0] > 0)
 				body << YAML::Key << "MaxHpTrigger" << YAML::Value << it_req->second.mhp[0];
@@ -2578,46 +2618,6 @@ static bool skill_parse_row_skilldb(char* split[], int columns, int current) {
 			}
 
 			body << YAML::EndMap;
-		}
-
-		if (!isMultiLevel(it_req->second.ap)) {
-			if (it_req->second.ap[0] > 0)
-				body << YAML::Key << "ApCost" << YAML::Value << it_req->second.ap[0];
-		}
-		else {
-			body << YAML::Key << "ApCost";
-			body << YAML::BeginSeq;
-
-			for (size_t i = 0; i < ARRAYLENGTH(it_req->second.ap); i++) {
-				if (it_req->second.ap[i] > 0) {
-					body << YAML::BeginMap;
-					body << YAML::Key << "Level" << YAML::Value << i + 1;
-					body << YAML::Key << "Amount" << YAML::Value << it_req->second.ap[i];
-					body << YAML::EndMap;
-				}
-			}
-
-			body << YAML::EndSeq;
-		}
-
-		if (!isMultiLevel(it_req->second.ap_rate)) {
-			if (it_req->second.ap_rate[0] != 0)
-				body << YAML::Key << "ApRateCost" << YAML::Value << it_req->second.ap_rate[0];
-		}
-		else {
-			body << YAML::Key << "ApRateCost";
-			body << YAML::BeginSeq;
-
-			for (size_t i = 0; i < ARRAYLENGTH(it_req->second.ap_rate); i++) {
-				if (it_req->second.ap_rate[i] != 0) {
-					body << YAML::BeginMap;
-					body << YAML::Key << "Level" << YAML::Value << i + 1;
-					body << YAML::Key << "Amount" << YAML::Value << it_req->second.ap_rate[i];
-					body << YAML::EndMap;
-				}
-			}
-
-			body << YAML::EndSeq;
 		}
 
 		body << YAML::EndMap;
