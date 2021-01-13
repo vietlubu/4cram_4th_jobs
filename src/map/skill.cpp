@@ -2144,11 +2144,11 @@ int skill_additional_effect(struct block_list* src, struct block_list *bl, uint1
 		sc_start(src, bl, SC_DEADLY_DEFEASANCE, 100, skill_lv, skill_get_time(skill_id, skill_lv));
 		break;
 	case AG_CRYSTAL_IMPACT:// Targets hit are dealt aftershock damage.
-		skill_castend_damage_id(src, bl, AG_CRYSTAL_IMPACT_ATK, skill_lv, tick, 0);
+		skill_castend_damage_id(src, bl, AG_CRYSTAL_IMPACT_ATK, skill_lv, tick, SD_LEVEL);
 		break;
 	case CD_ARBITRIUM:// Target is Deep Silenced by chance and is then dealt a 2nd splash hit.
 		sc_start(src, bl, SC_HANDICAPSTATE_DEEPSILENCE, 20 + 5 * skill_lv, skill_lv, skill_get_time(skill_id, skill_lv));
-		skill_castend_damage_id(src, bl, CD_ARBITRIUM_ATK, skill_lv, tick, 0);
+		skill_castend_damage_id(src, bl, CD_ARBITRIUM_ATK, skill_lv, tick, SD_LEVEL);
 		break;
 	case WH_DEEPBLINDTRAP:// Need official success chances for all 4 Windhawk traps.
 		sc_start(src, bl, SC_HANDICAPSTATE_DEEPBLIND, 50, skill_lv, skill_get_time2(skill_id, skill_lv));
@@ -3766,9 +3766,9 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 		case AG_CRIMSON_ARROW:
 			dmg.dmotion = clif_skill_damage(dsrc, bl, tick, dmg.amotion, dmg.dmotion, damage, dmg.div_, skill_id, skill_lv, DMG_SPLASH);
 			break;
-		case AB_DUPLELIGHT_MELEE:
-		case AB_DUPLELIGHT_MAGIC:
-			dmg.amotion = 300;/* makes the damage value not overlap with previous damage (when displayed by the client) */
+		//case AB_DUPLELIGHT_MELEE:
+		//case AB_DUPLELIGHT_MAGIC:
+		//	dmg.amotion = 300;/* makes the damage value not overlap with previous damage (when displayed by the client) */
 		default:
 			if( flag&SD_ANIMATION && dmg.div_ < 2 ) //Disabling skill animation doesn't works on multi-hit.
 				dmg_type = DMG_SPLASH;
@@ -7324,6 +7324,11 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case AG_CLIMAX:
 	case WH_WIND_SIGN:
 	case WH_CALAMITYGALE:
+	case CD_ARGUTUS_VITA:
+	case CD_ARGUTUS_TELUM:
+	case CD_PRESENS_ACIES:
+	case CD_RELIGIO:
+	case CD_BENEDICTUM:
 		clif_skill_nodamage(src,bl,skill_id,skill_lv,
 			sc_start(src,bl,type,100,skill_lv,skill_get_time(skill_id,skill_lv)));
 		break;
@@ -7357,6 +7362,24 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 				skill_castend_nodamage_id(bl, bl, skill_id, skill_lv, tick, 1);
 			}
 		}
+		break;
+
+	case CD_COMPETENTIA:
+		if (sd == NULL || sd->status.party_id == 0 || (flag&1))
+		{
+			int hp_amount = tstatus->max_hp * (20 * skill_lv) / 100;
+			int sp_amount = tstatus->max_sp * (20 * skill_lv) / 100;
+
+			clif_skill_nodamage(0, bl, AL_HEAL, hp_amount, tick);
+			status_heal(bl, hp_amount, 0, 0, 0);
+
+			clif_skill_nodamage(0, bl, MG_SRECOVERY, sp_amount, tick);
+			status_heal(bl, 0, sp_amount, 0, 0);
+
+			clif_skill_nodamage(bl, bl, skill_id, skill_lv, sc_start(src, bl, type, 100, skill_lv, skill_get_time(skill_id, skill_lv)));
+		}
+		else if (sd)
+			party_foreachsamemap(skill_area_sub, sd, skill_get_splash(skill_id, skill_lv), src, skill_id, skill_lv, tick, flag|BCT_PARTY|1, skill_castend_nodamage_id);
 		break;
 
 	case SJ_GRAVITYCONTROL: {

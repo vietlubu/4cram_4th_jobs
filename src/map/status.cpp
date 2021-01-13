@@ -4946,7 +4946,7 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 		sd->indexed_bonus.subrace[RC_DEMON] += skill;
 		sd->indexed_bonus.subele[ELE_DARK] += skill;
 	}
-	if ((skill = pc_checkskill(sd, DK_TWOHANDDEF))>0 && (sd->status.weapon == W_2HSWORD || sd->status.weapon == W_2HSPEAR || sd->status.weapon == W_2HAXE))
+	if ((skill = pc_checkskill(sd, DK_TWOHANDDEF)) > 0 && (sd->status.weapon == W_2HSWORD || sd->status.weapon == W_2HSPEAR || sd->status.weapon == W_2HAXE))
 	{
 		short small_def[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 		short medium_def[10] = { 2, 3, 5, 6, 8, 9, 11, 12, 14, 15 };
@@ -4955,6 +4955,25 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 		sd->indexed_bonus.subsize[SZ_SMALL] += small_def[skill-1];
 		sd->indexed_bonus.subsize[SZ_MEDIUM] += medium_def[skill-1];
 		sd->indexed_bonus.subsize[SZ_BIG] += large_def[skill-1];
+	}
+	if ((skill = pc_checkskill(sd, CD_MACE_BOOK_M)) > 0 && (sd->status.weapon == W_MACE || sd->status.weapon == W_2HMACE || sd->status.weapon == W_BOOK))
+	{
+		short small_atk[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+		short medium_atk[10] = { 2, 3, 5, 6, 8, 9, 11, 12, 14, 15 };
+		short large_atk[10] = { 3, 5, 7, 9, 10, 12, 13, 15, 16, 18 };
+
+		sd->right_weapon.addsize[SZ_SMALL] += small_atk[skill-1];
+		sd->left_weapon.addsize[SZ_SMALL] += small_atk[skill-1];
+		sd->right_weapon.addsize[SZ_MEDIUM] += medium_atk[skill-1];
+		sd->left_weapon.addsize[SZ_MEDIUM] += medium_atk[skill-1];
+		sd->right_weapon.addsize[SZ_BIG] += large_atk[skill-1];
+		sd->left_weapon.addsize[SZ_BIG] += large_atk[skill-1];
+	}
+	if ((skill = pc_checkskill(sd, CD_FIDUS_ANIMUS)) > 0)
+	{
+		short holy_matk[10] = { 1, 3, 4, 6, 7, 9, 10, 12, 13, 15 };
+
+		sd->indexed_bonus.magic_atk_ele[ELE_HOLY] += holy_matk[skill-1];
 	}
 
 	if(sc->count) {
@@ -7003,6 +7022,9 @@ static unsigned short status_calc_pow(struct block_list *bl, struct status_chang
 	if (!sc || !sc->count)
 		return cap_value(pow, 0, USHRT_MAX);
 
+	if (sc->data[SC_BENEDICTUM])
+		pow += sc->data[SC_BENEDICTUM]->val2;
+
 	return (unsigned short)cap_value(pow, 0, USHRT_MAX);
 }
 
@@ -7017,6 +7039,9 @@ static unsigned short status_calc_sta(struct block_list *bl, struct status_chang
 {
 	if (!sc || !sc->count)
 		return cap_value(sta, 0, USHRT_MAX);
+
+	if (sc->data[SC_RELIGIO])
+		sta += sc->data[SC_RELIGIO]->val2;
 
 	return (unsigned short)cap_value(sta, 0, USHRT_MAX);
 }
@@ -7033,6 +7058,9 @@ static unsigned short status_calc_wis(struct block_list *bl, struct status_chang
 	if (!sc || !sc->count)
 		return cap_value(wis, 0, USHRT_MAX);
 
+	if (sc->data[SC_RELIGIO])
+		wis += sc->data[SC_RELIGIO]->val2;
+
 	return (unsigned short)cap_value(wis, 0, USHRT_MAX);
 }
 
@@ -7047,6 +7075,9 @@ static unsigned short status_calc_spl(struct block_list *bl, struct status_chang
 {
 	if (!sc || !sc->count)
 		return cap_value(spl, 0, USHRT_MAX);
+
+	if (sc->data[SC_RELIGIO])
+		spl += sc->data[SC_RELIGIO]->val2;
 
 	return (unsigned short)cap_value(spl, 0, USHRT_MAX);
 }
@@ -7063,6 +7094,9 @@ static unsigned short status_calc_con(struct block_list *bl, struct status_chang
 	if (!sc || !sc->count)
 		return cap_value(con, 0, USHRT_MAX);
 
+	if (sc->data[SC_BENEDICTUM])
+		con += sc->data[SC_BENEDICTUM]->val2;
+
 	return (unsigned short)cap_value(con, 0, USHRT_MAX);
 }
 
@@ -7077,6 +7111,9 @@ static unsigned short status_calc_crt(struct block_list *bl, struct status_chang
 {
 	if (!sc || !sc->count)
 		return cap_value(crt, 0, USHRT_MAX);
+
+	if (sc->data[SC_BENEDICTUM])
+		crt += sc->data[SC_BENEDICTUM]->val2;
 
 	return (unsigned short)cap_value(crt, 0, USHRT_MAX);
 }
@@ -8480,6 +8517,9 @@ static signed short status_calc_patk(struct block_list *bl, struct status_change
 	if (!sc || !sc->count)
 		return cap_value(patk, 0, SHRT_MAX);
 
+	if (sc->data[SC_COMPETENTIA])
+		patk += sc->data[SC_COMPETENTIA]->val2;
+
 	return (short)cap_value(patk, 0, SHRT_MAX);
 }
 
@@ -8494,6 +8534,9 @@ static signed short status_calc_smatk(struct block_list *bl, struct status_chang
 {
 	if (!sc || !sc->count)
 		return cap_value(smatk, 0, SHRT_MAX);
+
+	if (sc->data[SC_COMPETENTIA])
+		smatk += sc->data[SC_COMPETENTIA]->val2;
 
 	return (short)cap_value(smatk, 0, SHRT_MAX);
 }
@@ -8554,6 +8597,9 @@ static signed short status_calc_crate(struct block_list *bl, struct status_chang
 {
 	if (!sc || !sc->count)
 		return cap_value(crate, 0, SHRT_MAX);
+
+	if (sc->data[SC_PRE_ACIES])
+		crate += sc->data[SC_PRE_ACIES]->val2;
 
 	return (short)cap_value(crate, 0, SHRT_MAX);
 }
@@ -12958,6 +13004,20 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			val2 = 2 * val1;// Heal rate.
 			val4 = tick / 2000;
 			tick_time = 2000;
+			break;
+		case SC_A_VITA:
+		case SC_A_TELUM:
+			val2 = 5 * val1;// Res/MRes Pierce Percentage
+			break;
+		case SC_PRE_ACIES:
+			val2 = 2 * val1;// CRate Increase
+			break;
+		case SC_COMPETENTIA:
+			val2 = 10 * val1;// PAtk/SMatk Increase - Unconfirmed if this is official formula but its 50 at Lv 5. [Rytech]
+			break;
+		case SC_RELIGIO:
+		case SC_BENEDICTUM:
+			val2 = 2 * val1;// Trait Stats Increase
 			break;
 		case SC_WINDSIGN:
 			val2 = 8 + 6 * val1;// Chance to gain AP on attack.

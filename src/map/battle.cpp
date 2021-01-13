@@ -6033,10 +6033,19 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src, struct bl
 		if (sd && tstatus->res > 0)
 		{
 			short res = tstatus->res;
+			short ignore_res = 0;// Value used as a percentage.
 			
 			if (res > battle_config.max_res_mres_reduction)
 				res = battle_config.max_res_mres_reduction;
 			
+			if (sc && sc->data[SC_A_TELUM])
+				ignore_res += sc->data[SC_A_TELUM]->val2;
+
+			ignore_res = min(ignore_res, 100);
+
+			if (ignore_res > 0)
+				res -= res * ignore_res / 100;
+
 			// Guessing damage is reduced to no lower then 1???
 			if (res >= 1000)
 			{
@@ -6991,10 +7000,19 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 		if (sd && tstatus->mres > 0)
 		{
 			short mres = tstatus->mres;
+			short ignore_mres = 0;// Value used as percentage.
 			
 			if (mres > battle_config.max_res_mres_reduction)
 				mres = battle_config.max_res_mres_reduction;
 			
+			if (sc && sc->data[SC_A_VITA])
+				ignore_mres += sc->data[SC_A_VITA]->val2;
+
+			ignore_mres = min(ignore_mres, 100);
+
+			if (ignore_mres > 0)
+				mres -= mres * ignore_mres / 100;
+
 			// Guessing damage is reduced to no lower then 1???
 			if (mres >= 1000)
 				ad.damage = 1;
@@ -8072,13 +8090,10 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 			short duple_rate = 10 + 2 * sc->data[SC_DUPLELIGHT]->val1;
 
 			if (rand() % 100 < duple_rate)
-				skill_attack(skill_get_type(AB_DUPLELIGHT_MELEE), src, src, target, AB_DUPLELIGHT_MELEE, sc->data[SC_DUPLELIGHT]->val1, tick, flag|SD_LEVEL);
+				skill_castend_damage_id(src, target, AB_DUPLELIGHT_MELEE, sc->data[SC_DUPLELIGHT]->val1, tick, flag|SD_LEVEL);
 
 			if (rand() % 100 < duple_rate)
-				skill_attack(skill_get_type(AB_DUPLELIGHT_MAGIC), src, src, target, AB_DUPLELIGHT_MAGIC, sc->data[SC_DUPLELIGHT]->val1, tick, flag|SD_LEVEL);
-
-			if (pc_checkskill(sd, CD_PETITIO) > 0 && rand() % 100 < duple_rate)// Is this the official success chance??? [Rytech]
-				skill_castend_damage_id(src, target, CD_PETITIO, pc_checkskill(sd, CD_PETITIO), tick, flag);
+				skill_castend_damage_id(src, target, AB_DUPLELIGHT_MAGIC, sc->data[SC_DUPLELIGHT]->val1, tick, flag|SD_LEVEL);
 		}
 	}
 
@@ -8284,6 +8299,31 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 				}
 			}
 		}
+		// Whats the official success chance? Is SP consumed for every autocast? [Rytech]
+		if (sc && sc->data[SC_DUPLELIGHT] && pc_checkskill(sd, CD_PETITIO) > 0 && rnd() % 100 < 20)
+		{
+			uint16 skill_id = CD_PETITIO;
+			uint16 skill_lv = pc_checkskill(sd, CD_PETITIO);
+			struct unit_data *ud = unit_bl2ud(src);
+
+			sd->state.autocast = 1;
+			skill_castend_damage_id(src, target, skill_id, skill_lv, tick, flag);
+			sd->state.autocast = 0;
+
+			if (ud)
+			{
+				int autospell_tick = skill_delayfix(src, skill_id, skill_lv);
+
+				if (DIFF_TICK(ud->canact_tick, tick + autospell_tick) < 0)
+				{
+					ud->canact_tick = i64max(tick + autospell_tick, ud->canact_tick);
+					if (battle_config.display_status_timers && sd)
+						clif_status_change(src, EFST_POSTDELAY, 1, autospell_tick, 0, 0, 0);
+				}
+			}
+		}
+		// It has a success chance of triggering even tho the description says nothing about it.
+		// Need to find out what the official success chance is. [Rytech]
 		if (sc && sc->data[SC_ABYSSFORCEWEAPON] && sd->abyssball > 0 && rnd() % 100 < 20)
 		{
 			uint16 skill_id = ABC_FROM_THE_ABYSS_ATK;
