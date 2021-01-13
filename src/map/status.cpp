@@ -1128,6 +1128,16 @@ void initChangeTables(void)
 	set_sc( AG_CRYSTAL_IMPACT            , SC_CRYSTAL_IMPACT   , EFST_CRYSTAL_IMPACT   , SCB_NONE);
 	set_sc_with_vfx( AG_CLIMAX           , SC_CLIMAX           , EFST_CLIMAX           , SCB_NONE);
 
+	// Cardinal
+	set_sc_with_vfx( CD_MEDIALE_VOTUM, SC_MEDIALE                  , EFST_MEDIALE                  , SCB_NONE);
+	set_sc( CD_ARGUTUS_VITA , SC_A_VITA                   , EFST_A_VITA                   , SCB_NONE);
+	set_sc( CD_ARGUTUS_TELUM, SC_A_TELUM                  , EFST_A_TELUM                  , SCB_NONE);
+	set_sc_with_vfx( CD_ARBITRIUM    , SC_HANDICAPSTATE_DEEPSILENCE, EFST_HANDICAPSTATE_DEEPSILENCE, SCB_NONE);
+	set_sc_with_vfx( CD_PRESENS_ACIES, SC_PRE_ACIES                , EFST_PRE_ACIES                , SCB_CRATE);
+	set_sc_with_vfx( CD_COMPETENTIA  , SC_COMPETENTIA              , EFST_COMPETENTIA              , SCB_PATK|SCB_SMATK);
+	set_sc_with_vfx( CD_RELIGIO      , SC_RELIGIO                  , EFST_RELIGIO                  , SCB_STA|SCB_WIS|SCB_SPL);
+	set_sc_with_vfx( CD_BENEDICTUM   , SC_BENEDICTUM               , EFST_BENEDICTUM               , SCB_POW|SCB_CON|SCB_CRT);
+
 	// Windhawk
 	set_sc_with_vfx( WH_WIND_SIGN    , SC_WINDSIGN                     , EFST_WINDSIGN                     , SCB_NONE);
 	set_sc_with_vfx( WH_CALAMITYGALE , SC_CALAMITYGALE                 , EFST_CALAMITYGALE                 , SCB_NONE);
@@ -1698,7 +1708,7 @@ void initChangeTables(void)
 
 	// 4th Job Common Status
 	StatusDisplayType[SC_HANDICAPSTATE_DEEPBLIND] = BL_PC;
-
+	StatusDisplayType[SC_HANDICAPSTATE_DEEPSILENCE] = BL_PC;
 	StatusDisplayType[SC_HANDICAPSTATE_LIGHTNINGSTRIKE] = BL_PC;
 	StatusDisplayType[SC_HANDICAPSTATE_CRYSTALLIZATION] = BL_PC;
 	StatusDisplayType[SC_HANDICAPSTATE_CONFLAGRATION] = BL_PC;
@@ -1710,6 +1720,11 @@ void initChangeTables(void)
 	StatusDisplayType[SC_VIGOR] = BL_PC;
 	StatusDisplayType[SC_DEADLY_DEFEASANCE] = BL_PC;
 	StatusDisplayType[SC_CLIMAX] = BL_PC;
+	StatusDisplayType[SC_MEDIALE] = BL_PC;
+	StatusDisplayType[SC_PRE_ACIES] = BL_PC;
+	StatusDisplayType[SC_COMPETENTIA] = BL_PC;
+	StatusDisplayType[SC_RELIGIO] = BL_PC;
+	StatusDisplayType[SC_BENEDICTUM] = BL_PC;
 	StatusDisplayType[SC_WINDSIGN] = BL_PC;
 	StatusDisplayType[SC_CALAMITYGALE] = BL_PC;
 
@@ -12939,6 +12954,11 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 				tick_time = 500;// Avoid being brought down to 0.
 			val4 = tick - tick_time;// Remaining Time
 			break;
+		case SC_MEDIALE:
+			val2 = 2 * val1;// Heal rate.
+			val4 = tick / 2000;
+			tick_time = 2000;
+			break;
 		case SC_WINDSIGN:
 			val2 = 8 + 6 * val1;// Chance to gain AP on attack.
 			if (val1 = 5)// Its 40% on level 5.
@@ -15097,6 +15117,15 @@ TIMER_FUNC(status_change_timer){
 				heal = ~heal + 1;
 			status_heal(bl, heal, 0, 0, 3);
 			sc_timer_next(5000 + tick);
+			return 0;
+		}
+		break;
+
+	case SC_MEDIALE:
+		if (--(sce->val4) >= 0) {
+			clif_specialeffect(bl, 1808, AREA);
+			skill_castend_nodamage_id(bl, bl, CD_MEDIALE_VOTUM, sce->val1, tick, 1);
+			sc_timer_next(2000 + tick);
 			return 0;
 		}
 		break;

@@ -2297,6 +2297,8 @@ void battle_consume_ammo(struct map_session_data*sd, int skill, int lv)
 
 static int battle_range_type(struct block_list *src, struct block_list *target, uint16 skill_id, uint16 skill_lv)
 {
+	struct map_session_data *sd = BL_CAST(BL_PC, src);
+
 	// [Akinari] , [Xynvaroth]: Traps are always short range.
 	if (skill_get_inf2(skill_id, INF2_ISTRAP))
 		return BF_SHORT;
@@ -2319,6 +2321,10 @@ static int battle_range_type(struct block_list *src, struct block_list *target, 
 
 		case DK_HACKANDSLASHER_ATK:// 2 cell cast range but deals ranged damage.
 			return BF_LONG;// Ranged
+
+		case CD_PETITIO:// Skill range is 2 but damage is melee with books and ranged with mace.
+			if (sd && (sd->status.weapon == W_MACE || sd->status.weapon == W_2HMACE))
+				return BF_LONG;
 	}
 
 	//Skill Range Criteria
@@ -4891,6 +4897,16 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			if (sc && sc->data[SC_GIANTGROWTH])
 				skillratio *= 2;
 			break;
+		case CD_EFFLIGO:
+			skillratio += -100 + 800 * skill_lv + 5 * sstatus->pow;
+			if (tstatus->race == RC_UNDEAD || tstatus->race == RC_DEMON)
+				skillratio += 400 * skill_lv;
+			RE_LVL_DMOD(100);
+			break;
+		case CD_PETITIO:
+			skillratio += -100 + 270 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			break;
 		case WH_HAWKRUSH:
 			skillratio += -100 + 100 * skill_lv + 5 * sstatus->con;
 			RE_LVL_DMOD(100);
@@ -6906,6 +6922,23 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 						skillratio += -100 + 750 * skill_lv + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
 						break;
+					case CD_ARBITRIUM:
+					case CD_ARBITRIUM_ATK:
+						skillratio += -100 + 200 * skill_lv + 5 * sstatus->spl;
+						RE_LVL_DMOD(100);
+						break;
+					case CD_PNEUMATICUS_PROCELLA:
+						skillratio += -100 + 200 * skill_lv + 10 * sstatus->spl;
+						if (tstatus->race == RC_UNDEAD || tstatus->race == RC_DEMON)
+							skillratio += 100 * skill_lv;
+						RE_LVL_DMOD(100);
+						break;
+					case CD_FRAMEN:
+						skillratio += -100 + 500 * skill_lv + 5 * sstatus->spl;
+						if (tstatus->race == RC_UNDEAD || tstatus->race == RC_DEMON)
+							skillratio += 150 * skill_lv;
+						RE_LVL_DMOD(100);
+						break;
 					case ABC_FROM_THE_ABYSS_ATK:
 						skillratio += 150 + 70 * skill_lv + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
@@ -8034,14 +8067,18 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 	damage = wd.damage + wd.damage2;
 	if( damage > 0 && src != target )
 	{
-		if( sc && sc->data[SC_DUPLELIGHT] && (wd.flag&BF_SHORT) && rnd()%100 <= 10+2*sc->data[SC_DUPLELIGHT]->val1 )
-		{	// Activates it only from melee damage
-			uint16 skill_id;
-			if( rnd()%2 == 1 )
-				skill_id = AB_DUPLELIGHT_MELEE;
-			else
-				skill_id = AB_DUPLELIGHT_MAGIC;
-			skill_attack(skill_get_type(skill_id), src, src, target, skill_id, sc->data[SC_DUPLELIGHT]->val1, tick, SD_LEVEL);
+		if (sc && sc->data[SC_DUPLELIGHT] && (wd.flag&BF_SHORT))
+		{// Activates only from regular melee damage. Success chance is seperate for both duple light attacks.
+			short duple_rate = 10 + 2 * sc->data[SC_DUPLELIGHT]->val1;
+
+			if (rand() % 100 < duple_rate)
+				skill_attack(skill_get_type(AB_DUPLELIGHT_MELEE), src, src, target, AB_DUPLELIGHT_MELEE, sc->data[SC_DUPLELIGHT]->val1, tick, flag|SD_LEVEL);
+
+			if (rand() % 100 < duple_rate)
+				skill_attack(skill_get_type(AB_DUPLELIGHT_MAGIC), src, src, target, AB_DUPLELIGHT_MAGIC, sc->data[SC_DUPLELIGHT]->val1, tick, flag|SD_LEVEL);
+
+			if (pc_checkskill(sd, CD_PETITIO) > 0 && rand() % 100 < duple_rate)// Is this the official success chance??? [Rytech]
+				skill_castend_damage_id(src, target, CD_PETITIO, pc_checkskill(sd, CD_PETITIO), tick, flag);
 		}
 	}
 
@@ -9134,7 +9171,7 @@ static const struct _battle_data {
 	{ "auction_maximumprice",               &battle_config.auction_maximumprice,            500000000, 0,   MAX_ZENY,       },
 	{ "homunculus_auto_vapor",              &battle_config.homunculus_auto_vapor,           80,     0,      100,            },
 	{ "display_status_timers",              &battle_config.display_status_timers,           1,      0,      1,              },
-	{ "skill_add_heal_rate",                &battle_config.skill_add_heal_rate,             7,      0,      INT_MAX,        },
+	{ "skill_add_heal_rate",                &battle_config.skill_add_heal_rate,           487,      0,      INT_MAX,        },
 	{ "eq_single_target_reflectable",       &battle_config.eq_single_target_reflectable,    1,      0,      1,              },
 	{ "invincible.nodamage",                &battle_config.invincible_nodamage,             0,      0,      1,              },
 	{ "mob_slave_keep_target",              &battle_config.mob_slave_keep_target,           0,      0,      1,              },

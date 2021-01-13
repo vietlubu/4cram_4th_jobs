@@ -123,82 +123,82 @@
 5237,0,6,4,1,0x2,2:2:3:3:4,5,1,yes,0,0,0,magic,0,0,4,	AG_FROZEN_SLASH,Frozen Slash
 
 // Inquisitor
-5238,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	IQ_POWERFUL_FAITH,Powerful Faith
-5239,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	IQ_FIRM_FAITH,Firm Faith
-5240,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	IQ_WILL_OF_FAITH,Will Of Faith
-5241,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	IQ_OLEUM_SANCTUM,Oleum Sanctum
-5242,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	IQ_SINCERE_FAITH,Sincere Faith
-5243,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	IQ_MASSIVE_F_BLASTER,Massive Flame Blaster
-5244,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	IQ_EXPOSION_BLASTER,Exposion Blaster
-5245,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	IQ_FIRST_BRAND,First Brand
-5246,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	IQ_FIRST_FAITH_POWER,First Faith Power
-5247,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	IQ_JUDGE,Judge
-5248,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	IQ_SECOND_FLAME,Second Flame
-5249,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	IQ_SECOND_FAITH,Second Faith
-5250,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	IQ_SECOND_JUDGEMENT,Second Judgement
-5251,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	IQ_THIRD_PUNISH,Third Punish
-5252,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	IQ_THIRD_FLAME_BOMB,Third Flame Bomb
-5253,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	IQ_THIRD_CONSECRATION,Third Consecration
-5254,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	IQ_THIRD_EXOR_FLAME,Third Exor Flame
+5238,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_POWERFUL_FAITH,Powerful Faith
+5239,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_FIRM_FAITH,Firm Faith
+5240,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	IQ_WILL_OF_FAITH,Will Of Faith
+5241,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_OLEUM_SANCTUM,Oleum Sanctum
+5242,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_SINCERE_FAITH,Sincere Faith
+5243,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	IQ_MASSIVE_F_BLASTER,Massive Flame Blaster
+5244,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_EXPOSION_BLASTER,Exposion Blaster
+5245,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_FIRST_BRAND,First Brand
+5246,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_FIRST_FAITH_POWER,First Faith Power
+5247,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_JUDGE,Judge
+5248,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_SECOND_FLAME,Second Flame
+5249,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_SECOND_FAITH,Second Faith
+5250,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_SECOND_JUDGEMENT,Second Judgement
+5251,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_THIRD_PUNISH,Third Punish
+5252,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_THIRD_FLAME_BOMB,Third Flame Bomb
+5253,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_THIRD_CONSECRATION,Third Consecration
+5254,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_THIRD_EXOR_FLAME,Third Exor Flame
 
 // Imperial Guard
-5255,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	IG_GUARD_STANCE,Guard Stance
-5256,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	IG_GUARDIAN_SHIELD,Guardian Shield
-5257,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	IG_REBOUND_SHIELD,Rebound Shield
-5258,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	IG_SHIELD_MASTERY,Shield Mastery
-5259,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	IG_SPEAR_SWORD_M,Spear And Sword Mastery
-5260,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	IG_ATTACK_STANCE,Attack Stance
-5261,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	IG_ULTIMATE_SACRIFICE,Ultimate Sacrifice
-5262,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	IG_HOLY_SHIELD,Holy Shield
-5263,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	IG_GRAND_JUDGEMENT,Grand Judgement
-5264,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	IG_JUDGEMENT_CROSS,Judgement Cross
-5265,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	IG_SHIELD_SHOOTING,Shield Shooting
-5266,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	IG_OVERSLASH,Overslash
-5267,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	IG_CROSS_RAIN,Cross Rain
+5255,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IG_GUARD_STANCE,Guard Stance
+5256,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IG_GUARDIAN_SHIELD,Guardian Shield
+5257,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IG_REBOUND_SHIELD,Rebound Shield
+5258,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	IG_SHIELD_MASTERY,Shield Mastery
+5259,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	IG_SPEAR_SWORD_M,Spear And Sword Mastery
+5260,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IG_ATTACK_STANCE,Attack Stance
+5261,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IG_ULTIMATE_SACRIFICE,Ultimate Sacrifice
+5262,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IG_HOLY_SHIELD,Holy Shield
+5263,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	IG_GRAND_JUDGEMENT,Grand Judgement
+5264,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	IG_JUDGEMENT_CROSS,Judgement Cross
+5265,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IG_SHIELD_SHOOTING,Shield Shooting
+5266,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	IG_OVERSLASH,Overslash
+5267,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	IG_CROSS_RAIN,Cross Rain
 
 // Cardinal
-5268,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	CD_REPARATIO,Reparatio
-5269,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	CD_MEDIALE_VOTUM,Mediale Votum
+5268,9,6,16,0,0x1,0,5,1,yes,0,0,0,none,0,0,0,	CD_REPARATIO,Reparatio
+5269,9,6,16,0,0x3,4,5,1,yes,0,0x400,0,none,0,0,0,	CD_MEDIALE_VOTUM,Mediale Votum
 5270,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	CD_MACE_BOOK_M,Mace Book Mastery
-5271,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	CD_ARGUTUS_VITA,Argutus Vita
-5272,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	CD_ARGUTUS_TELUM,Argutus Telum
-5273,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	CD_ARBITRIUM,Arbitrium
-5274,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	CD_ARBITRIUM_ATK,Arbitrium Attack
-5275,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	CD_PRESENS_ACIES,Presens Acies
+5271,9,6,16,0,0x1,0,5,1,yes,0,0x400,0,none,0,0,0,	CD_ARGUTUS_VITA,Argutus Vita
+5272,9,6,16,0,0x1,0,5,1,yes,0,0x400,0,none,0,0,0,	CD_ARGUTUS_TELUM,Argutus Telum
+5273,9,6,1,6,0,0,10,1,yes,0,0,0,magic,0,0,0,	CD_ARBITRIUM,Arbitrium
+5274,9,6,1,6,0x2,1:1:1:2:2:2:3:3:3:4,10,1,no,0,0,0,magic,0,0,0,	CD_ARBITRIUM_ATK,Arbitrium Attack// Whats the real splash size?
+5275,9,6,16,0,0x1,0,5,1,yes,0,0x400,0,none,0,0,0,	CD_PRESENS_ACIES,Presens Acies
 5276,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	CD_FIDUS_ANIMUS,Fidus Animus
-5277,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	CD_EFFLIGO,Effligo
-5278,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	CD_COMPETENTIA,Competentia
-5279,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	CD_PNEUMATICUS_PROCELLA,Pneumaticus Procella
-5280,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	CD_DILECTIO_HEAL,Dilectio Heal
-5281,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	CD_RELIGIO,Religio
-5282,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	CD_BENEDICTUM,Benedictum
-5283,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	CD_PETITIO,Petitio
-5284,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	CD_FRAMEN,Framen
+5277,2,8,1,-1,0,0,10,-7,yes,0,0,0,weapon,0,0,0,	CD_EFFLIGO,Effligo
+5278,0,6,4,0,0x3,10,5,1,yes,0,0,0,none,0,0,0,	CD_COMPETENTIA,Competentia// Whats the real splash size?
+5279,9,8,2,6,0,0,10,-10,yes,0,0,0,magic,0,0,0,	CD_PNEUMATICUS_PROCELLA,Pneumaticus Procella
+5280,9,6,16,0,0x3,1:1:2:2:3,5,1,yes,0,0x400,0,none,0,0,1,	CD_DILECTIO_HEAL,Dilectio Heal
+5281,9,6,16,0,0x1,0,5,1,yes,0,0,0,none,0,0,1,	CD_RELIGIO,Religio
+5282,9,6,16,0,0x1,0,5,1,yes,0,0,0,none,0,0,1,	CD_BENEDICTUM,Benedictum
+5283,2,6,1,-1,0x2,1:1:1:2:2:2:3:3:3:4,10,1,yes,0,0,0,weapon,0,0,2,	CD_PETITIO,Petitio
+5284,9,6,1,6,0x2,2:2:2:3:3,5,1,yes,0,0,0,magic,0,0,3,	CD_FRAMEN,Framen
 
 // Shadow Cross
-5285,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	SHC_SHADOW_EXCEED,Shadow Exceed
-5286,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	SHC_DANCING_KNIFE,Dancing Knife
-5287,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	SHC_SAVAGE_IMPACT,Savage Impact
-5288,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	SHC_SHADOW_SENSE,Shadow Sense
-5289,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	SHC_ETERNAL_SLASH,Eternal Slash
-5290,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	SHC_POTENT_VENOM,Potent Venom
-5291,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	SHC_SHADOW_STAB,Shadow Stab
-5292,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	SHC_IMPACT_CRATER,Impact Crater
-5293,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	SHC_ENCHANTING_SHADOW,Enchanting Shadow
-5294,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	SHC_FATAL_SHADOW_CROW,Fatal Shadow Crow
+5285,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	SHC_SHADOW_EXCEED,Shadow Exceed
+5286,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	SHC_DANCING_KNIFE,Dancing Knife
+5287,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	SHC_SAVAGE_IMPACT,Savage Impact
+5288,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	SHC_SHADOW_SENSE,Shadow Sense
+5289,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	SHC_ETERNAL_SLASH,Eternal Slash
+5290,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	SHC_POTENT_VENOM,Potent Venom
+5291,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	SHC_SHADOW_STAB,Shadow Stab
+5292,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	SHC_IMPACT_CRATER,Impact Crater
+5293,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	SHC_ENCHANTING_SHADOW,Enchanting Shadow
+5294,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	SHC_FATAL_SHADOW_CROW,Fatal Shadow Crow
 
 // Meister
-5295,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	MT_AXE_STOMP,Axe Stomp
-5296,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	MT_RUSH_QUAKE,Rush Quake
-5297,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	MT_M_MACHINE,Manufacture Machine
-5298,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	MT_A_MACHINE,Attack Machine
-5299,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	MT_D_MACHINE,Defense Machine
-5300,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	MT_TWOAXEDEF,Two Hand Axe Def
-5301,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	MT_ABR_M,ABR Mastery
-5302,0,0,0,0,0,0,4,0,no,0,0,0,none,0,0,0,	MT_SUMMON_ABR_BATTLE_WARIOR,ABR Battle Warior
-5303,0,0,0,0,0,0,4,0,no,0,0,0,none,0,0,0,	MT_SUMMON_ABR_DUAL_CANNON,ABR Dual Cannon
-5304,0,0,0,0,0,0,4,0,no,0,0,0,none,0,0,0,	MT_SUMMON_ABR_MOTHER_NET,ABR Mother Net
-5305,0,0,0,0,0,0,4,0,no,0,0,0,none,0,0,0,	MT_SUMMON_ABR_INFINITY,ABR Infinity
+5295,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	MT_AXE_STOMP,Axe Stomp
+5296,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	MT_RUSH_QUAKE,Rush Quake
+5297,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	MT_M_MACHINE,Manufacture Machine
+5298,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	MT_A_MACHINE,Attack Machine
+5299,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	MT_D_MACHINE,Defense Machine
+5300,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	MT_TWOAXEDEF,Two Hand Axe Def
+5301,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	MT_ABR_M,ABR Mastery
+5302,0,0,0,0,0,0,4,0,yes,0,0,0,none,0,0,0,	MT_SUMMON_ABR_BATTLE_WARIOR,ABR Battle Warior
+5303,0,0,0,0,0,0,4,0,yes,0,0,0,none,0,0,0,	MT_SUMMON_ABR_DUAL_CANNON,ABR Dual Cannon
+5304,0,0,0,0,0,0,4,0,yes,0,0,0,none,0,0,0,	MT_SUMMON_ABR_MOTHER_NET,ABR Mother Net
+5305,0,0,0,0,0,0,4,0,yes,0,0,0,none,0,0,0,	MT_SUMMON_ABR_INFINITY,ABR Infinity
 
 // Arch Mage Climax Version Skill
 5306,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	AG_DESTRUCTIVE_HURRICANE_CLIMAX,Destructive Hurricane Climax
@@ -208,18 +208,18 @@
 5310,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	BO_ACIDIFIED_ZONE_FIRE_ATK,Actified Zone Fire Attack
 
 // Abyss Chaser
-5311,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	ABC_DAGGER_AND_BOW_M,Dagger And Bow Mastery
-5312,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	ABC_MAGIC_SWORD_M,Magic Sword Mastery
-5313,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	ABC_STRIP_SHADOW,Strip Shadow
-5314,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	ABC_ABYSS_DAGGER,Abyss Dagger
-5315,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	ABC_UNLUCKY_RUSH,Unlucky Rush
-5316,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	ABC_CHAIN_REACTION_SHOT,Chain Reaction Shot
+5311,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	ABC_DAGGER_AND_BOW_M,Dagger And Bow Mastery
+5312,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	ABC_MAGIC_SWORD_M,Magic Sword Mastery
+5313,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	ABC_STRIP_SHADOW,Strip Shadow
+5314,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	ABC_ABYSS_DAGGER,Abyss Dagger
+5315,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	ABC_UNLUCKY_RUSH,Unlucky Rush
+5316,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	ABC_CHAIN_REACTION_SHOT,Chain Reaction Shot
 5317,0,6,4,0,0x1,0,5,1,yes,0,0,0,none,0,0,0,	ABC_FROM_THE_ABYSS,From The Abyss
-5318,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	ABC_ABYSS_SLAYER,Abyss Slayer
-5319,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	ABC_ABYSS_STRIKE,Abyss Strike
-5320,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	ABC_DEFT_STAB,Deft Stab
-5321,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	ABC_ABYSS_SQUARE,Abyss Square
-5322,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	ABC_FRENZY_SHOT,Frenzy Shot
+5318,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	ABC_ABYSS_SLAYER,Abyss Slayer
+5319,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	ABC_ABYSS_STRIKE,Abyss Strike
+5320,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	ABC_DEFT_STAB,Deft Stab
+5321,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	ABC_ABYSS_SQUARE,Abyss Square
+5322,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	ABC_FRENZY_SHOT,Frenzy Shot
 
 // Windhawk
 5323,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	WH_ADVANCED_TRAP,Advanced Trap
@@ -237,65 +237,65 @@
 5335,1,6,2,3,0,0,5,1,yes,0,0,0,weapon,0,0,3,	WH_FLAMETRAP,Flame Trap
 
 // Biolo
-5336,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	BO_BIONIC_PHARMACY,Bionic Pharmacy
-5337,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	BO_BIONICS_M,Bionics Mastery
-5338,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	BO_THE_WHOLE_PROTECTION,The Whole Protection
-5339,0,0,0,0,0,0,4,0,no,0,0,0,none,0,0,0,	BO_ADVANCE_PROTECTION,Advance Protection
-5340,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	BO_ACIDIFIED_ZONE_WATER,Acidified Zone Water
-5341,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	BO_ACIDIFIED_ZONE_GROUND,Acidified Zone Ground
-5342,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	BO_ACIDIFIED_ZONE_WIND,Acidified Zone Wind
-5343,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	BO_ACIDIFIED_ZONE_FIRE,Acidified Zone Fire
-5344,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	BO_WOODENWARRIOR,Wooden Warrior
-5345,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	BO_WOODEN_FAIRY,Wooden Fairy
-5346,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	BO_CREEPER,Creeper
-5347,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	BO_RESEARCHREPORT,Research Report
-5348,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	BO_HELLTREE,Hell Tree
+5336,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	BO_BIONIC_PHARMACY,Bionic Pharmacy
+5337,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	BO_BIONICS_M,Bionics Mastery
+5338,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	BO_THE_WHOLE_PROTECTION,The Whole Protection
+5339,0,0,0,0,0,0,4,0,yes,0,0,0,none,0,0,0,	BO_ADVANCE_PROTECTION,Advance Protection
+5340,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	BO_ACIDIFIED_ZONE_WATER,Acidified Zone Water
+5341,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	BO_ACIDIFIED_ZONE_GROUND,Acidified Zone Ground
+5342,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	BO_ACIDIFIED_ZONE_WIND,Acidified Zone Wind
+5343,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	BO_ACIDIFIED_ZONE_FIRE,Acidified Zone Fire
+5344,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	BO_WOODENWARRIOR,Wooden Warrior
+5345,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	BO_WOODEN_FAIRY,Wooden Fairy
+5346,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	BO_CREEPER,Creeper
+5347,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	BO_RESEARCHREPORT,Research Report
+5348,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	BO_HELLTREE,Hell Tree
 
 // Troubadour/Trouvere
-5349,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	TR_STAGE_MANNER,Stage Manner
-5350,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	TR_RETROSPECTION,Retrospection
-5351,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	TR_MYSTIC_SYMPHONY,Mystic Symphony
-5352,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	TR_KVASIR_SONATA,Kvasir Sonata
-5353,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	TR_ROSEBLOSSOM,Rose Blossom
+5349,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_STAGE_MANNER,Stage Manner
+5350,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	TR_RETROSPECTION,Retrospection
+5351,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	TR_MYSTIC_SYMPHONY,Mystic Symphony
+5352,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	TR_KVASIR_SONATA,Kvasir Sonata
+5353,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_ROSEBLOSSOM,Rose Blossom
 5354,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	TR_ROSEBLOSSOM_ATK,Rose Blossom Attack
-5355,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	TR_RHYTHMSHOOTING,Rhythm Shooting
-5356,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	TR_METALIC_FURY,Metalic Fury
-5357,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	TR_SOUNDBLEND,Sound Blend
-5358,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	TR_GEF_NOCTURN,Geffenia Nocturn
-5359,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	TR_ROKI_CAPRICCIO,Roki Capriccio
-5360,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	TR_AIN_RHAPSODY,Ain Rhapsody
-5361,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	TR_MUSICAL_INTERLUDE,Musical Interlude
-5362,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	TR_JAWAII_SERENADE,Jawaii Serenade
-5363,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	TR_NIPELHEIM_REQUIEM,Nipelheim Requiem
-5364,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	TR_PRON_MARCH,Pron March
+5355,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_RHYTHMSHOOTING,Rhythm Shooting
+5356,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_METALIC_FURY,Metalic Fury
+5357,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_SOUNDBLEND,Sound Blend
+5358,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_GEF_NOCTURN,Geffenia Nocturn
+5359,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_ROKI_CAPRICCIO,Roki Capriccio
+5360,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_AIN_RHAPSODY,Ain Rhapsody
+5361,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_MUSICAL_INTERLUDE,Musical Interlude
+5362,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_JAWAII_SERENADE,Jawaii Serenade
+5363,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_NIPELHEIM_REQUIEM,Nipelheim Requiem
+5364,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_PRON_MARCH,Pron March
 
 // Elemental Master
-5365,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	EM_MAGIC_BOOK_M,Magic Book Mastery
-5366,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	EM_SPELL_ENCHANTING,Spell Enchanting
-5367,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	EM_ACTIVITY_BURN,Activity Burn
-5368,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	EM_INCREASING_ACTIVITY,Increasing Activity
-5369,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	EM_DIAMOND_STORM,Diamond Storm
-5370,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	EM_LIGHTNING_LAND,Lightning Land
-5371,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	EM_VENOM_SWAMP,Venom Swamp
-5372,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	EM_CONFLAGRATION,Conflagration
-5373,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	EM_TERRA_DRIVE,Terra Drive
-5374,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	EM_ELEMENTAL_SPIRIT_M,Elemental Spirit Mastery
-5375,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	EM_SUMMON_ELEMENTAL_ARDOR,Summon Elemental Ardor
-5376,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	EM_SUMMON_ELEMENTAL_DILUVIO,Summon Elemental Diluvio
-5377,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	EM_SUMMON_ELEMENTAL_PROCELLA,Summon Elemental Procella
-5378,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	EM_SUMMON_ELEMENTAL_TERREMOTUS,Summon Elemental Terremotus
-5379,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	EM_SUMMON_ELEMENTAL_SERPENS,Summon Elemental Serpens
-5380,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	EM_ELEMENTAL_BUSTER,Elemental Buster
-5381,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	EM_ELEMENTAL_VEIL,Elemental Veil
+5365,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	EM_MAGIC_BOOK_M,Magic Book Mastery
+5366,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	EM_SPELL_ENCHANTING,Spell Enchanting
+5367,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	EM_ACTIVITY_BURN,Activity Burn
+5368,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	EM_INCREASING_ACTIVITY,Increasing Activity
+5369,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	EM_DIAMOND_STORM,Diamond Storm
+5370,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	EM_LIGHTNING_LAND,Lightning Land
+5371,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	EM_VENOM_SWAMP,Venom Swamp
+5372,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	EM_CONFLAGRATION,Conflagration
+5373,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	EM_TERRA_DRIVE,Terra Drive
+5374,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	EM_ELEMENTAL_SPIRIT_M,Elemental Spirit Mastery
+5375,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	EM_SUMMON_ELEMENTAL_ARDOR,Summon Elemental Ardor
+5376,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	EM_SUMMON_ELEMENTAL_DILUVIO,Summon Elemental Diluvio
+5377,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	EM_SUMMON_ELEMENTAL_PROCELLA,Summon Elemental Procella
+5378,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	EM_SUMMON_ELEMENTAL_TERREMOTUS,Summon Elemental Terremotus
+5379,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	EM_SUMMON_ELEMENTAL_SERPENS,Summon Elemental Serpens
+5380,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	EM_ELEMENTAL_BUSTER,Elemental Buster
+5381,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	EM_ELEMENTAL_VEIL,Elemental Veil
 
 // Extra 4th Job Skills
 5382,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	ABC_CHAIN_REACTION_SHOT_ATK,Chain Reaction Shot Attack
 5383,1,6,1,0,0x2,3,5,1,no,0,0,0,magic,0,0,0,	ABC_FROM_THE_ABYSS_ATK,From The Abyss Attack
-5384,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	BO_WOODEN_THROWROCK,Wooden Throw Rock
-5385,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	BO_WOODEN_ATTACK,Wooden Attack
-5386,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	BO_HELL_HOWLING,Hell Howling
-5387,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	BO_HELL_DUSTY,Hell Dusty
-5388,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	BO_FAIRY_DUSTY,Fairy Dusty
+5384,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	BO_WOODEN_THROWROCK,Wooden Throw Rock
+5385,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	BO_WOODEN_ATTACK,Wooden Attack
+5386,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	BO_HELL_HOWLING,Hell Howling
+5387,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	BO_HELL_DUSTY,Hell Dusty
+5388,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	BO_FAIRY_DUSTY,Fairy Dusty
 5389,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	EM_ELEMENTAL_BUSTER_FIRE,Elemental Buster Fire
 5390,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	EM_ELEMENTAL_BUSTER_WATER,Elemental Buster Water
 5391,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	EM_ELEMENTAL_BUSTER_WIND,Elemental Buster Wind
@@ -303,25 +303,25 @@
 5393,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	EM_ELEMENTAL_BUSTER_POISON,Elemental Buster Poison
 
 // Super Elemental Spirits
-8443,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	EM_EL_FLAMETECHNIC,Flame Technic
-8444,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	EM_EL_FLAMEARMOR,Flame Armor
-8445,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	EM_EL_FLAMEROCK,Flame Rock
-8446,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	EM_EL_COLD_FORCE,Cold Force
-8447,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	EM_EL_CRYSTAL_ARMOR,Crystal Armor
-8448,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	EM_EL_AGE_OF_ICE,Age Of Ice
-8449,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	EM_EL_GRACE_BREEZE,Grace Breeze
-8450,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	EM_EL_EYES_OF_STORM,Eyes Of Storm
-8451,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	EM_EL_STORM_WIND,Storm Wind
-8452,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	EM_EL_EARTH_CARE,Earth Care
-8453,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	EM_EL_STRONG_PROTECTION,Strong Protection
-8454,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	EM_EL_AVALANCHE,Avalanche
-8455,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	EM_EL_DEEP_POISONING,Deep Poisoning
-8456,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	EM_EL_POISON_SHIELD,Poison Shield
-8457,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	EM_EL_DEADLY_POISON,Deadly Poison
+8443,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	EM_EL_FLAMETECHNIC,Flame Technic
+8444,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	EM_EL_FLAMEARMOR,Flame Armor
+8445,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	EM_EL_FLAMEROCK,Flame Rock
+8446,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	EM_EL_COLD_FORCE,Cold Force
+8447,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	EM_EL_CRYSTAL_ARMOR,Crystal Armor
+8448,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	EM_EL_AGE_OF_ICE,Age Of Ice
+8449,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	EM_EL_GRACE_BREEZE,Grace Breeze
+8450,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	EM_EL_EYES_OF_STORM,Eyes Of Storm
+8451,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	EM_EL_STORM_WIND,Storm Wind
+8452,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	EM_EL_EARTH_CARE,Earth Care
+8453,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	EM_EL_STRONG_PROTECTION,Strong Protection
+8454,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	EM_EL_AVALANCHE,Avalanche
+8455,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	EM_EL_DEEP_POISONING,Deep Poisoning
+8456,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	EM_EL_POISON_SHIELD,Poison Shield
+8457,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	EM_EL_DEADLY_POISON,Deadly Poison
 
 // ABR (Automated Battle Robot)
-8601,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	ABR_BATTLE_BUSTER,Battle Buster
-8602,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	ABR_DUAL_CANNON_FIRE,Dual Cannon Fire
-8603,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	ABR_NET_REPAIR,Net Repair
-8604,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	ABR_NET_SUPPORT,Net Support
-8605,0,0,0,0,0,0,1,0,no,0,0,0,none,0,0,0,	ABR_INFINITY_BUSTER,Infinity Buster
+8601,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	ABR_BATTLE_BUSTER,Battle Buster
+8602,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	ABR_DUAL_CANNON_FIRE,Dual Cannon Fire
+8603,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	ABR_NET_REPAIR,Net Repair
+8604,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	ABR_NET_SUPPORT,Net Support
+8605,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	ABR_INFINITY_BUSTER,Infinity Buster
