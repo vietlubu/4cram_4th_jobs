@@ -6866,6 +6866,7 @@ int pc_jobid2mapid(unsigned short b_class)
 		case JOB_CARDINAL:              return MAPID_CARDINAL;
 		case JOB_MEISTER:               return MAPID_MEISTER;
 		case JOB_SHADOW_CROSS:          return MAPID_SHADOW_CROSS;
+	//4-2 Jobs
 		case JOB_IMPERIAL_GUARD:        return MAPID_IMPERIAL_GUARD;
 		case JOB_ELEMENTAL_MASTER:      return MAPID_ELEMENTAL_MASTER;
 		case JOB_INQUISITOR:            return MAPID_INQUISITOR;
@@ -7031,6 +7032,7 @@ int pc_mapid2jobid(unsigned short class_, int sex)
 		case MAPID_CARDINAL:              return JOB_CARDINAL;
 		case MAPID_MEISTER:               return JOB_MEISTER;
 		case MAPID_SHADOW_CROSS:          return JOB_SHADOW_CROSS;
+	//4-2 Jobs
 		case MAPID_IMPERIAL_GUARD:        return JOB_IMPERIAL_GUARD;
 		case MAPID_ELEMENTAL_MASTER:      return JOB_ELEMENTAL_MASTER;
 		case MAPID_INQUISITOR:            return JOB_INQUISITOR;
