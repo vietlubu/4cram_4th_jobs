@@ -2317,6 +2317,7 @@ static int battle_range_type(struct block_list *src, struct block_list *target, 
 #endif
 		case GC_CROSSIMPACT:// Cast range is 7 cells and player jumps to target but skill is considered melee
 		case DK_SERVANT_W_PHANTOM:// 9 cell cast range but deals melee damage.
+		case MT_RUSH_QUAKE:// 9 cell cast range but deals melee damage.
 			return BF_SHORT;// Melee
 
 		case DK_HACKANDSLASHER_ATK:// 2 cell cast range but deals ranged damage.
@@ -4396,6 +4397,8 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			RE_LVL_DMOD(100);
 			if (distance_bl(src, target) > 2) // Will deal 75% damage outside of 5x5 area.
 				skillratio = skillratio * 75 / 100;
+			if (sc && sc->data[SC_AXE_STOMP])// Whats the official increase? [Rytech]
+				skillratio += skillratio * 50 / 100;
 			break;
 		case SC_FATALMENACE:
 			skillratio += 100 * skill_lv;
@@ -4905,6 +4908,20 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			break;
 		case CD_PETITIO:
 			skillratio += -100 + 270 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			break;
+		case MT_AXE_STOMP:
+			skillratio += -100 + 350 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			break;
+		case MT_RUSH_QUAKE:
+			skillratio += -100 + 750 * skill_lv + 10 * sstatus->pow;
+			if (tstatus->race == RC_FORMLESS || tstatus->race == RC_INSECT)
+				skillratio += 350 * skill_lv;
+			RE_LVL_DMOD(100);
+			break;
+		case MT_A_MACHINE:// Formula unknown. Using Dancing Knife's formula for now. [Rytech]
+			skillratio += -100 + 200 * skill_lv + 5 * sstatus->pow;
 			RE_LVL_DMOD(100);
 			break;
 		case WH_HAWKRUSH:
@@ -5839,6 +5856,10 @@ static struct Damage initialize_weapon_data(struct block_list *src, struct block
 					if ((sd->servantball + sd->servantball_old) < wd.div_)
 						wd.div_ = sd->servantball + sd->servantball_old;
 				}
+				break;
+			case MT_AXE_STOMP:
+				if (sd && sd->status.weapon == W_2HAXE)
+					wd.div_ = 2;
 				break;
 		}
 	} else {

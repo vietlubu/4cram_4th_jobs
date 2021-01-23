@@ -1116,39 +1116,48 @@ void initChangeTables(void)
 	set_sc( SP_SOULCOLLECT	, SC_SOULCOLLECT	, EFST_SOULCOLLECT	, SCB_NONE );
 
 	// Dragon Knight
-	set_sc( DK_SERVANTWEAPON          , SC_SERVANTWEAPON          , EFST_SERVANTWEAPON          , SCB_NONE );
-	set_sc_with_vfx( DK_SERVANT_W_SIGN, SC_SERVANT_SIGN           , EFST_SERVANT_SIGN           , SCB_NONE );
-	set_sc_with_vfx( DK_SERVANT_W_PHANTOM      , SC_HANDICAPSTATE_DEEPBLIND, EFST_HANDICAPSTATE_DEEPBLIND, SCB_NONE );
-	set_sc( DK_CHARGINGPIERCE         , SC_CHARGINGPIERCE         , EFST_CHARGINGPIERCE         , SCB_NONE );
-	set_sc_with_vfx(DK_DRAGONIC_AURA  , SC_DRAGONIC_AURA          , EFST_DRAGONIC_AURA          , SCB_NONE );
-	set_sc_with_vfx(DK_VIGOR          , SC_VIGOR                  , EFST_VIGOR                  , SCB_ALL );
+	set_sc(          DK_SERVANTWEAPON    , SC_SERVANTWEAPON          , EFST_SERVANTWEAPON          , SCB_NONE );
+	set_sc_with_vfx( DK_SERVANT_W_SIGN   , SC_SERVANT_SIGN           , EFST_SERVANT_SIGN           , SCB_NONE );
+	set_sc_with_vfx( DK_SERVANT_W_PHANTOM, SC_HANDICAPSTATE_DEEPBLIND, EFST_HANDICAPSTATE_DEEPBLIND, SCB_NONE );
+	set_sc(          DK_CHARGINGPIERCE   , SC_CHARGINGPIERCE         , EFST_CHARGINGPIERCE         , SCB_NONE );
+	set_sc_with_vfx( DK_DRAGONIC_AURA    , SC_DRAGONIC_AURA          , EFST_DRAGONIC_AURA          , SCB_NONE );
+	set_sc_with_vfx( DK_VIGOR            , SC_VIGOR                  , EFST_VIGOR                  , SCB_ALL );
 
 	// Arch Mage
-	set_sc_with_vfx( AG_DEADLY_PROJECTION, SC_DEADLY_DEFEASANCE, EFST_DEADLY_DEFEASANCE, SCB_NONE);
-	set_sc( AG_CRYSTAL_IMPACT            , SC_CRYSTAL_IMPACT   , EFST_CRYSTAL_IMPACT   , SCB_NONE);
-	set_sc_with_vfx( AG_CLIMAX           , SC_CLIMAX           , EFST_CLIMAX           , SCB_NONE);
-
-	// Cardinal
-	set_sc_with_vfx( CD_MEDIALE_VOTUM, SC_MEDIALE                  , EFST_MEDIALE                  , SCB_NONE);
-	set_sc( CD_ARGUTUS_VITA , SC_A_VITA                   , EFST_A_VITA                   , SCB_NONE);
-	set_sc( CD_ARGUTUS_TELUM, SC_A_TELUM                  , EFST_A_TELUM                  , SCB_NONE);
-	set_sc_with_vfx( CD_ARBITRIUM    , SC_HANDICAPSTATE_DEEPSILENCE, EFST_HANDICAPSTATE_DEEPSILENCE, SCB_NONE);
-	set_sc_with_vfx( CD_PRESENS_ACIES, SC_PRE_ACIES                , EFST_PRE_ACIES                , SCB_CRATE);
-	set_sc_with_vfx( CD_COMPETENTIA  , SC_COMPETENTIA              , EFST_COMPETENTIA              , SCB_PATK|SCB_SMATK);
-	set_sc_with_vfx( CD_RELIGIO      , SC_RELIGIO                  , EFST_RELIGIO                  , SCB_STA|SCB_WIS|SCB_SPL);
-	set_sc_with_vfx( CD_BENEDICTUM   , SC_BENEDICTUM               , EFST_BENEDICTUM               , SCB_POW|SCB_CON|SCB_CRT);
+	set_sc_with_vfx( AG_DEADLY_PROJECTION, SC_DEADLY_DEFEASANCE, EFST_DEADLY_DEFEASANCE, SCB_NONE );
+	set_sc(          AG_CRYSTAL_IMPACT   , SC_CRYSTAL_IMPACT   , EFST_CRYSTAL_IMPACT   , SCB_NONE );
+	set_sc_with_vfx( AG_CLIMAX           , SC_CLIMAX           , EFST_CLIMAX           , SCB_NONE );
 
 	// Windhawk
-	set_sc_with_vfx( WH_WIND_SIGN    , SC_WINDSIGN                     , EFST_WINDSIGN                     , SCB_NONE);
-	set_sc_with_vfx( WH_CALAMITYGALE , SC_CALAMITYGALE                 , EFST_CALAMITYGALE                 , SCB_NONE);
-	set_sc ( WH_CRESCIVE_BOLT        , SC_CRESCIVEBOLT                 , EFST_CRESCIVEBOLT                 , SCB_NONE);
-	set_sc_with_vfx( WH_DEEPBLINDTRAP, SC_HANDICAPSTATE_DEEPBLIND      , EFST_HANDICAPSTATE_DEEPBLIND      , SCB_NONE);
-	set_sc_with_vfx( WH_SOLIDTRAP    , SC_HANDICAPSTATE_CRYSTALLIZATION, EFST_HANDICAPSTATE_CRYSTALLIZATION, SCB_NONE);
-	set_sc_with_vfx( WH_SWIFTTRAP    , SC_HANDICAPSTATE_LIGHTNINGSTRIKE, EFST_HANDICAPSTATE_LIGHTNINGSTRIKE, SCB_NONE);
-	set_sc_with_vfx( WH_FLAMETRAP    , SC_HANDICAPSTATE_CONFLAGRATION  , EFST_HANDICAPSTATE_CONFLAGRATION  , SCB_NONE);
+	set_sc_with_vfx( WH_WIND_SIGN    , SC_WINDSIGN                     , EFST_WINDSIGN                     , SCB_NONE );
+	set_sc_with_vfx( WH_CALAMITYGALE , SC_CALAMITYGALE                 , EFST_CALAMITYGALE                 , SCB_NONE );
+	set_sc (         WH_CRESCIVE_BOLT, SC_CRESCIVEBOLT                 , EFST_CRESCIVEBOLT                 , SCB_NONE );
+	set_sc_with_vfx( WH_DEEPBLINDTRAP, SC_HANDICAPSTATE_DEEPBLIND      , EFST_HANDICAPSTATE_DEEPBLIND      , SCB_NONE );
+	set_sc_with_vfx( WH_SOLIDTRAP    , SC_HANDICAPSTATE_CRYSTALLIZATION, EFST_HANDICAPSTATE_CRYSTALLIZATION, SCB_NONE );
+	set_sc_with_vfx( WH_SWIFTTRAP    , SC_HANDICAPSTATE_LIGHTNINGSTRIKE, EFST_HANDICAPSTATE_LIGHTNINGSTRIKE, SCB_NONE );
+	set_sc_with_vfx( WH_FLAMETRAP    , SC_HANDICAPSTATE_CONFLAGRATION  , EFST_HANDICAPSTATE_CONFLAGRATION  , SCB_NONE );
+
+	// Cardinal
+	set_sc_with_vfx( CD_MEDIALE_VOTUM, SC_MEDIALE                  , EFST_MEDIALE                  , SCB_NONE );
+	set_sc(          CD_ARGUTUS_VITA , SC_A_VITA                   , EFST_A_VITA                   , SCB_NONE );
+	set_sc(          CD_ARGUTUS_TELUM, SC_A_TELUM                  , EFST_A_TELUM                  , SCB_NONE );
+	set_sc_with_vfx( CD_ARBITRIUM    , SC_HANDICAPSTATE_DEEPSILENCE, EFST_HANDICAPSTATE_DEEPSILENCE, SCB_NONE );
+	set_sc_with_vfx( CD_PRESENS_ACIES, SC_PRE_ACIES                , EFST_PRE_ACIES                , SCB_CRATE );
+	set_sc_with_vfx( CD_COMPETENTIA  , SC_COMPETENTIA              , EFST_COMPETENTIA              , SCB_PATK|SCB_SMATK );
+	set_sc_with_vfx( CD_RELIGIO      , SC_RELIGIO                  , EFST_RELIGIO                  , SCB_STA|SCB_WIS|SCB_SPL );
+	set_sc_with_vfx( CD_BENEDICTUM   , SC_BENEDICTUM               , EFST_BENEDICTUM               , SCB_POW|SCB_CON|SCB_CRT );
+
+	// Meister
+	set_sc(          MT_AXE_STOMP               , SC_AXE_STOMP        , EFST_AXE_STOMP        , SCB_NONE );
+	set_sc_with_vfx( MT_A_MACHINE               , SC_A_MACHINE        , EFST_A_MACHINE        , SCB_NONE );
+	set_sc_with_vfx( MT_D_MACHINE               , SC_D_MACHINE        , EFST_D_MACHINE        , SCB_DEF|SCB_RES );
+	set_sc(          MT_SUMMON_ABR_BATTLE_WARIOR, SC_ABR_BATTLE_WARIOR, EFST_ABR_BATTLE_WARIOR, SCB_NONE );
+	set_sc(          MT_SUMMON_ABR_DUAL_CANNON  , SC_ABR_DUAL_CANNON  , EFST_ABR_DUAL_CANNON  , SCB_NONE );
+	set_sc(          MT_SUMMON_ABR_MOTHER_NET   , SC_ABR_MOTHER_NET   , EFST_ABR_MOTHER_NET   , SCB_NONE );
+	set_sc(          MT_SUMMON_ABR_INFINITY     , SC_ABR_INFINITY     , EFST_ABR_INFINITY     , SCB_NONE );
 
 	// Abyss Chaser
-	set_sc(ABC_FROM_THE_ABYSS, SC_ABYSSFORCEWEAPON, EFST_ABYSSFORCEWEAPON, SCB_NONE);
+	set_sc(          ABC_FROM_THE_ABYSS, SC_ABYSSFORCEWEAPON, EFST_ABYSSFORCEWEAPON, SCB_NONE );
 
 #ifdef RENEWAL
 	set_sc( NV_HELPANGEL			, SC_HELPANGEL		, EFST_HELPANGEL	, SCB_NONE );
@@ -1727,6 +1736,8 @@ void initChangeTables(void)
 	StatusDisplayType[SC_BENEDICTUM] = BL_PC;
 	StatusDisplayType[SC_WINDSIGN] = BL_PC;
 	StatusDisplayType[SC_CALAMITYGALE] = BL_PC;
+	StatusDisplayType[SC_A_MACHINE] = BL_PC;
+	StatusDisplayType[SC_D_MACHINE] = BL_PC;
 
 	/* StatusChangeState (SCS_) NOMOVE */
 	StatusChangeStateTable[SC_ANKLE]				|= SCS_NOMOVE;
@@ -4975,6 +4986,16 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 
 		sd->indexed_bonus.magic_atk_ele[ELE_HOLY] += holy_matk[skill-1];
 	}
+	if ((skill = pc_checkskill(sd, MT_TWOAXEDEF)) > 0 && sd->status.weapon == W_2HAXE)
+	{
+		short small_def[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+		short medium_def[10] = { 2, 3, 5, 6, 8, 9, 11, 12, 14, 15 };
+		short large_def[10] = { 3, 5, 7, 9, 10, 12, 13, 15, 16, 18 };
+
+		sd->indexed_bonus.subsize[SZ_SMALL] += small_def[skill-1];
+		sd->indexed_bonus.subsize[SZ_MEDIUM] += medium_def[skill-1];
+		sd->indexed_bonus.subsize[SZ_BIG] += large_def[skill-1];
+	}
 
 	if(sc->count) {
 		if(sc->data[SC_CONCENTRATE]) { // Update the card-bonus data
@@ -7773,6 +7794,8 @@ static defType status_calc_def(struct block_list *bl, struct status_change *sc, 
 		def += sc->data[SC_GLASTHEIM_ITEMDEF]->val1;
 	if (sc->data[SC_SOULGOLEM])
 		def += sc->data[SC_SOULGOLEM]->val2;
+	if (sc->data[SC_D_MACHINE])
+		def += sc->data[SC_D_MACHINE]->val2;
 
 	return (defType)cap_value(def,DEFTYPE_MIN,DEFTYPE_MAX);
 }
@@ -8552,6 +8575,9 @@ static signed short status_calc_res(struct block_list *bl, struct status_change 
 {
 	if (!sc || !sc->count)
 		return cap_value(res, 0, SHRT_MAX);
+
+	if (sc->data[SC_D_MACHINE])
+		res += sc->data[SC_D_MACHINE]->val3;
 
 	return (short)cap_value(res, 0, SHRT_MAX);
 }
@@ -13019,6 +13045,14 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 		case SC_BENEDICTUM:
 			val2 = 2 * val1;// Trait Stats Increase
 			break;
+		case SC_A_MACHINE:
+			val4 = tick / 1000;
+			tick_time = 1000;
+			break;
+		case SC_D_MACHINE:
+			val2 = 200 + 50 * val1;// DEF Increase
+			val3 = 20 * val1;// Res Increase
+			break;
 		case SC_WINDSIGN:
 			val2 = 8 + 6 * val1;// Chance to gain AP on attack.
 			if (val1 = 5)// Its 40% on level 5.
@@ -15186,6 +15220,14 @@ TIMER_FUNC(status_change_timer){
 			clif_specialeffect(bl, 1808, AREA);
 			skill_castend_nodamage_id(bl, bl, CD_MEDIALE_VOTUM, sce->val1, tick, 1);
 			sc_timer_next(2000 + tick);
+			return 0;
+		}
+		break;
+
+	case SC_A_MACHINE:
+		if (--(sce->val4) >= 0) {
+			skill_castend_nodamage_id(bl, bl, MT_A_MACHINE, sce->val1, tick, 1);
+			sc_timer_next(1000 + tick);
 			return 0;
 		}
 		break;

@@ -5317,6 +5317,9 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case CD_ARBITRIUM_ATK:
 	case CD_PETITIO:
 	case CD_FRAMEN:
+	case MT_AXE_STOMP:
+	case MT_RUSH_QUAKE:
+	case MT_A_MACHINE:
 	case WH_GALESTORM:
 	case ABC_FROM_THE_ABYSS_ATK:
 		if( flag&1 ) {//Recursive invocation
@@ -5394,6 +5397,7 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 						skill_id = SU_LUNATICCARROTBEAT2;
 					break;
 				case DK_SERVANT_W_PHANTOM:
+				case MT_RUSH_QUAKE:
 				{
 					uint8 dir = map_calc_dir(bl, src->x, src->y);
 
@@ -7322,13 +7326,14 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case DK_CHARGINGPIERCE:
 	case DK_VIGOR:
 	case AG_CLIMAX:
-	case WH_WIND_SIGN:
-	case WH_CALAMITYGALE:
 	case CD_ARGUTUS_VITA:
 	case CD_ARGUTUS_TELUM:
 	case CD_PRESENS_ACIES:
 	case CD_RELIGIO:
 	case CD_BENEDICTUM:
+	case MT_D_MACHINE:
+	case WH_WIND_SIGN:
+	case WH_CALAMITYGALE:
 		clif_skill_nodamage(src,bl,skill_id,skill_lv,
 			sc_start(src,bl,type,100,skill_lv,skill_get_time(skill_id,skill_lv)));
 		break;
@@ -7845,6 +7850,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case AG_DESTRUCTIVE_HURRICANE:
 	case AG_CRYSTAL_IMPACT:
 	case AG_FROZEN_SLASH:
+	case MT_AXE_STOMP:
 	{
 		struct status_change *sc = status_get_sc(src);
 		int starget = BL_CHAR|BL_SKILL;
@@ -7868,6 +7874,8 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 			}
 			status_change_end(src, SC_DIMENSION, INVALID_TIMER);
 		}
+		if (skill_id == MT_AXE_STOMP)
+			sc_start(src, bl, SC_AXE_STOMP, 100, skill_lv, skill_get_time(skill_id, skill_lv));
 
 		skill_area_temp[1] = 0;
 		clif_skill_nodamage(src,bl,skill_id,skill_lv,1);
@@ -7876,6 +7884,16 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 		if( !i && ( skill_id == RK_WINDCUTTER || skill_id == NC_AXETORNADO || skill_id == SR_SKYNETBLOW || skill_id == KO_HAPPOKUNAI ) )
 			clif_skill_damage(src,src,tick, status_get_amotion(src), 0, -30000, 1, skill_id, skill_lv, DMG_SINGLE);
 	}
+		break;
+
+	case MT_A_MACHINE:
+		if (flag&1)
+		{
+			skill_area_temp[1] = 0;
+			map_foreachinrange(skill_area_sub, bl, skill_get_splash(skill_id, skill_lv), BL_CHAR|BL_SKILL, src, skill_id, skill_lv, tick, flag|BCT_ENEMY|SD_LEVEL|SD_SPLASH, skill_castend_damage_id);
+		}
+		else
+			clif_skill_nodamage(src, bl, skill_id, skill_lv, sc_start(src, bl, type, 100, skill_lv, skill_get_time(skill_id, skill_lv)));
 		break;
 
 	case RK_IGNITIONBREAK:
