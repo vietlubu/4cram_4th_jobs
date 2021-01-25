@@ -11486,6 +11486,16 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 		}
 		break;
 
+	case MT_M_MACHINE:
+		if (sd)
+		{
+			sd->skill_id_old = skill_id;
+			sd->skill_lv_old = skill_lv;
+			clif_cooking_list(sd, 31, skill_id, 7 + skill_lv, 7);
+			clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
+		}
+		break;
+
 	case EL_CIRCLE_OF_FIRE:
 	case EL_PYROTECHNIC:
 	case EL_HEATER:
@@ -16042,6 +16052,7 @@ bool skill_check_condition_castbegin(struct map_session_data* sd, uint16 skill_i
 		case GN_MAKEBOMB:
 		case GN_S_PHARMACY:
 		case GN_CHANGEMATERIAL:
+		case MT_M_MACHINE:
 			if( sd->menuskill_id != skill_id )
 				return false;
 			break;
@@ -17095,6 +17106,7 @@ bool skill_check_condition_castend(struct map_session_data* sd, uint16 skill_id,
 		case GN_MAKEBOMB:
 		case GN_S_PHARMACY:
 		case GN_CHANGEMATERIAL:
+		case MT_M_MACHINE:
 			if( sd->menuskill_id != skill_id )
 				return false;
 			break;
@@ -20723,6 +20735,12 @@ bool skill_produce_mix(struct map_session_data *sd, uint16 skill_id, t_itemid na
 					make_per = 100000; // Adjust success back to 100% for crafting
 				}
 				break;
+			case MT_M_MACHINE:
+			{// Difficulty formula unknown. Making it 100% success for now. [Rytech]
+				qty = 7 + skill_lv;
+				make_per = 100000;
+			}
+			break;
 			default:
 				if (sd->menuskill_id == AM_PHARMACY &&
 					sd->menuskill_val > 10 && sd->menuskill_val <= 20)
@@ -20933,6 +20951,10 @@ bool skill_produce_mix(struct map_session_data *sd, uint16 skill_id, t_itemid na
 					clif_produceeffect(sd, 6, nameid);
 					clif_misceffect(&sd->bl, 5);
 					clif_msg_skill(sd, skill_id, ITEM_PRODUCE_SUCCESS);
+					break;
+				case MT_M_MACHINE:
+					clif_produceeffect(sd, 0, nameid);
+					clif_misceffect(&sd->bl, 3);
 					break;
 			}
 			return true;

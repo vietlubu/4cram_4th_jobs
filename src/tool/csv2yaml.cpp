@@ -707,7 +707,7 @@ static bool parse_item_constants_txt( const char* path ){
 		str[21] = str[21] + 1;  //skip the first left curly
 		*p = '\0';              //null the last right curly
 
-		uint16 item_id = atoi( str[0] );
+		uint32 item_id = atoi( str[0] );
 		char* name = trim( str[1] );
 
 		aegis_itemnames[item_id] = std::string(name);

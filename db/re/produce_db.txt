@@ -692,3 +692,10 @@
 279,533,30,0,0,11058,0,514,1,519,1
 // Unripe Apple (619) <-- 10 Sticky Mucus, 20 Green Herbs, 10 Apples
 280,619,30,0,0,11058,0,938,10,511,20,512,10
+
+//===== Capsules === ItemLV=31 =================
+// Device Capsule (1000289) <-- MT_M_MACHINE Lvl, Device Creation Guide, 5 Mini Furnace, 5 Oridecon Hammer, 50 Magic Gear Fuel
+281,1000289,31,5297,1,1000352,0,612,5,615,5,6146,50
+// Auto Battle Capsule (1000290) <-- MT_M_MACHINE Lvl, Device Creation Guide, 5 Mini Furnace, 5 Oridecon Hammer, 75 Magic Gear Fuel
+282,1000290,31,5297,1,1000352,0,612,5,615,5,6146,75
+//==============================================

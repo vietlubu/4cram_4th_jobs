@@ -2188,6 +2188,9 @@ Body:
           Amount: 60
         - Level: 5
           Amount: 70
+      ItemCost:
+        - Item: Device_Creation_Guide
+          Amount: 0
   - Id: 5298
     Name: MT_A_MACHINE
     Description: Attack Machine
@@ -2238,6 +2241,9 @@ Body:
           Amount: 52
         - Level: 5
           Amount: 55
+      ItemCost:
+        - Item: Device_Capsule
+          Amount: 1
   - Id: 5299
     Name: MT_D_MACHINE
     Description: Defense Machine
@@ -2275,6 +2281,9 @@ Body:
           Amount: 52
         - Level: 5
           Amount: 55
+      ItemCost:
+        - Item: Device_Capsule
+          Amount: 1
   - Id: 5300
     Name: MT_TWOAXEDEF
     Description: Two Hand Axe Def
@@ -2318,6 +2327,9 @@ Body:
           Amount: 50
         - Level: 4
           Amount: 60
+      ItemCost:
+        - Item: Auto_Battle_Capsule
+          Amount: 1
   - Id: 5303
     Name: MT_SUMMON_ABR_DUAL_CANNON
     Description: ABR Dual Cannon
@@ -2351,6 +2363,9 @@ Body:
           Amount: 50
         - Level: 4
           Amount: 60
+      ItemCost:
+        - Item: Auto_Battle_Capsule
+          Amount: 1
   - Id: 5304
     Name: MT_SUMMON_ABR_MOTHER_NET
     Description: ABR Mother Net
@@ -2384,6 +2399,9 @@ Body:
           Amount: 50
         - Level: 4
           Amount: 60
+      ItemCost:
+        - Item: Auto_Battle_Capsule
+          Amount: 1
   - Id: 5305
     Name: MT_SUMMON_ABR_INFINITY
     Description: ABR Infinity
@@ -2417,6 +2435,9 @@ Body:
         - Level: 4
           Amount: 60
       ApCost: 200
+      ItemCost:
+        - Item: Auto_Battle_Capsule
+          Amount: 5
   - Id: 5306
     Name: AG_DESTRUCTIVE_HURRICANE_CLIMAX
     Description: Destructive Hurricane Climax
@@ -2630,6 +2651,9 @@ Body:
     AfterCastActDelay: 1000
     Requires:
       SpCost: 5
+      ItemCost:
+        - Item: Hawk_Flute
+          Amount: 0
   - Id: 5328
     Name: WH_CALAMITYGALE
     Description: Calamity Gale
