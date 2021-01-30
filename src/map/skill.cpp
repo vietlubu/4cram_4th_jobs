@@ -1393,6 +1393,9 @@ int skill_additional_effect(struct block_list* src, struct block_list *bl, uint1
 					if((sce=sc->data[SC_EDP]))
 						sc_start4(src,bl,SC_DPOISON,sce->val2, sce->val1,src->id,0,0,
 							skill_get_time2(ASC_EDP,sce->val1));
+					if ((sce = sc->data[SC_SHADOW_WEAPON]))
+						sc_start4(src, bl, SC_SHADOW_SCAR, sce->val2, sce->val1, src->id, 0, 0,
+							skill_get_time2(SHC_ENCHANTING_SHADOW, sce->val1));
 
 					if ((sce = sc->data[SC_LUXANIMA]) && rnd() % 100 < sce->val2)
 						skill_castend_nodamage_id(src, bl, RK_STORMBLAST, 1, tick, 0);
@@ -2149,6 +2152,16 @@ int skill_additional_effect(struct block_list* src, struct block_list *bl, uint1
 	case CD_ARBITRIUM:// Target is Deep Silenced by chance and is then dealt a 2nd splash hit.
 		sc_start(src, bl, SC_HANDICAPSTATE_DEEPSILENCE, 20 + 5 * skill_lv, skill_lv, skill_get_time(skill_id, skill_lv));
 		skill_castend_damage_id(src, bl, CD_ARBITRIUM_ATK, skill_lv, tick, SD_LEVEL);
+		break;
+	case SHC_FATAL_SHADOW_CROW:
+	{
+		short dark_claw_lv = 1;
+
+		if (pc_checkskill(sd, GC_DARKCROW) > 1)
+			dark_claw_lv = pc_checkskill(sd, GC_DARKCROW);
+
+		sc_start(src, bl, SC_DARKCROW, 100, dark_claw_lv, skill_get_time(skill_id, skill_lv));
+	}
 		break;
 	case WH_DEEPBLINDTRAP:// Need official success chances for all 4 Windhawk traps.
 		sc_start(src, bl, SC_HANDICAPSTATE_DEEPBLIND, 50, skill_lv, skill_get_time2(skill_id, skill_lv));
@@ -4976,12 +4989,29 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case DK_DRAGONIC_AURA:
 	case DK_STORMSLASH:
 	case CD_EFFLIGO:
+	case SHC_SHADOW_STAB:
 	case WH_HAWKRUSH:
 	case WH_HAWKBOOMERANG:
 		clif_skill_nodamage(src, bl, skill_id, skill_lv, tick);
 		skill_attack(BF_WEAPON, src, src, bl, skill_id, skill_lv, tick, flag);
 		if (skill_id == DK_DRAGONIC_AURA)
 			sc_start(src, src, SC_DRAGONIC_AURA, 100, skill_lv, skill_get_time(skill_id,skill_lv));
+		break;
+
+	case SHC_ETERNAL_SLASH:
+		if (sc && sc->data[SC_E_SLASH_COUNT])
+		{
+			short count = 1 + sc->data[SC_E_SLASH_COUNT]->val1;
+
+			if (count > 5)
+				count = 5;
+
+			sc_start(src, src, SC_E_SLASH_COUNT, 100, count, skill_get_time(skill_id, skill_lv));
+		}
+		else
+			sc_start(src, src, SC_E_SLASH_COUNT, 100, 1, skill_get_time(skill_id, skill_lv));
+		clif_skill_nodamage(src, bl, skill_id, skill_lv, tick);
+		skill_attack(BF_WEAPON, src, src, bl, skill_id, skill_lv, tick, flag);
 		break;
 
 	case WH_CRESCIVE_BOLT:
@@ -5317,6 +5347,10 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case CD_ARBITRIUM_ATK:
 	case CD_PETITIO:
 	case CD_FRAMEN:
+	case SHC_DANCING_KNIFE:
+	case SHC_SAVAGE_IMPACT:
+	case SHC_IMPACT_CRATER:
+	case SHC_FATAL_SHADOW_CROW:
 	case MT_AXE_STOMP:
 	case MT_RUSH_QUAKE:
 	case MT_A_MACHINE:
@@ -5397,6 +5431,8 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 						skill_id = SU_LUNATICCARROTBEAT2;
 					break;
 				case DK_SERVANT_W_PHANTOM:
+				case SHC_SAVAGE_IMPACT:
+				case SHC_FATAL_SHADOW_CROW:
 				case MT_RUSH_QUAKE:
 				{
 					uint8 dir = map_calc_dir(bl, src->x, src->y);
@@ -7331,6 +7367,9 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case CD_PRESENS_ACIES:
 	case CD_RELIGIO:
 	case CD_BENEDICTUM:
+	case SHC_SHADOW_EXCEED:
+	case SHC_POTENT_VENOM:
+	case SHC_ENCHANTING_SHADOW:
 	case MT_D_MACHINE:
 	case WH_WIND_SIGN:
 	case WH_CALAMITYGALE:
@@ -7850,6 +7889,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case AG_DESTRUCTIVE_HURRICANE:
 	case AG_CRYSTAL_IMPACT:
 	case AG_FROZEN_SLASH:
+	case SHC_IMPACT_CRATER:
 	case MT_AXE_STOMP:
 	{
 		struct status_change *sc = status_get_sc(src);
@@ -7874,8 +7914,8 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 			}
 			status_change_end(src, SC_DIMENSION, INVALID_TIMER);
 		}
-		if (skill_id == MT_AXE_STOMP)
-			sc_start(src, bl, SC_AXE_STOMP, 100, skill_lv, skill_get_time(skill_id, skill_lv));
+		if (skill_id == SHC_IMPACT_CRATER || skill_id == MT_AXE_STOMP)
+			sc_start(src, bl, type, 100, skill_lv, skill_get_time(skill_id, skill_lv));
 
 		skill_area_temp[1] = 0;
 		clif_skill_nodamage(src,bl,skill_id,skill_lv,1);
@@ -7886,6 +7926,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	}
 		break;
 
+	case SHC_DANCING_KNIFE:
 	case MT_A_MACHINE:
 		if (flag&1)
 		{

@@ -1156,6 +1156,15 @@ void initChangeTables(void)
 	set_sc(          MT_SUMMON_ABR_MOTHER_NET   , SC_ABR_MOTHER_NET   , EFST_ABR_MOTHER_NET   , SCB_NONE );
 	set_sc(          MT_SUMMON_ABR_INFINITY     , SC_ABR_INFINITY     , EFST_ABR_INFINITY     , SCB_NONE );
 
+	// Shadow Cross
+	set_sc_with_vfx( SHC_SHADOW_EXCEED    , SC_SHADOW_EXCEED , EFST_SHADOW_EXCEED , SCB_NONE );
+	set_sc_with_vfx( SHC_DANCING_KNIFE    , SC_DANCING_KNIFE , EFST_DANCING_KNIFE , SCB_NONE );
+	set_sc_with_vfx( SHC_ETERNAL_SLASH    , SC_E_SLASH_COUNT , EFST_E_SLASH_COUNT , SCB_NONE );
+	set_sc(          SHC_POTENT_VENOM     , SC_POTENT_VENOM  , EFST_POTENT_VENOM  , SCB_NONE );
+	set_sc(          SHC_IMPACT_CRATER    , SC_WEAPONBLOCK_ON, EFST_WEAPONBLOCK_ON, SCB_NONE );
+	set_sc(          SHC_ENCHANTING_SHADOW, SC_SHADOW_WEAPON , EFST_SHADOW_WEAPON , SCB_NONE );
+	set_sc_with_vfx( SHC_FATAL_SHADOW_CROW, SC_DARKCROW      , EFST_DARKCROW      , SCB_NONE );
+
 	// Abyss Chaser
 	set_sc(          ABC_FROM_THE_ABYSS, SC_ABYSSFORCEWEAPON, EFST_ABYSSFORCEWEAPON, SCB_NONE );
 
@@ -1463,6 +1472,7 @@ void initChangeTables(void)
 
 	// 4th Jobs
 	StatusIconChangeTable[SC_CHARGINGPIERCE_COUNT] = EFST_CHARGINGPIERCE_COUNT;
+	StatusIconChangeTable[SC_SHADOW_SCAR] = EFST_SHADOW_SCAR;
 
 	/* Other SC which are not necessarily associated to skills */
 	StatusChangeFlagTable[SC_ASPDPOTION0] |= SCB_ASPD;
@@ -1738,6 +1748,9 @@ void initChangeTables(void)
 	StatusDisplayType[SC_CALAMITYGALE] = BL_PC;
 	StatusDisplayType[SC_A_MACHINE] = BL_PC;
 	StatusDisplayType[SC_D_MACHINE] = BL_PC;
+	StatusDisplayType[SC_SHADOW_EXCEED] = BL_PC;
+	StatusDisplayType[SC_DANCING_KNIFE] = BL_PC;
+	StatusDisplayType[SC_E_SLASH_COUNT] = BL_PC;
 
 	/* StatusChangeState (SCS_) NOMOVE */
 	StatusChangeStateTable[SC_ANKLE]				|= SCS_NOMOVE;
@@ -4816,6 +4829,8 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 		base_status->flee += (skill*3)>>1;
 	if (pc_checkskill(sd, SU_POWEROFLIFE) > 0)
 		base_status->flee += 20;
+	if ((skill = pc_checkskill(sd, SHC_SHADOW_SENSE)) > 0)
+		base_status->flee += skill * 10;
 
 // ----- CRITICAL CALCULATION -----
 
@@ -4825,6 +4840,14 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 	if ((skill = pc_checkskill(sd, PR_MACEMASTERY)) > 0 && (sd->status.weapon == W_MACE || sd->status.weapon == W_2HMACE))
 		base_status->cri += skill * 10;
 #endif
+	if ((skill = pc_checkskill(sd, SHC_SHADOW_SENSE)) > 0)
+	{
+		if (sd->status.weapon == W_DAGGER || sd->status.weapon == W_DOUBLE_DD || 
+			sd->status.weapon == W_DOUBLE_DS || sd->status.weapon == W_DOUBLE_DA)
+			base_status->cri += 100 + skill * 40;
+		else if (sd->status.weapon == W_KATAR)
+			base_status->cri += 50 + skill * 20;
+	}
 
 // ----- EQUIPMENT-DEF CALCULATION -----
 
@@ -13045,6 +13068,16 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 		case SC_BENEDICTUM:
 			val2 = 2 * val1;// Trait Stats Increase
 			break;
+		case SC_DANCING_KNIFE:
+			val4 = tick / 300;
+			tick_time = 300;
+			break;
+		case SC_POTENT_VENOM:
+			val2 = 3 * val1;// Res Pierce Percentage
+			break;
+		case SC_SHADOW_WEAPON:
+			val2 = val1;// Success Chance of Shadow Scar
+			break;
 		case SC_A_MACHINE:
 			val4 = tick / 1000;
 			tick_time = 1000;
@@ -13156,6 +13189,7 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 		case SC_MISTY_FROST:
 		case SC_CHARGINGPIERCE_COUNT:
 		case SC_CLIMAX:
+		case SC_E_SLASH_COUNT:
 			val_flag |= 1;
 			break;
 		// Start |1|2 val_flag setting
@@ -15220,6 +15254,14 @@ TIMER_FUNC(status_change_timer){
 			clif_specialeffect(bl, 1808, AREA);
 			skill_castend_nodamage_id(bl, bl, CD_MEDIALE_VOTUM, sce->val1, tick, 1);
 			sc_timer_next(2000 + tick);
+			return 0;
+		}
+		break;
+
+	case SC_DANCING_KNIFE:
+		if (--(sce->val4) >= 0) {
+			skill_castend_nodamage_id(bl, bl, SHC_DANCING_KNIFE, sce->val1, tick, 1);
+			sc_timer_next(300 + tick);
 			return 0;
 		}
 		break;

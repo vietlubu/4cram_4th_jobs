@@ -2316,11 +2316,13 @@ static int battle_range_type(struct block_list *src, struct block_list *target, 
 			return BF_LONG;
 #endif
 		case GC_CROSSIMPACT:// Cast range is 7 cells and player jumps to target but skill is considered melee
-		case DK_SERVANT_W_PHANTOM:// 9 cell cast range but deals melee damage.
-		case MT_RUSH_QUAKE:// 9 cell cast range but deals melee damage.
+		case DK_SERVANT_W_PHANTOM:// 9 cell cast range.
+		case SHC_SAVAGE_IMPACT:// 7 cell cast range.
+		case SHC_FATAL_SHADOW_CROW:// 9 cell cast range.
+		case MT_RUSH_QUAKE:// 9 cell cast range.
 			return BF_SHORT;// Melee
 
-		case DK_HACKANDSLASHER_ATK:// 2 cell cast range but deals ranged damage.
+		case DK_HACKANDSLASHER_ATK:// 2 cell cast range.
 			return BF_LONG;// Ranged
 
 		case CD_PETITIO:// Skill range is 2 but damage is melee with books and ranged with mace.
@@ -2664,6 +2666,9 @@ static bool is_attack_critical(struct Damage* wd, struct block_list *src, struct
 #endif
 			case RK_IGNITIONBREAK:
 			case GC_CROSSIMPACT:
+			case SHC_SAVAGE_IMPACT:
+			case SHC_ETERNAL_SLASH:
+			case SHC_IMPACT_CRATER:
 				cri /= 2;
 				break;
 			case WH_GALESTORM:
@@ -4910,6 +4915,32 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			skillratio += -100 + 270 * skill_lv + 5 * sstatus->pow;
 			RE_LVL_DMOD(100);
 			break;
+		case SHC_DANCING_KNIFE:
+			skillratio += -100 + 200 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			break;
+		case SHC_SAVAGE_IMPACT:
+			skillratio += -100 + 350 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			break;
+		case SHC_ETERNAL_SLASH:
+			skillratio += -100 + 350 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			break;
+		case SHC_SHADOW_STAB:
+			skillratio += -100 + 750 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			break;
+		case SHC_IMPACT_CRATER:
+			skillratio += -100 + 65 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			break;
+		case SHC_FATAL_SHADOW_CROW:
+			skillratio += -100 + 650 * skill_lv + 10 * sstatus->pow;
+			if (tstatus->race == RC_DEMIHUMAN || tstatus->race == RC_DRAGON)
+				skillratio += 300 * skill_lv;
+			RE_LVL_DMOD(100);
+			break;
 		case MT_AXE_STOMP:
 			skillratio += -100 + 350 * skill_lv + 5 * sstatus->pow;
 			RE_LVL_DMOD(100);
@@ -5857,6 +5888,18 @@ static struct Damage initialize_weapon_data(struct block_list *src, struct block
 						wd.div_ = sd->servantball + sd->servantball_old;
 				}
 				break;
+			case SHC_ETERNAL_SLASH:
+				if (sc && sc->data[SC_E_SLASH_COUNT])
+					wd.div_ = sc->data[SC_E_SLASH_COUNT]->val1;
+				break;
+			case SHC_SHADOW_STAB:// Not working as it should. Think status is ending before reaching this check. Fix it later. [Rytech]
+				if (sc && (sc->data[SC_CLOAKING] || sc->data[SC_CLOAKINGEXCEED]))
+					wd.div_ = 2;
+				break;
+			case SHC_IMPACT_CRATER:
+				if (sc && sc->data[SC_ROLLINGCUTTER])
+					wd.div_ = sc->data[SC_ROLLINGCUTTER]->val1;
+				break;
 			case MT_AXE_STOMP:
 				if (sd && sd->status.weapon == W_2HAXE)
 					wd.div_ = 2;
@@ -6059,8 +6102,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src, struct bl
 			if (res > battle_config.max_res_mres_reduction)
 				res = battle_config.max_res_mres_reduction;
 			
-			if (sc && sc->data[SC_A_TELUM])
-				ignore_res += sc->data[SC_A_TELUM]->val2;
+			if (sc)
+			{
+				if (sc->data[SC_A_TELUM])
+					ignore_res += sc->data[SC_A_TELUM]->val2;
+				if (sc->data[SC_POTENT_VENOM])
+					ignore_res += sc->data[SC_POTENT_VENOM]->val2;
+			}
 
 			ignore_res = min(ignore_res, 100);
 

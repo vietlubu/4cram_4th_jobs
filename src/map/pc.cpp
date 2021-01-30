@@ -6621,6 +6621,7 @@ static void pc_checkallowskill(struct map_session_data *sd)
 		SC_ADRENALINE2,
 		SC_DANCING,
 		SC_GATLINGFEVER,
+		SC_DANCING_KNIFE,
 	};
 	uint8 i;
 	nullpo_retv(sd);

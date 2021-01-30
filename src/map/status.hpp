@@ -1004,6 +1004,7 @@ enum sc_type : int16 {
 	SC_POTENT_VENOM,
 	SC_SHADOW_SCAR,
 	SC_E_SLASH_COUNT,
+	SC_SHADOW_WEAPON,
 
 	// Imperial Guard
 	SC_GUARD_STANCE,
