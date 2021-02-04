@@ -493,6 +493,7 @@ Body:
         Area: 5
     CastCancel: true
     AfterCastActDelay: 1000
+    Duration2: 900000
     Cooldown: 6000
     FixedCastTime: 2000
     Requires:
@@ -630,6 +631,7 @@ Body:
         Time: 4800
       - Level: 5
         Time: 6000
+    Duration2: 30000
     Cooldown:
       - Level: 1
         Time: 1200
@@ -821,6 +823,7 @@ Body:
         Time: 4800
       - Level: 5
         Time: 6000
+    Duration2: 30000
     Cooldown:
       - Level: 1
         Time: 1200
@@ -937,6 +940,7 @@ Body:
         Area: 7
     CastCancel: true
     AfterCastActDelay: 1000
+    Duration2: 900000
     Cooldown: 6000
     FixedCastTime: 2000
     Requires:

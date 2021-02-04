@@ -7382,6 +7382,11 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 		clif_skill_nodamage(src, bl, skill_id, skill_lv, sc_start2(src, bl, type, 100, skill_lv, src->id, skill_get_time(skill_id, skill_lv)));
 	break;
 
+	case AG_VIOLENT_QUAKE:
+	case AG_ALL_BLOOM:
+		sc_start(src, bl, type, 100, skill_lv, skill_get_time2(skill_id, skill_lv));
+		break;
+
 	case CD_MEDIALE_VOTUM:
 	case CD_DILECTIO_HEAL:
 		if (flag&1)
@@ -13026,30 +13031,60 @@ int skill_castend_pos2(struct block_list* src, int x, int y, uint16 skill_id, ui
 	case AG_ALL_BLOOM:
 	{
 		int area = skill_get_splash(skill_id, skill_lv);
-		short tmpx = 0, tmpy = 0, sub_skill = 0;
+		int unit_time = skill_get_time(skill_id, skill_lv);
+		int unit_interval = skill_get_unit_interval(skill_id);
+		short tmpx = 0, tmpy = 0, sub_skill = 0, climax = 0;
+
+		// Grab Climax's effect level if active.
+		// This affects the behavior of certain skills in certain ways.
+		if (sc && sc->data[SC_CLIMAX])
+			climax = sc->data[SC_CLIMAX]->val1;
 
 		if (skill_id == AG_VIOLENT_QUAKE)
+		{
 			sub_skill = AG_VIOLENT_QUAKE_ATK;
+
+			// Fixes rising rocks spawn area to 7x7.
+			if (climax == 5)
+				area = 3;
+		}
 		else
+		{// AG_ALL_BLOOM
 			sub_skill = AG_ALL_BLOOM_ATK;
+
+			if (climax == 1)
+			{// Rose buds spawn at double the speed.
+				unit_time /= 2;
+				unit_interval /= 2;
+			}
+		}
 
 		// Displays the earthquake / flower garden.
 		skill_unitsetting(src, skill_id, skill_lv, x, y, 0);
 
-		// Spawn the rising rocks / rose buds at seperate intervals.
-		for (i = 1; i <= skill_get_time(skill_id, skill_lv) / skill_get_unit_interval(skill_id); i++)
-		{
-			// Creates a random Cell in the Splash Area
+		if (climax == 4)
+		{// Deals no damage and instead inflicts a status on the enemys in range.
+			i = skill_get_splash(skill_id, skill_lv);
+			map_foreachinallarea(skill_area_sub, src->m, x-i, y-i, x+i, y+i, BL_CHAR, src, skill_id, skill_lv, tick, flag|BCT_ENEMY|1, skill_castend_nodamage_id);
+		}
+		else for (i = 1; i <= unit_time / unit_interval; i++)
+		{// Spawn the rising rocks / rose buds on random spots at seperate intervals
 			tmpx = x - area + rnd() % (area * 2 + 1);
 			tmpy = y - area + rnd() % (area * 2 + 1);
-			skill_unitsetting(src, sub_skill, skill_lv, tmpx, tmpy, flag + i*skill_get_unit_interval(skill_id));
+			skill_unitsetting(src, sub_skill, skill_lv, tmpx, tmpy, flag + i*unit_interval);
+
+			if ((skill_id == AG_VIOLENT_QUAKE && climax == 1) || (skill_id == AG_ALL_BLOOM && climax == 2))
+			{// Spwan a 2nd rising rock / rose bud along with the 1st one.
+				tmpx = x - area + rnd() % (area * 2 + 1);
+				tmpy = y - area + rnd() % (area * 2 + 1);
+				skill_unitsetting(src, sub_skill, skill_lv, tmpx, tmpy, flag + i*unit_interval);
+			}
 		}
 
 		// One final attack the size of the flower garden is dealt after
 		// all rose buds explode if Climax level 5 is active.
-		// Note: Disabled until Climax is coded in.
-		 if (skill_id == AG_ALL_BLOOM && sc && sc->data[SC_CLIMAX] && sc->data[SC_CLIMAX]->val1 == 5)
-			skill_unitsetting(src, AG_ALL_BLOOM_ATK2, skill_lv, x, y, flag + i*skill_get_unit_interval(skill_id));
+		if (skill_id == AG_ALL_BLOOM && climax == 5)
+			skill_unitsetting(src, AG_ALL_BLOOM_ATK2, skill_lv, x, y, flag + i*unit_interval);
 	}
 	break;
 
@@ -13933,9 +13968,6 @@ struct skill_unit_group *skill_unitsetting(struct block_list *src, uint16 skill_
 	case WZ_METEOR:
 	case SU_CN_METEOR:
 	case SU_CN_METEOR2:
-	case AG_VIOLENT_QUAKE_ATK:
-	case AG_ALL_BLOOM_ATK:
-	case AG_ALL_BLOOM_ATK2:
 		limit = flag;
 		flag = 0; // Flag should not influence anything else for these skills
 		break;
@@ -14218,6 +14250,24 @@ struct skill_unit_group *skill_unitsetting(struct block_list *src, uint16 skill_
 	case MH_VOLCANIC_ASH:
 		if (!map_flag_vs(src->m))
 			target = BCT_ENEMY;
+		break;
+	case AG_VIOLENT_QUAKE:
+	case AG_ALL_BLOOM:
+		if (sc && sc->data[SC_CLIMAX])
+		{
+			if (skill_id == AG_ALL_BLOOM && sc->data[SC_CLIMAX]->val1 == 1)
+				limit /= 2;// Rose buds spawn at double the speed, so rose garden duration must be halved.
+			else if (sc->data[SC_CLIMAX]->val1 == 4)
+				limit = 3000;// Show main AoE for fixed duration on status giving effect.
+		}
+		break;
+	case AG_VIOLENT_QUAKE_ATK:
+	case AG_ALL_BLOOM_ATK:
+	case AG_ALL_BLOOM_ATK2:
+		limit = flag;
+		flag = 0;
+		if (skill_id == AG_VIOLENT_QUAKE_ATK && sc && sc->data[SC_CLIMAX] && sc->data[SC_CLIMAX]->val1 == 2)
+			range = 4;// Rising rocks splash is increased to 9x9.
 		break;
 	case WH_DEEPBLINDTRAP:
 	case WH_SOLIDTRAP:

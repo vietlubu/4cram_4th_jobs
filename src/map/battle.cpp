@@ -524,6 +524,12 @@ int64 battle_attr_fix(struct block_list *src, struct block_list *target, int64 d
 #else
 					damage += (int64)(damage * 50 / 100);
 #endif
+				if (tsc->data[SC_CLIMAX_BLOOM])
+#ifdef RENEWAL
+					ratio += 100;
+#else
+					damage += (int64)(damage);
+#endif
 				break;
 			case ELE_HOLY:
 				if (tsc->data[SC_ORATIO])
@@ -573,6 +579,12 @@ int64 battle_attr_fix(struct block_list *src, struct block_list *target, int64 d
 					ratio += 50;
 #else
 					damage += (int64)(damage * 50 / 100);
+#endif
+				if (tsc->data[SC_CLIMAX_EARTH])
+#ifdef RENEWAL
+					ratio += 100;
+#else
+					damage += (int64)(damage);
 #endif
 				status_change_end(target, SC_MAGNETICFIELD, INVALID_TIMER); //freed if received earth dmg
 				break;
@@ -6938,6 +6950,13 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 					case AG_VIOLENT_QUAKE_ATK:
 						skillratio += -100 + 120 * skill_lv + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
+						if (sc && sc->data[SC_CLIMAX])
+						{
+							if (sc->data[SC_CLIMAX]->val1 == 1)
+								skillratio /= 2;
+							else if (sc->data[SC_CLIMAX]->val1 == 3)
+								skillratio *= 2;
+						}
 						break;
 					case AG_SOUL_VC_STRIKE:
 						skillratio += -100 + 180 * skill_lv + 3 * sstatus->spl;
@@ -6950,6 +6969,13 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 					case AG_ALL_BLOOM_ATK:
 						skillratio += -100 + 100 * skill_lv + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
+						if (sc && sc->data[SC_CLIMAX])
+						{
+							if (sc->data[SC_CLIMAX]->val1 == 2)
+								skillratio /= 2;
+							else if (sc->data[SC_CLIMAX]->val1 == 3)
+								skillratio *= 2;
+						}
 						break;
 					case AG_ALL_BLOOM_ATK2:// Is this affected by BaseLV and SPL too??? [Rytech]
 						skillratio += -100 + 7000 + 5 * sstatus->spl;

@@ -2504,6 +2504,7 @@ enum e_skill_unit_id : uint16 {
 	UNT_VENOM_SWAMP,
 	UNT_CONFLAGRATION,
 
+	// Skill units outside the normal unit range.
 	UNT_DEEPBLINDTRAP = 20852,
 	UNT_SOLIDTRAP,
 	UNT_SWIFTTRAP,

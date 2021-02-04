@@ -1124,9 +1124,12 @@ void initChangeTables(void)
 	set_sc_with_vfx( DK_VIGOR            , SC_VIGOR                  , EFST_VIGOR                  , SCB_ALL );
 
 	// Arch Mage
-	set_sc_with_vfx( AG_DEADLY_PROJECTION, SC_DEADLY_DEFEASANCE, EFST_DEADLY_DEFEASANCE, SCB_NONE );
-	set_sc(          AG_CRYSTAL_IMPACT   , SC_CRYSTAL_IMPACT   , EFST_CRYSTAL_IMPACT   , SCB_NONE );
-	set_sc_with_vfx( AG_CLIMAX           , SC_CLIMAX           , EFST_CLIMAX           , SCB_NONE );
+	set_sc_with_vfx( AG_DEADLY_PROJECTION    , SC_DEADLY_DEFEASANCE, EFST_DEADLY_DEFEASANCE, SCB_NONE );
+	set_sc(          AG_DESTRUCTIVE_HURRICANE, SC_CLIMAX_DES_HU    , EFST_CLIMAX_DES_HU    , SCB_MATK );
+	set_sc(          AG_VIOLENT_QUAKE        , SC_CLIMAX_EARTH     , EFST_CLIMAX_EARTH     , SCB_NONE );
+	set_sc(          AG_ALL_BLOOM            , SC_CLIMAX_BLOOM     , EFST_CLIMAX_BLOOM     , SCB_NONE );
+	set_sc(          AG_CRYSTAL_IMPACT       , SC_CLIMAX_CRYIMP    , EFST_CLIMAX_CRYIMP    , SCB_DEF|SCB_MDEF );
+	set_sc_with_vfx( AG_CLIMAX               , SC_CLIMAX           , EFST_CLIMAX           , SCB_NONE );
 
 	// Windhawk
 	set_sc_with_vfx( WH_WIND_SIGN    , SC_WINDSIGN                     , EFST_WINDSIGN                     , SCB_NONE );
@@ -1472,6 +1475,7 @@ void initChangeTables(void)
 
 	// 4th Jobs
 	StatusIconChangeTable[SC_CHARGINGPIERCE_COUNT] = EFST_CHARGINGPIERCE_COUNT;
+	StatusIconChangeTable[SC_CRYSTAL_IMPACT] = EFST_CRYSTAL_IMPACT;
 	StatusIconChangeTable[SC_SHADOW_SCAR] = EFST_SHADOW_SCAR;
 
 	/* Other SC which are not necessarily associated to skills */
@@ -1657,6 +1661,8 @@ void initChangeTables(void)
 
 	// 4th Jobs
 	StatusChangeFlagTable[SC_CHARGINGPIERCE_COUNT] |= SCB_NONE;
+	StatusChangeFlagTable[SC_CRYSTAL_IMPACT] |= SCB_NONE;
+	StatusChangeFlagTable[SC_SHADOW_SCAR] |= SCB_NONE;
 
 #ifdef RENEWAL
 	// renewal EDP increases your weapon atk
@@ -7467,6 +7473,8 @@ static unsigned short status_calc_matk(struct block_list *bl, struct status_chan
 	if (sc->data[SC_NIBELUNGEN] && sc->data[SC_NIBELUNGEN]->val2 == RINGNBL_MATKRATE)
 		matk += matk * 20 / 100;
 #endif
+	if (sc->data[SC_CLIMAX_DES_HU])
+		matk += 100;
 
 	return (unsigned short)cap_value(matk,0,USHRT_MAX);
 }
@@ -7819,6 +7827,8 @@ static defType status_calc_def(struct block_list *bl, struct status_change *sc, 
 		def += sc->data[SC_SOULGOLEM]->val2;
 	if (sc->data[SC_D_MACHINE])
 		def += sc->data[SC_D_MACHINE]->val2;
+	if (sc->data[SC_CLIMAX_CRYIMP])
+		def += 300;
 
 	return (defType)cap_value(def,DEFTYPE_MIN,DEFTYPE_MAX);
 }
@@ -7945,6 +7955,8 @@ static defType status_calc_mdef(struct block_list *bl, struct status_change *sc,
 		mdef += sc->data[SC_GLASTHEIM_ITEMDEF]->val2;
 	if (sc->data[SC_SOULGOLEM])
 		mdef += sc->data[SC_SOULGOLEM]->val3;
+	if (sc->data[SC_CLIMAX_CRYIMP])
+		mdef += 100;
 
 	return (defType)cap_value(mdef,DEFTYPE_MIN,DEFTYPE_MAX);
 }
