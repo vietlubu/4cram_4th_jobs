@@ -524,12 +524,6 @@ int64 battle_attr_fix(struct block_list *src, struct block_list *target, int64 d
 #else
 					damage += (int64)(damage * 50 / 100);
 #endif
-				if (tsc->data[SC_CLIMAX_BLOOM])
-#ifdef RENEWAL
-					ratio += 100;
-#else
-					damage += (int64)(damage);
-#endif
 				break;
 			case ELE_HOLY:
 				if (tsc->data[SC_ORATIO])
@@ -579,12 +573,6 @@ int64 battle_attr_fix(struct block_list *src, struct block_list *target, int64 d
 					ratio += 50;
 #else
 					damage += (int64)(damage * 50 / 100);
-#endif
-				if (tsc->data[SC_CLIMAX_EARTH])
-#ifdef RENEWAL
-					ratio += 100;
-#else
-					damage += (int64)(damage);
 #endif
 				status_change_end(target, SC_MAGNETICFIELD, INVALID_TIMER); //freed if received earth dmg
 				break;
@@ -6400,6 +6388,14 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 			if(sd && sd->spiritcharm_type != CHARM_TYPE_NONE && sd->spiritcharm > 0)
 				s_ele = sd->spiritcharm_type;
 			break;
+		case AG_DESTRUCTIVE_HURRICANE:
+			if (sc && sc->data[SC_CLIMAX] && sc->data[SC_CLIMAX]->val1 == 2)
+				ad.blewcount = 2;
+			break;
+		case AG_CRYSTAL_IMPACT:
+			if (sc && sc->data[SC_CLIMAX] && sc->data[SC_CLIMAX]->val1 == 2)
+				ad.div_ = 2;
+			break;
 	}
 
 	//Set miscellaneous data that needs be filled
@@ -6938,6 +6934,13 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 					case AG_DESTRUCTIVE_HURRICANE:
 						skillratio += -100 + 1600 * skill_lv + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
+						if (sc && sc->data[SC_CLIMAX])
+						{
+							if (sc->data[SC_CLIMAX]->val1 == 3)
+								skillratio *= 2;
+							else if (sc->data[SC_CLIMAX]->val1 == 5)
+								skillratio += skillratio * 70 / 100;
+						}
 						break;
 					case AG_RAIN_OF_CRYSTAL:
 						skillratio += -100 + 150 * skill_lv + 5 * sstatus->spl;
@@ -6982,9 +6985,21 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 						RE_LVL_DMOD(100);
 						break;
 					case AG_CRYSTAL_IMPACT:
+						skillratio += -100 + 800 * skill_lv + 5 * sstatus->spl;
+						RE_LVL_DMOD(100);
+						if (sc && sc->data[SC_CLIMAX])
+						{
+							if (sc->data[SC_CLIMAX]->val1 == 3)
+								skillratio += skillratio * 50 / 100;
+							else if (sc->data[SC_CLIMAX]->val1 == 4)
+								skillratio /= 2;
+						}
+						break;
 					case AG_CRYSTAL_IMPACT_ATK:// Said to deal the same damage as the main attack.
 						skillratio += -100 + 800 * skill_lv + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
+						if (sc && sc->data[SC_CLIMAX] && sc->data[SC_CLIMAX]->val1 == 4)
+							skillratio += skillratio * 150 / 100;
 						break;
 					case AG_TORNADO_STORM:
 						skillratio += -100 + 90 * skill_lv + 5 * sstatus->spl;
@@ -7043,6 +7058,10 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 							skillratio += 150 * skill_lv;
 						RE_LVL_DMOD(100);
 						break;
+					case AG_DESTRUCTIVE_HURRICANE_CLIMAX:// Is this affected by BaseLV and SPL too??? [Rytech]
+						skillratio += -100 + 500 + 5 * sstatus->spl;
+						RE_LVL_DMOD(100);
+						break;
 					case ABC_FROM_THE_ABYSS_ATK:
 						skillratio += 150 + 70 * skill_lv + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
@@ -7055,6 +7074,12 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 						(sc->data[SC_WIND_INSIGNIA] && sc->data[SC_WIND_INSIGNIA]->val1 == 3 && s_ele == ELE_WIND) ||
 						(sc->data[SC_EARTH_INSIGNIA] && sc->data[SC_EARTH_INSIGNIA]->val1 == 3 && s_ele == ELE_EARTH))
 						skillratio += 25;
+
+					if (sc->data[SC_CLIMAX_DES_HU] && s_ele == ELE_WIND)
+						skillratio += skillratio * 30 / 100;
+
+					if (sc->data[SC_CLIMAX_CRYIMP] && s_ele == ELE_WATER)
+						skillratio += skillratio * 30 / 100;
 				}
 
 				MATK_RATE(skillratio);

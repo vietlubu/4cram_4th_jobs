@@ -924,7 +924,7 @@ Body:
     TargetType: Self
     DamageFlags:
       Splash: true
-    Hit: Single
+    Hit: Multi_Hit
     HitCount: 1
     Element: Water
     SplashArea:
@@ -2708,6 +2708,13 @@ Body:
     Name: AG_DESTRUCTIVE_HURRICANE_CLIMAX
     Description: Destructive Hurricane Climax
     MaxLevel: 5
+    Type: Magic
+    TargetType: Attack
+    Hit: Single
+    HitCount: 1
+    Element: Wind
+    Requires:
+      SpCost: 1
   - Id: 5307
     Name: BO_ACIDIFIED_ZONE_WATER_ATK
     Description: Actified Zone Water Attack

@@ -1126,9 +1126,9 @@ void initChangeTables(void)
 	// Arch Mage
 	set_sc_with_vfx( AG_DEADLY_PROJECTION    , SC_DEADLY_DEFEASANCE, EFST_DEADLY_DEFEASANCE, SCB_NONE );
 	set_sc(          AG_DESTRUCTIVE_HURRICANE, SC_CLIMAX_DES_HU    , EFST_CLIMAX_DES_HU    , SCB_MATK );
-	set_sc(          AG_VIOLENT_QUAKE        , SC_CLIMAX_EARTH     , EFST_CLIMAX_EARTH     , SCB_NONE );
-	set_sc(          AG_ALL_BLOOM            , SC_CLIMAX_BLOOM     , EFST_CLIMAX_BLOOM     , SCB_NONE );
-	set_sc(          AG_CRYSTAL_IMPACT       , SC_CLIMAX_CRYIMP    , EFST_CLIMAX_CRYIMP    , SCB_DEF|SCB_MDEF );
+	set_sc(          AG_VIOLENT_QUAKE        , SC_CLIMAX_EARTH     , EFST_CLIMAX_EARTH     , SCB_ALL );
+	set_sc(          AG_ALL_BLOOM            , SC_CLIMAX_BLOOM     , EFST_CLIMAX_BLOOM     , SCB_ALL );
+	set_sc(          AG_CRYSTAL_IMPACT       , SC_CLIMAX_CRYIMP    , EFST_CLIMAX_CRYIMP    , SCB_ALL );
 	set_sc_with_vfx( AG_CLIMAX               , SC_CLIMAX           , EFST_CLIMAX           , SCB_NONE );
 
 	// Windhawk
@@ -5163,6 +5163,12 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 			sd->right_weapon.addrace[RC_DEMIHUMAN] += 50;
 			sd->left_weapon.addrace[RC_ANGEL] += 50;
 		}
+		if (sc->data[SC_CLIMAX_EARTH])
+			sd->indexed_bonus.subele[ELE_EARTH] -= 100;
+		if (sc->data[SC_CLIMAX_BLOOM])
+			sd->indexed_bonus.subele[ELE_FIRE] -= 100;
+		if (sc->data[SC_CLIMAX_CRYIMP])
+			sd->indexed_bonus.subele[ELE_WATER] += 30;
 	}
 	status_cpy(&sd->battle_status, base_status);
 
