@@ -2083,7 +2083,7 @@ int skill_additional_effect(struct block_list* src, struct block_list *bl, uint1
 					case SC_ENTRY_QUEUE_APPLY_DELAY:	case SC_ENTRY_QUEUE_NOTIFY_ADMISSION_TIME_OUT:
 					case SC_REUSE_LIMIT_LUXANIMA:	case SC_LUXANIMA:	case SC_SOULENERGY:
 					case SC_EP16_2_BUFF_SS:		case SC_EP16_2_BUFF_SC:	case SC_EP16_2_BUFF_AC:
-					case SC_EMERGENCY_MOVE:
+					case SC_EMERGENCY_MOVE:		case SC_MADOGEAR:
 						continue;
 					case SC_WHISTLE:		case SC_ASSNCROS:		case SC_POEMBRAGI:
 					case SC_APPLEIDUN:		case SC_HUMMING:		case SC_DONTFORGETME:
@@ -3526,10 +3526,9 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 					dmg.damage -= dmg.damage * (6 * (1+per)) / 100;
 				}
 
-				if (sd && sd->bonus.reduce_damage_return != 0) {
-					dmg.damage -= dmg.damage * sd->bonus.reduce_damage_return / 100;
-					if (dmg.damage < 1)
-						dmg.damage = 1;
+				if (dmg.damage > 0 && tsd && tsd->bonus.reduce_damage_return != 0) {
+					dmg.damage -= dmg.damage * tsd->bonus.reduce_damage_return / 100;
+					dmg.damage = i64max(dmg.damage, 1);
 				}
 			}
 #endif
@@ -5535,7 +5534,19 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 			skill_attack(skill_get_type(skill_id), src, src, bl, skill_id, skill_lv, tick, flag);
 		break;
 
+#ifdef RENEWAL
 	case KN_BOWLINGBASH:
+		if (flag & 1) {
+			skill_attack(skill_get_type(skill_id), src, src, bl, skill_id, skill_lv, tick, (skill_area_temp[0]) > 0 ? SD_ANIMATION | skill_area_temp[0] : skill_area_temp[0]);
+			skill_blown(src, bl, skill_get_blewcount(skill_id, skill_lv), -1, BLOWN_NONE);
+		} else {
+			skill_area_temp[0] = map_foreachinallrange(skill_area_sub, bl, skill_get_splash(skill_id, skill_lv), BL_CHAR, src, skill_id, skill_lv, tick, BCT_ENEMY, skill_area_sub_count);
+			map_foreachinrange(skill_area_sub, bl, skill_get_splash(skill_id, skill_lv), BL_CHAR|BL_SKILL, src, skill_id, skill_lv, tick, flag | BCT_ENEMY | SD_SPLASH | 1, skill_castend_damage_id);
+		}
+		break;
+#else
+	case KN_BOWLINGBASH:
+#endif
 	case MS_BOWLINGBASH:
 		{
 			int min_x,max_x,min_y,max_y,i,c,dir,tx,ty;
@@ -5607,10 +5618,8 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 					break;
 				}
 			}
-#ifndef  RENEWAL
 			// Original hit or chain hit depending on flag
 			skill_attack(BF_WEAPON,src,src,bl,skill_id,skill_lv,tick,(flag&0xFFF)>0?SD_ANIMATION:0);
-#endif
 		}
 		break;
 
@@ -8933,6 +8942,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 					case SC_QUEST_BUFF1:	case SC_QUEST_BUFF2:	case SC_QUEST_BUFF3:
 					case SC_ARMOR_ELEMENT_EARTH:	case SC_ARMOR_ELEMENT_FIRE:	case SC_ARMOR_ELEMENT_WIND:
 					case SC_ENTRY_QUEUE_APPLY_DELAY:	case SC_ENTRY_QUEUE_NOTIFY_ADMISSION_TIME_OUT:
+					case SC_MADOGEAR:
 					// Clans
 					case SC_CLAN_INFO:
 					case SC_SWORDCLAN:
@@ -10478,7 +10488,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 					case SC_ENTRY_QUEUE_APPLY_DELAY:	case SC_ENTRY_QUEUE_NOTIFY_ADMISSION_TIME_OUT:
 					case SC_REUSE_LIMIT_LUXANIMA:		case SC_LUXANIMA:	case SC_SOULENERGY:
 					case SC_EP16_2_BUFF_SS:		case SC_EP16_2_BUFF_SC:	case SC_EP16_2_BUFF_AC:
-					case SC_EMERGENCY_MOVE:
+					case SC_EMERGENCY_MOVE:		case SC_MADOGEAR:
 					continue;
 				case SC_ASSUMPTIO:
 					if( bl->type == BL_MOB )
@@ -10714,7 +10724,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case NC_SELFDESTRUCTION:
 		if( sd ) {
 			if( pc_ismadogear(sd) )
-				pc_setmadogear(sd, 0);
+				pc_setmadogear(sd, false);
 			skill_area_temp[1] = 0;
 			clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
 			map_foreachinrange(skill_area_sub, bl, skill_get_splash(skill_id, skill_lv), BL_CHAR|BL_SKILL, src, skill_id, skill_lv, tick, flag|BCT_ENEMY|SD_SPLASH|1, skill_castend_damage_id);

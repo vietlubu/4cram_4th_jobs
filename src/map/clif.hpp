@@ -738,8 +738,8 @@ void clif_skill_unit_test(struct block_list *bl, short x, short y, int unit_id, 
 
 void clif_autospell(struct map_session_data *sd,uint16 skill_lv);
 void clif_devotion(struct block_list *src, struct map_session_data *tsd);
-void clif_spiritball(struct block_list *bl);
-void clif_soulball(struct map_session_data *sd);
+void clif_spiritball( struct block_list *bl, struct block_list* target = nullptr, enum send_target send_target = AREA );
+void clif_soulball( struct map_session_data *sd, struct block_list* target = nullptr, enum send_target send_target = AREA );
 void clif_servantball(struct block_list *bl);
 void clif_abyssball(struct block_list *bl);
 void clif_combo_delay(struct block_list *bl,t_tick wait);
