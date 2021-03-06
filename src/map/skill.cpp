@@ -4986,6 +4986,9 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case RL_SLUGSHOT:
 	case RL_AM_BLAST:
 	case DK_SERVANTWEAPON_ATK:
+	case ABR_BATTLE_BUSTER:
+	case ABR_DUAL_CANNON_FIRE:
+	case ABR_INFINITY_BUSTER:
 		skill_attack(BF_WEAPON,src,src,bl,skill_id,skill_lv,tick,flag);
 		break;
 
@@ -7453,7 +7456,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 			{
 				int heal_amount = skill_calc_heal(src, bl, skill_id, skill_lv, 1);
 
-				clif_skill_nodamage(0, bl, AL_HEAL, heal_amount, tick);
+				clif_skill_nodamage(0, bl, AL_HEAL, heal_amount, 1);
 				status_heal(bl, heal_amount, 0, 0, 0);
 			}
 			else if (sd)
@@ -7477,10 +7480,10 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 			int hp_amount = tstatus->max_hp * (20 * skill_lv) / 100;
 			int sp_amount = tstatus->max_sp * (20 * skill_lv) / 100;
 
-			clif_skill_nodamage(0, bl, AL_HEAL, hp_amount, tick);
+			clif_skill_nodamage(0, bl, AL_HEAL, hp_amount, 1);
 			status_heal(bl, hp_amount, 0, 0, 0);
 
-			clif_skill_nodamage(0, bl, MG_SRECOVERY, sp_amount, tick);
+			clif_skill_nodamage(0, bl, MG_SRECOVERY, sp_amount, 1);
 			status_heal(bl, 0, sp_amount, 0, 0);
 
 			clif_skill_nodamage(bl, bl, skill_id, skill_lv, sc_start(src, bl, type, 100, skill_lv, skill_get_time(skill_id, skill_lv)));
@@ -8130,6 +8133,32 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 				party_foreachsamemap(skill_area_sub, mer->master, skill_get_splash(skill_id, skill_lv), src, skill_id, skill_lv, tick, flag|BCT_PARTY|1, skill_castend_nodamage_id);
 			else if( mer->master && !(flag&1) )
 				clif_skill_nodamage(src, &mer->master->bl, skill_id, skill_lv, sc_start(src,bl,type,100,skill_lv,skill_get_time(skill_id,skill_lv)));
+		}
+		break;
+
+	case ABR_NET_REPAIR:
+	case ABR_NET_SUPPORT:
+		if (flag&1)
+		{
+			int heal_amount;
+			
+			if (skill_id == ABR_NET_REPAIR)
+			{
+				heal_amount = tstatus->max_hp * 10 / 100;
+				clif_skill_nodamage(0, bl, AL_HEAL, heal_amount, 1);
+				status_heal(bl, heal_amount, 0, 0, 0);
+			}
+			else
+			{// ABR_NET_SUPPORT
+				heal_amount = tstatus->max_sp * 3 / 100;
+				clif_skill_nodamage(0, bl, MG_SRECOVERY, heal_amount, 1);
+				status_heal(bl, 0, heal_amount, 0, 0);
+			}
+		}
+		else
+		{
+			clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
+			map_foreachinrange(skill_area_sub, bl, skill_get_splash(skill_id, skill_lv), BL_CHAR, src, skill_id, skill_lv, tick, flag|BCT_ALLY|SD_SPLASH|1, skill_castend_nodamage_id);
 		}
 		break;
 
@@ -11691,6 +11720,29 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 			}
 		}
 		break;
+
+	case MT_SUMMON_ABR_BATTLE_WARIOR:
+	case MT_SUMMON_ABR_DUAL_CANNON:
+	case MT_SUMMON_ABR_MOTHER_NET:
+	case MT_SUMMON_ABR_INFINITY:
+	{
+		short abrs[4] = { MOBID_ABR_BATTLE_WARIOR, MOBID_ABR_DUAL_CANNON, MOBID_ABR_MOTHER_NET, MOBID_ABR_INFINITY };
+		struct mob_data *md;
+
+		clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
+		sc_start(src, bl, type, 100, skill_lv, skill_get_time(skill_id, skill_lv));
+		md = mob_once_spawn_sub(src, src->m, src->x, src->y, "--ja--", abrs[3 - (MT_SUMMON_ABR_INFINITY - skill_id)], "", SZ_SMALL, AI_ABR);
+		if (md) {
+			md->master_id = src->id;
+			md->special_state.ai = AI_ABR;
+			if (md->deletetimer != INVALID_TIMER)
+				delete_timer(md->deletetimer, mob_timer_delete);
+			md->deletetimer = add_timer(gettick() + skill_get_time(skill_id, skill_lv), mob_timer_delete, md->bl.id, 0);
+			mob_spawn(md);
+		}
+	}
+	break;
+
 	case KO_KYOUGAKU:
 		if( dstsd && tsc && !tsc->data[type] && rnd()%100 < tstatus->int_/2 ){
 			clif_skill_nodamage(src,bl,skill_id,skill_lv,
@@ -16071,7 +16123,7 @@ static int skill_check_condition_mob_master_sub(struct block_list *bl, va_list a
 	skill=va_arg(ap,int);
 	c=va_arg(ap,int *);
 
-	ai = (unsigned)(skill == AM_SPHEREMINE?AI_SPHERE:skill == KO_ZANZOU?AI_ZANZOU:skill == MH_SUMMON_LEGION?AI_LEGION:skill == NC_SILVERSNIPER?AI_FAW:skill == NC_MAGICDECOY?AI_FAW:AI_FLORA);
+	ai = (unsigned)(skill == AM_SPHEREMINE?AI_SPHERE:skill == KO_ZANZOU?AI_ZANZOU:skill == MH_SUMMON_LEGION?AI_LEGION:skill == NC_SILVERSNIPER?AI_FAW:skill == NC_MAGICDECOY?AI_FAW:skill == MT_SUMMON_ABR_BATTLE_WARIOR?AI_ABR:skill == MT_SUMMON_ABR_DUAL_CANNON?AI_ABR:skill == MT_SUMMON_ABR_MOTHER_NET?AI_ABR:skill == MT_SUMMON_ABR_INFINITY?AI_ABR:AI_FLORA);
 	if( md->master_id != src_id || md->special_state.ai != ai)
 		return 0; //Non alchemist summoned mobs have nothing to do here.
 
@@ -17320,6 +17372,24 @@ bool skill_check_condition_castend(struct map_session_data* sd, uint16 skill_id,
 				}
 			}
 			break;
+		case MT_SUMMON_ABR_BATTLE_WARIOR:
+		case MT_SUMMON_ABR_DUAL_CANNON:
+		case MT_SUMMON_ABR_MOTHER_NET:
+		case MT_SUMMON_ABR_INFINITY:
+		{
+			short c = 0;
+			short abrs[4] = { MOBID_ABR_BATTLE_WARIOR, MOBID_ABR_DUAL_CANNON, MOBID_ABR_MOTHER_NET, MOBID_ABR_INFINITY };
+			short maxcount = skill_get_maxcount(skill_id, skill_lv);
+			if (battle_config.land_skill_limit && maxcount > 0 && (battle_config.land_skill_limit&BL_PC)) {
+				i = map_foreachinmap(skill_check_condition_mob_master_sub, sd->bl.m, BL_MOB, sd->bl.id, abrs[3 - (MT_SUMMON_ABR_INFINITY - skill_id)], skill_id, &c);
+				if (c >= maxcount || c != i)
+				{
+					clif_skill_fail(sd, skill_id, USESKILL_FAIL_LEVEL, 0);
+					return false;
+				}
+			}
+			break;
+		}
 	}
 
 	status = &sd->battle_status;

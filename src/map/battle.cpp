@@ -4395,6 +4395,8 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			skillratio += -100 + status_get_str(src) + status_get_dex(src);
 			RE_LVL_DMOD(100);
 			skillratio += 300 + 100 * skill_lv;
+			if (sc && sc->data[SC_ABR_BATTLE_WARIOR])
+				skillratio *= 2;
 			break;
 		case NC_MAGMA_ERUPTION: // 'Slam' damage
 			skillratio += 350 + 50 * skill_lv;
@@ -4997,6 +4999,13 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			skillratio += -100 + 250 * skill_lv + 5 * sstatus->con;
 			RE_LVL_DMOD(100);
 			skillratio += skillratio * (20 * (sd ? pc_checkskill(sd, WH_ADVANCED_TRAP) : 5)) / 100;
+			break;
+		case ABR_BATTLE_BUSTER:// Need official formula.
+		case ABR_DUAL_CANNON_FIRE:// Need official formula.
+			skillratio += -100 + 8000;
+			break;
+		case ABR_INFINITY_BUSTER:// Need official formula.
+			skillratio += -100 + 50000;
 			break;
 	}
 	return skillratio;
@@ -5886,7 +5895,17 @@ static struct Damage initialize_weapon_data(struct block_list *src, struct block
 			case RK_WINDCUTTER:
 				if (sd && (sd->status.weapon == W_1HSPEAR || sd->status.weapon == W_2HSPEAR))
 					wd.flag |= BF_LONG;
-
+				break;
+			case NC_BOOSTKNUCKLE:
+			case NC_VULCANARM:
+			case NC_ARMSCANNON:
+				if (sc && sc->data[SC_ABR_DUAL_CANNON])
+					wd.div_ = 2;
+				break;
+			case NC_POWERSWING:
+				if (sc && sc->data[SC_ABR_BATTLE_WARIOR])
+					wd.div_ = -2;
+				break;
 			// The number of hits is set to 3 by default for use in Inspiration status.
 			// When in Banding, the number of hits is equal to the number of Royal Guards in Banding.
 			case LG_HESPERUSLIT:

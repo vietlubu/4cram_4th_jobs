@@ -195,10 +195,10 @@
 5299,1,6,16,0,0x1,0,5,1,yes,0,0x400,0,none,0,0,0,	MT_D_MACHINE,Defense Machine
 5300,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	MT_TWOAXEDEF,Two Hand Axe Def
 5301,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	MT_ABR_M,ABR Mastery
-5302,0,6,4,0,0x1,0,4,1,yes,0,0,0,none,0,0,20,	MT_SUMMON_ABR_BATTLE_WARIOR,ABR Battle Warior
-5303,0,6,4,0,0x1,0,4,1,yes,0,0,0,none,0,0,20,	MT_SUMMON_ABR_DUAL_CANNON,ABR Dual Cannon
-5304,0,6,4,0,0x1,0,4,1,yes,0,0,0,none,0,0,20,	MT_SUMMON_ABR_MOTHER_NET,ABR Mother Net
-5305,0,6,4,0,0x1,0,4,1,yes,0,0,0,none,0,0,0,	MT_SUMMON_ABR_INFINITY,ABR Infinity
+5302,0,6,4,0,0x1,0,4,1,yes,0,0,1,none,0,0,20,	MT_SUMMON_ABR_BATTLE_WARIOR,ABR Battle Warior
+5303,0,6,4,0,0x1,0,4,1,yes,0,0,1,none,0,0,20,	MT_SUMMON_ABR_DUAL_CANNON,ABR Dual Cannon
+5304,0,6,4,0,0x1,0,4,1,yes,0,0,1,none,0,0,20,	MT_SUMMON_ABR_MOTHER_NET,ABR Mother Net
+5305,0,6,4,0,0x1,0,4,1,yes,0,0,1,none,0,0,0,	MT_SUMMON_ABR_INFINITY,ABR Infinity
 
 // Extra 4th Job Skills 1
 5306,0,6,1,4,0,0,5,1,no,0,0,0,magic,0,0,0,	AG_DESTRUCTIVE_HURRICANE_CLIMAX,Destructive Hurricane Climax
@@ -319,9 +319,9 @@
 8456,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	EM_EL_POISON_SHIELD,Poison Shield
 8457,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	EM_EL_DEADLY_POISON,Deadly Poison
 
-// ABR (Automated Battle Robot)
-8601,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	ABR_BATTLE_BUSTER,Battle Buster
-8602,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	ABR_DUAL_CANNON_FIRE,Dual Cannon Fire
-8603,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	ABR_NET_REPAIR,Net Repair
-8604,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	ABR_NET_SUPPORT,Net Support
-8605,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	ABR_INFINITY_BUSTER,Infinity Buster
+// ABR (Automated Battle Robot) - Do any of the attack skills do splash damage???
+8601,1,6,1,0,0,0,1,1,yes,0,0,0,weapon,0,0,0,	ABR_BATTLE_BUSTER,Battle Buster
+8602,9,6,1,0,0,0,1,1,yes,0,0,0,weapon,0,0,0,	ABR_DUAL_CANNON_FIRE,Dual Cannon Fire
+8603,0,6,4,0,0x3,5,1,1,yes,0,0,0,none,0,0,0,	ABR_NET_REPAIR,Net Repair// Need official splash size.
+8604,0,6,4,0,0x3,5,1,1,yes,0,0,0,none,0,0,0,	ABR_NET_SUPPORT,Net Support// Need official splash size.
+8605,9,6,1,0,0,0,1,1,yes,0,0,0,weapon,0,0,0,	ABR_INFINITY_BUSTER,Infinity Buster

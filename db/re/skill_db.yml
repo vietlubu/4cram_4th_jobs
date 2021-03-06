@@ -21023,7 +21023,7 @@ Body:
     Flags:
       AllowOnMado: true
     Range: 11
-    Hit: Single
+    Hit: Multi_Hit
     HitCount: 1
     Element: Weapon
     CastTime:
@@ -21084,7 +21084,7 @@ Body:
       TargetTrap: true
       AllowOnMado: true
     Range: 13
-    Hit: Single
+    Hit: Multi_Hit
     HitCount: 1
     Element: Weapon
     SplashArea: 1
@@ -21219,7 +21219,7 @@ Body:
         Size: 11
       - Level: 5
         Size: 13
-    Hit: Single
+    Hit: Multi_Hit
     HitCount: 1
     Element: Weapon
     SplashArea:
@@ -21792,7 +21792,7 @@ Body:
     Flags:
       AllowOnMado: true
     Range: 1
-    Hit: Single
+    Hit: Multi_Hit
     HitCount: 1
     Element: Weapon
     AfterCastActDelay:

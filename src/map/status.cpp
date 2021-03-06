@@ -3490,6 +3490,43 @@ int status_calc_mob_(struct mob_data* md, enum e_status_calc_opt opt)
 					status->matk_min = status->matk_max = 250 + 50*((TBL_PC*)mbl)->menuskill_val;
 					break;
 				}
+				case MT_SUMMON_ABR_BATTLE_WARIOR:
+				case MT_SUMMON_ABR_DUAL_CANNON:
+				case MT_SUMMON_ABR_MOTHER_NET:
+				case MT_SUMMON_ABR_INFINITY:
+				{
+					struct map_session_data* msd = BL_CAST(BL_PC, mbl);
+					struct status_data *mstatus = status_get_status_data(mbl);
+					short abr_mastery = 0;
+
+					if (!msd || !mstatus)
+						break;
+
+					abr_mastery = pc_checkskill(msd, MT_ABR_M);
+
+					// Custom formulas for ABR's.
+					// Its unknown how the summoner's stats affects the ABR's stats.
+					// I decided to do something similar to elementals for now until I know.
+					// Also added hit increase from ABR-Mastery for balance reasons. [Rytech]
+					status->batk = 2 * mstatus->batk + 500 + 200 * abr_mastery;
+					status->max_hp = (5000 + 2000 * abr_mastery) * mstatus->vit;
+					status->def = mstatus->def + 20 * abr_mastery;
+					status->mdef = mstatus->mdef + 4 * abr_mastery;
+					status->hit = mstatus->hit + 5 * abr_mastery / 2;
+					status->flee = mstatus->flee + 10 * abr_mastery;
+					status->speed = mstatus->speed;
+
+					// The Infinity ABR appears to have a much higher attack then other
+					// ABR's and im guessing has a much higher MaxHP due to it being a AP
+					// costing summon. [Rytech]
+					if (ud->skill_id == MT_SUMMON_ABR_INFINITY)
+					{
+						status->batk += 2000;
+						status->max_hp += 20000;
+					}
+
+					break;
+				}
 			}
 			status->hp = status->max_hp;
 		}
