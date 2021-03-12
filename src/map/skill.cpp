@@ -17380,9 +17380,10 @@ bool skill_check_condition_castend(struct map_session_data* sd, uint16 skill_id,
 			short c = 0;
 			short abrs[4] = { MOBID_ABR_BATTLE_WARIOR, MOBID_ABR_DUAL_CANNON, MOBID_ABR_MOTHER_NET, MOBID_ABR_INFINITY };
 			short maxcount = skill_get_maxcount(skill_id, skill_lv);
-			if (battle_config.land_skill_limit && maxcount > 0 && (battle_config.land_skill_limit&BL_PC)) {
-				i = map_foreachinmap(skill_check_condition_mob_master_sub, sd->bl.m, BL_MOB, sd->bl.id, abrs[3 - (MT_SUMMON_ABR_INFINITY - skill_id)], skill_id, &c);
-				if (c >= maxcount || c != i)
+			if (battle_config.land_skill_limit && maxcount > 0 && (battle_config.land_skill_limit&BL_PC))
+			{
+				map_foreachinmap(skill_check_condition_mob_master_sub, sd->bl.m, BL_MOB, sd->bl.id, abrs[3 - (MT_SUMMON_ABR_INFINITY - skill_id)], skill_id, &c);
+				if (c >= maxcount)
 				{
 					clif_skill_fail(sd, skill_id, USESKILL_FAIL_LEVEL, 0);
 					return false;

@@ -3254,7 +3254,7 @@ void pc_bonus(struct map_session_data *sd,int type,int val)
 		case SP_CON:
 		case SP_CRT:
 			if (sd->state.lr_flag != 2)
-				sd->indexed_bonus.param_bonus[type - SP_POW] += val;
+				sd->indexed_bonus.param_bonus[type - SP_POW + PARAM_POW] += val;
 			break;
 		case SP_ATK1:
 			if(!sd->state.lr_flag) {
@@ -3732,12 +3732,12 @@ void pc_bonus(struct map_session_data *sd,int type,int val)
 			break;
 		case SP_ALL_TRAIT_STATS:
 			if (sd->state.lr_flag != 2) {
-				sd->indexed_bonus.param_bonus[SP_POW - SP_POW] += val;
-				sd->indexed_bonus.param_bonus[SP_STA - SP_POW] += val;
-				sd->indexed_bonus.param_bonus[SP_WIS - SP_POW] += val;
-				sd->indexed_bonus.param_bonus[SP_SPL - SP_POW] += val;
-				sd->indexed_bonus.param_bonus[SP_CON - SP_POW] += val;
-				sd->indexed_bonus.param_bonus[SP_CRT - SP_POW] += val;
+				sd->indexed_bonus.param_bonus[SP_POW - SP_POW + PARAM_POW] += val;
+				sd->indexed_bonus.param_bonus[SP_STA - SP_POW + PARAM_POW] += val;
+				sd->indexed_bonus.param_bonus[SP_WIS - SP_POW + PARAM_POW] += val;
+				sd->indexed_bonus.param_bonus[SP_SPL - SP_POW + PARAM_POW] += val;
+				sd->indexed_bonus.param_bonus[SP_CON - SP_POW + PARAM_POW] += val;
+				sd->indexed_bonus.param_bonus[SP_CRT - SP_POW + PARAM_POW] += val;
 			}
 			break;
 		case SP_AGI_VIT:	// [Valaris]

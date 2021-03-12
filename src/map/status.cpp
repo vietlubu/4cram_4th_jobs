@@ -3508,7 +3508,7 @@ int status_calc_mob_(struct mob_data* md, enum e_status_calc_opt opt)
 					// Its unknown how the summoner's stats affects the ABR's stats.
 					// I decided to do something similar to elementals for now until I know.
 					// Also added hit increase from ABR-Mastery for balance reasons. [Rytech]
-					status->max_hp = (5000 + 2000 * abr_mastery) * mstatus->vit;
+					status->max_hp = (5000 + 2000 * abr_mastery) * mstatus->vit / 100;
 					status->rhw.atk = (2 * mstatus->batk + 500 + 200 * abr_mastery) * 70 / 100;
 					status->rhw.atk2 = 2 * mstatus->batk + 500 + 200 * abr_mastery;
 					status->def = mstatus->def + 20 * abr_mastery;
