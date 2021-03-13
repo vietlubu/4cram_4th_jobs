@@ -27,7 +27,7 @@ static void skill_txt_data(const std::string& modePath, const std::string& fixed
 	skill_nearnpc.clear();
 
 	if (fileExists(modePath + "/skill_require_db.txt"))
-		sv_readdb(modePath.c_str(), "skill_require_db.txt", ',', 34, 34, -1, skill_parse_row_requiredb, false);
+		sv_readdb(modePath.c_str(), "skill_require_db.txt", ',', 36, 36, -1, skill_parse_row_requiredb, false);
 	if (fileExists(modePath + "/skill_cast_db.txt"))
 		sv_readdb(modePath.c_str(), "skill_cast_db.txt", ',', 7, 8, -1, skill_parse_row_castdb, false);
 	if (fileExists(modePath + "/skill_castnodex_db.txt"))
@@ -150,8 +150,8 @@ int do_init( int argc, char** argv ){
 	if (fileExists(skill_db.getDefaultLocation())) {
 		skill_db.load();
 	} else {
-		sv_readdb(path_db_mode.c_str(), "skill_db.txt", ',', 18, 18, -1, parse_skill_constants_txt, false);
-		sv_readdb(path_db_import.c_str(), "skill_db.txt", ',', 18, 18, -1, parse_skill_constants_txt, false);
+		sv_readdb(path_db_mode.c_str(), "skill_db.txt", ',', 19, 19, -1, parse_skill_constants_txt, false);
+		sv_readdb(path_db_import.c_str(), "skill_db.txt", ',', 19, 19, -1, parse_skill_constants_txt, false);
 	}
 
 	// Load constants
@@ -203,14 +203,14 @@ int do_init( int argc, char** argv ){
 
 	skill_txt_data( path_db_mode, path_db );
 	if (!process("SKILL_DB", 1, { path_db_mode }, "skill_db", [](const std::string& path, const std::string& name_ext) -> bool {
-		return sv_readdb(path.c_str(), name_ext.c_str(), ',', 18, 18, -1, &skill_parse_row_skilldb, false);
+		return sv_readdb(path.c_str(), name_ext.c_str(), ',', 19, 19, -1, &skill_parse_row_skilldb, false);
 	})){
 		return 0;
 	}
 
 	skill_txt_data( path_db_import, path_db_import );
 	if (!process("SKILL_DB", 1, { path_db_import }, "skill_db", [](const std::string& path, const std::string& name_ext) -> bool {
-		return sv_readdb(path.c_str(), name_ext.c_str(), ',', 18, 18, -1, &skill_parse_row_skilldb, false);
+		return sv_readdb(path.c_str(), name_ext.c_str(), ',', 19, 19, -1, &skill_parse_row_skilldb, false);
 	})){
 		return 0;
 	}
@@ -949,6 +949,9 @@ static bool skill_parse_row_requiredb(char* split[], int columns, int current)
 		}
 	}
 
+	skill_split_atoi(split[34], entry.ap);
+	skill_split_atoi(split[35], entry.ap_rate);
+
 	skill_require.insert({ atoi(split[0]), entry });
 
 	return true;
@@ -1075,8 +1078,8 @@ static bool skill_parse_row_skilldb(char* split[], int columns, int current) {
 
 	body << YAML::BeginMap;
 	body << YAML::Key << "Id" << YAML::Value << skill_id;
-	body << YAML::Key << "Name" << YAML::Value << trim(split[16]);
-	body << YAML::Key << "Description" << YAML::Value << trim(split[17]);
+	body << YAML::Key << "Name" << YAML::Value << trim(split[17]);
+	body << YAML::Key << "Description" << YAML::Value << trim(split[18]);
 	body << YAML::Key << "MaxLevel" << YAML::Value << atoi(split[7]);
 
 	if (strcmpi(split[13], "weapon") == 0)
@@ -1382,6 +1385,31 @@ static bool skill_parse_row_skilldb(char* split[], int columns, int current) {
 		}
 	}
 
+	memset(arr, 0, sizeof(arr));
+	arr_size = skill_split_atoi(split[16], arr);
+
+	if (arr_size != 0) {
+		if (arr_size == 1) {
+			if (arr[0] != 0) {
+				body << YAML::Key << "GiveAp";
+				body << YAML::Value << arr[0];
+			}
+		}
+		else {
+			body << YAML::Key << "GiveAp";
+			body << YAML::BeginSeq;
+
+			for (int i = 0; i < arr_size; i++) {
+				body << YAML::BeginMap;
+				body << YAML::Key << "Level" << YAML::Value << i + 1;
+				body << YAML::Key << "Amount" << YAML::Value << arr[i];
+				body << YAML::EndMap;
+			}
+
+			body << YAML::EndSeq;
+		}
+	}
+
 	auto it_copyable = skill_copyable.find(skill_id);
 
 	if (it_copyable != skill_copyable.end()) {
@@ -1424,6 +1452,10 @@ static bool skill_parse_row_skilldb(char* split[], int columns, int current) {
 				body << YAML::Key << "ItemCost" << YAML::Value << "true";
 			if (it_copyable->second.req_opt & 0x1000)
 				body << YAML::Key << "Equipment" << YAML::Value << "true";
+			if (it_copyable->second.req_opt & 0x2000)
+				body << YAML::Key << "ApCost" << YAML::Value << "true";
+			if (it_copyable->second.req_opt & 0x4000)
+				body << YAML::Key << "ApRateCost" << YAML::Value << "true";
 			body << YAML::EndMap;
 		}
 
@@ -1713,6 +1745,46 @@ static bool skill_parse_row_skilldb(char* split[], int columns, int current) {
 			body << YAML::EndSeq;
 		}
 		
+		if (!isMultiLevel(it_req->second.ap)) {
+			if (it_req->second.ap[0] > 0)
+				body << YAML::Key << "ApCost" << YAML::Value << it_req->second.ap[0];
+		}
+		else {
+			body << YAML::Key << "ApCost";
+			body << YAML::BeginSeq;
+
+			for (size_t i = 0; i < ARRAYLENGTH(it_req->second.ap); i++) {
+				if (it_req->second.ap[i] > 0) {
+					body << YAML::BeginMap;
+					body << YAML::Key << "Level" << YAML::Value << i + 1;
+					body << YAML::Key << "Amount" << YAML::Value << it_req->second.ap[i];
+					body << YAML::EndMap;
+				}
+			}
+
+			body << YAML::EndSeq;
+		}
+
+		if (!isMultiLevel(it_req->second.ap_rate)) {
+			if (it_req->second.ap_rate[0] != 0)
+				body << YAML::Key << "ApRateCost" << YAML::Value << it_req->second.ap_rate[0];
+		}
+		else {
+			body << YAML::Key << "ApRateCost";
+			body << YAML::BeginSeq;
+
+			for (size_t i = 0; i < ARRAYLENGTH(it_req->second.ap_rate); i++) {
+				if (it_req->second.ap_rate[i] != 0) {
+					body << YAML::BeginMap;
+					body << YAML::Key << "Level" << YAML::Value << i + 1;
+					body << YAML::Key << "Amount" << YAML::Value << it_req->second.ap_rate[i];
+					body << YAML::EndMap;
+				}
+			}
+
+			body << YAML::EndSeq;
+		}
+
 		if (!isMultiLevel(it_req->second.mhp)) {
 			if (it_req->second.mhp[0] > 0)
 				body << YAML::Key << "MaxHpTrigger" << YAML::Value << it_req->second.mhp[0];
@@ -2536,6 +2608,10 @@ static bool itemdb_read_db(const char* file) {
 			} else {
 				body << YAML::Key << "Classes";
 				body << YAML::BeginMap;
+				if (ITEMJ_FORTH & temp_class) {
+					temp_class &= ~ITEMJ_ALL_FORTH;
+					body << YAML::Key << "All_Forth" << YAML::Value << "true";
+				}
 				if ((ITEMJ_THIRD & temp_class) && (ITEMJ_THIRD_UPPER & temp_class) && (ITEMJ_THIRD_BABY & temp_class)) {
 					temp_class &= ~ITEMJ_ALL_THIRD;
 					body << YAML::Key << "All_Third" << YAML::Value << "true";
@@ -2548,7 +2624,7 @@ static bool itemdb_read_db(const char* file) {
 					temp_class &= ~ITEMJ_ALL_BABY;
 					body << YAML::Key << "All_Baby" << YAML::Value << "true";
 				}
-				for (int32 i = ITEMJ_NONE; i <= ITEMJ_THIRD_BABY; i++) {
+				for (int32 i = ITEMJ_NONE; i <= ITEMJ_FORTH; i++) {
 					if (i & temp_class) {
 						const char* class_ = constant_lookup(i, "ITEMJ_");
 
