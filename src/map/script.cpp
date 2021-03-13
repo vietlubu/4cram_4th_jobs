@@ -9257,7 +9257,7 @@ BUILDIN_FUNC(successrefitem) {
 		clif_additem(sd,i,1,0);
 		pc_equipitem(sd,i,ep);
 		clif_misceffect(&sd->bl,3);
-		achievement_update_objective(sd, AG_REFINE_SUCCESS, 2, sd->inventory_data[i]->wlv, sd->inventory.u.items_inventory[i].refine);
+		achievement_update_objective(sd, AG_ENCHANT_SUCCESS, 2, sd->inventory_data[i]->wlv, sd->inventory.u.items_inventory[i].refine);
 		if (sd->inventory.u.items_inventory[i].refine == battle_config.blacksmith_fame_refine_threshold &&
 			sd->inventory.u.items_inventory[i].card[0] == CARD0_FORGE &&
 			sd->status.char_id == (int)MakeDWord(sd->inventory.u.items_inventory[i].card[2],sd->inventory.u.items_inventory[i].card[3]))
@@ -9307,7 +9307,7 @@ BUILDIN_FUNC(failedrefitem) {
 		clif_refine(sd->fd,1,i,sd->inventory.u.items_inventory[i].refine); //notify client of failure
 		pc_delitem(sd,i,1,0,2,LOG_TYPE_SCRIPT);
 		clif_misceffect(&sd->bl,2); 	// display failure effect
-		achievement_update_objective(sd, AG_REFINE_FAIL, 1, 1);
+		achievement_update_objective(sd, AG_ENCHANT_FAIL, 1, 1);
 		script_pushint(st, 1);
 		return SCRIPT_CMD_SUCCESS;
 	}
@@ -9356,7 +9356,7 @@ BUILDIN_FUNC(downrefitem) {
 		clif_additem(sd,i,1,0);
 		pc_equipitem(sd,i,ep);
 		clif_misceffect(&sd->bl,2);
-		achievement_update_objective(sd, AG_REFINE_FAIL, 1, sd->inventory.u.items_inventory[i].refine);
+		achievement_update_objective(sd, AG_ENCHANT_FAIL, 1, sd->inventory.u.items_inventory[i].refine);
 		script_pushint(st, sd->inventory.u.items_inventory[i].refine);
 		return SCRIPT_CMD_SUCCESS;
 	}
@@ -10504,9 +10504,9 @@ BUILDIN_FUNC(makepet)
 
 	sd->catch_target_class = mob_id;
 
-	struct mob_db* mdb = mob_db(pet->class_);
+	std::shared_ptr<s_mob_db> mdb = mob_db.find(pet->class_);
 
-	intif_create_pet( sd->status.account_id, sd->status.char_id, pet->class_, mdb->lv, pet->EggID, 0, pet->intimate, 100, 0, 1, mdb->jname );
+	intif_create_pet( sd->status.account_id, sd->status.char_id, pet->class_, mdb->lv, pet->EggID, 0, pet->intimate, 100, 0, 1, mdb->jname.c_str() );
 
 	return SCRIPT_CMD_SUCCESS;
 }
@@ -10656,7 +10656,6 @@ BUILDIN_FUNC(getmobdrops)
 {
 	int class_ = script_getnum(st,2);
 	int i, j = 0;
-	struct mob_db *mob;
 
 	if( !mobdb_checkid(class_) )
 	{
@@ -10664,7 +10663,7 @@ BUILDIN_FUNC(getmobdrops)
 		return SCRIPT_CMD_SUCCESS;
 	}
 
-	mob = mob_db(class_);
+	std::shared_ptr<s_mob_db> mob = mob_db.find(class_);
 
 	for( i = 0; i < MAX_MOB_DROP_TOTAL; i++ )
 	{
@@ -13811,14 +13810,16 @@ BUILDIN_FUNC(strmobinfo)
 		return SCRIPT_CMD_SUCCESS;
 	}
 
+	std::shared_ptr<s_mob_db> mob = mob_db.find(class_);
+
 	switch (num) {
-	case 1: script_pushstrcopy(st,mob_db(class_)->name); break;
-	case 2: script_pushstrcopy(st,mob_db(class_)->jname); break;
-	case 3: script_pushint(st,mob_db(class_)->lv); break;
-	case 4: script_pushint(st,mob_db(class_)->status.max_hp); break;
-	case 5: script_pushint(st,mob_db(class_)->status.max_sp); break;
-	case 6: script_pushint(st,mob_db(class_)->base_exp); break;
-	case 7: script_pushint(st,mob_db(class_)->job_exp); break;
+	case 1: script_pushstrcopy(st,mob->name.c_str()); break;
+	case 2: script_pushstrcopy(st, mob->jname.c_str()); break;
+	case 3: script_pushint(st,mob->lv); break;
+	case 4: script_pushint(st,mob->status.max_hp); break;
+	case 5: script_pushint(st,mob->status.max_sp); break;
+	case 6: script_pushint(st,mob->base_exp); break;
+	case 7: script_pushint(st,mob->job_exp); break;
 	default:
 		script_pushint(st,0);
 		break;
@@ -17480,13 +17481,13 @@ BUILDIN_FUNC(setitemscript)
  *-------------------------------------------------------*/
 BUILDIN_FUNC(addmonsterdrop)
 {
-	struct mob_db *mob;
+	std::shared_ptr<s_mob_db> mob;
 	int rate;
 
 	if(script_isstring(st, 2))
-		mob = mob_db(mobdb_searchname(script_getstr(st,2)));
+		mob = mob_db.find(mobdb_searchname(script_getstr(st,2)));
 	else
-		mob = mob_db(script_getnum(st,2));
+		mob = mob_db.find(script_getnum(st,2));
 
 	t_itemid item_id=script_getnum(st,3);
 	rate=script_getnum(st,4);
@@ -17534,12 +17535,12 @@ BUILDIN_FUNC(addmonsterdrop)
  *-------------------------------------------------------*/
 BUILDIN_FUNC(delmonsterdrop)
 {
-	struct mob_db *mob;
+	std::shared_ptr<s_mob_db> mob;
 
 	if(script_isstring(st, 2))
-		mob = mob_db(mobdb_searchname(script_getstr(st,2)));
+		mob = mob_db.find(mobdb_searchname(script_getstr(st,2)));
 	else
-		mob = mob_db(script_getnum(st,2));
+		mob = mob_db.find(script_getnum(st,2));
 
 	t_itemid item_id=script_getnum(st,3);
 
@@ -17576,7 +17577,6 @@ BUILDIN_FUNC(delmonsterdrop)
  *------------------------------------------*/
 BUILDIN_FUNC(getmonsterinfo)
 {
-	struct mob_db *mob;
 	int mob_id;
 
 	mob_id	= script_getnum(st,2);
@@ -17588,9 +17588,11 @@ BUILDIN_FUNC(getmonsterinfo)
 			script_pushint(st,-1);
 		return SCRIPT_CMD_SUCCESS;
 	}
-	mob = mob_db(mob_id);
+
+	std::shared_ptr<s_mob_db> mob = mob_db.find(mob_id);
+
 	switch ( script_getnum(st,3) ) {
-		case MOB_NAME:		script_pushstrcopy(st,mob->jname); break;
+		case MOB_NAME:		script_pushstrcopy(st,mob->jname.c_str()); break;
 		case MOB_LV:		script_pushint(st,mob->lv); break;
 		case MOB_MAXHP:		script_pushint(st,mob->status.max_hp); break;
 		case MOB_BASEEXP:	script_pushint(st,mob->base_exp); break;
@@ -17673,6 +17675,17 @@ BUILDIN_FUNC(checkidlehom)
 
 	if( script_nick2sd(2,sd) )
 		script_pushint(st, DIFF_TICK(last_tick, sd->idletime_hom));
+	else
+		script_pushint(st, 0);
+	return SCRIPT_CMD_SUCCESS;
+}
+
+BUILDIN_FUNC(checkidlemer)
+{
+	TBL_PC *sd;
+
+	if( script_nick2sd(2,sd) )
+		script_pushint(st, DIFF_TICK(last_tick, sd->idletime_mer));
 	else
 		script_pushint(st, 0);
 	return SCRIPT_CMD_SUCCESS;
@@ -23776,6 +23789,44 @@ BUILDIN_FUNC(channel_setopt) {
 }
 
 /**
+ * Get channel options
+ * channel_getopt <chname>,<option>;
+ */
+BUILDIN_FUNC(channel_getopt) {
+	Channel *ch;
+	const char *chname = script_getstr(st, 2);
+
+	if (!(ch = channel_name2channel((char *)chname, NULL, 0))) {
+		ShowError("buildin_channel_getopt: Channel name '%s' is invalid.\n", chname);
+		script_pushint(st, false);
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	int opt = script_getnum(st, 3);
+
+	switch (opt) {
+		case CHAN_OPT_ANNOUNCE_SELF:
+		case CHAN_OPT_ANNOUNCE_JOIN:
+		case CHAN_OPT_ANNOUNCE_LEAVE:
+		case CHAN_OPT_COLOR_OVERRIDE:
+		case CHAN_OPT_CAN_CHAT:
+		case CHAN_OPT_CAN_LEAVE:
+		case CHAN_OPT_AUTOJOIN:
+			script_pushint(st, (ch->opt & opt) != 0);
+			break;
+		case CHAN_OPT_MSG_DELAY:
+			script_pushint(st, ch->msg_delay);
+			break;
+		default:
+			ShowError("buildin_channel_getopt: Invalid option %d!\n", opt);
+			script_pushint(st, false);
+			return SCRIPT_CMD_FAILURE;
+	}
+
+	return SCRIPT_CMD_SUCCESS;
+}
+
+/**
  * Set channel color
  * channel_setcolor "<chname>",<color>;
  * @author [Cydh]
@@ -25491,6 +25542,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(checkchatting,"?"),
 	BUILDIN_DEF(checkidle,"?"),
 	BUILDIN_DEF(checkidlehom,"?"),
+	BUILDIN_DEF(checkidlemer,"?"),
 	BUILDIN_DEF(openmail,"?"),
 	BUILDIN_DEF(openauction,"?"),
 	BUILDIN_DEF(checkcell,"siii"),
@@ -25661,6 +25713,7 @@ struct script_function buildin_func[] = {
 	// Channel System
 	BUILDIN_DEF(channel_create,"ss?????"),
 	BUILDIN_DEF(channel_setopt,"sii"),
+	BUILDIN_DEF(channel_getopt,"si"),
 	BUILDIN_DEF(channel_setcolor,"si"),
 	BUILDIN_DEF(channel_setpass,"ss"),
 	BUILDIN_DEF(channel_setgroup,"si*"),
