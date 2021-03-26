@@ -1140,6 +1140,19 @@ bool battle_status_block_damage(struct block_list *src, struct block_list *targe
 		return false;
 	}
 
+	if ((sce = sc->data[SC_GUARDIAN_S]) && damage > 0) {
+		clif_specialeffect(target, EF_GUARD3, AREA);// Not official but we gotta show some way the barrier is working. [Rytech]
+		sce->val2 -= static_cast<int>(cap_value(damage, INT_MIN, INT_MAX));
+		if (flag & BF_WEAPON) {
+			if (sce->val2 >= 0)
+				damage = 0;
+			else
+				damage = -sce->val2;
+		}
+		if (sce->val2 <= 0)
+			status_change_end(target, SC_GUARDIAN_S, INVALID_TIMER);
+	}
+
 	if (damage == 0)
 		return false;
 
@@ -4193,6 +4206,8 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 #else
 			skillratio += 30 * skill_lv;
 #endif
+			if (sc && sc->data[SC_SHIELD_POWER])// Whats the official increase? [Rytech]
+				skillratio += skillratio * 50 / 100;
 			break;
 		case WS_CARTTERMINATION:
 			i = 10 * (16 - skill_lv);
@@ -4508,10 +4523,14 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 		case LG_CANNONSPEAR:
 			skillratio += -100 + skill_lv * (50 + status_get_str(src));
 			RE_LVL_DMOD(100);
+			if (sc && sc->data[SC_SPEAR_SCAR])// Whats the official increase? [Rytech]
+				skillratio += skillratio * 50 / 100;
 			break;
 		case LG_BANISHINGPOINT:
 			skillratio += -100 + (50 * skill_lv) + ((sd) ? pc_checkskill(sd,SM_BASH) * 30 : 0);
 			RE_LVL_DMOD(100);
+			if (sc && sc->data[SC_SPEAR_SCAR])// Whats the official increase? [Rytech]
+				skillratio += skillratio * 50 / 100;
 			break;
 		case LG_SHIELDPRESS:
 			skillratio += -100 + 200 * skill_lv + sstatus->str;
@@ -4522,6 +4541,8 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 					skillratio += sd->inventory_data[index]->weight / 10;
 			}
 			RE_LVL_DMOD(100);
+			if (sc && sc->data[SC_SHIELD_POWER])// Whats the official increase? [Rytech]
+				skillratio += skillratio * 50 / 100;
 			break;
 		case LG_PINPOINTATTACK:
 			skillratio += -100 + 100 * skill_lv + 5 * status_get_agi(src);
@@ -4567,6 +4588,8 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 					skillratio += -100 + (skill_lv + 1) * sd->inventory_data[index]->weight / 10;
 			}
 			RE_LVL_DMOD(100);
+			if (sc && sc->data[SC_SHIELD_POWER])// Whats the official increase? [Rytech]
+				skillratio += skillratio * 50 / 100;
 			break;
 		case LG_HESPERUSLIT:
 			if (sc) {
@@ -4992,6 +5015,32 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			RE_LVL_DMOD(100);
 			if (sc && sc->data[SC_GIANTGROWTH])
 				skillratio *= 2;
+			break;
+		case IG_GRAND_JUDGEMENT:
+			skillratio += -100 + 750 * skill_lv + 10 * sstatus->pow;
+			if (tstatus->race == RC_PLANT || tstatus->race == RC_INSECT)
+				skillratio += 350 * skill_lv;
+			RE_LVL_DMOD(100);
+			if ((i = pc_checkskill_imperial_guard(sd, 3)) > 0)
+				skillratio += skillratio * i / 100;
+			break;
+		case IG_SHIELD_SHOOTING:
+			skillratio += -100 + 600 * skill_lv + 5 * sstatus->pow;
+			if (sd)
+			{// Damage affected by the shield's weight and refine. Need official formula. [Rytech]
+				short index = sd->equip_index[EQI_HAND_L];
+				if (index >= 0 && sd->inventory_data[index] && sd->inventory_data[index]->type == IT_ARMOR)
+					skillratio += sd->inventory_data[index]->weight / 20 * sd->inventory.u.items_inventory[index].refine;
+			}
+			RE_LVL_DMOD(100);
+			if ((i = pc_checkskill_imperial_guard(sd, 3)) > 0)
+				skillratio += skillratio * i / 100;
+			break;
+		case IG_OVERSLASH:
+			skillratio += -100 + 60 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			if ((i = pc_checkskill_imperial_guard(sd, 3)) > 0)
+				skillratio += skillratio * i / 100;
 			break;
 		case CD_EFFLIGO:
 			skillratio += -100 + 800 * skill_lv + 5 * sstatus->pow;
@@ -6003,6 +6052,11 @@ static struct Damage initialize_weapon_data(struct block_list *src, struct block
 					if ((sd->servantball + sd->servantball_old) < wd.div_)
 						wd.div_ = sd->servantball + sd->servantball_old;
 				}
+				break;
+			case IG_OVERSLASH:
+				wd.div_ += wd.miscflag;
+				if (wd.div_ > 5)// Number of hits doesn't appear to go above 5.
+					wd.div_ = 5;
 				break;
 			case SHC_ETERNAL_SLASH:
 				if (sc && sc->data[SC_E_SLASH_COUNT])
@@ -7187,6 +7241,22 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 					case AG_FROZEN_SLASH:
 						skillratio += -100 + 750 * skill_lv + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
+						break;
+					case IG_JUDGEMENT_CROSS:
+						skillratio += -100 + 750 * skill_lv + 10 * sstatus->spl;
+						if (tstatus->race == RC_PLANT || tstatus->race == RC_INSECT)
+							skillratio += 350 * skill_lv;
+						RE_LVL_DMOD(100);
+						if ((i = pc_checkskill_imperial_guard(sd, 3)) > 0)
+							skillratio += skillratio * i / 100;
+						break;
+					case IG_CROSS_RAIN:// Need official damage increase from Spear and Sword Mastery. [Rytech]
+						skillratio += -100 + 30 * skill_lv + 5 * sstatus->spl + 5 * pc_checkskill(sd, IG_SPEAR_SWORD_M);
+						RE_LVL_DMOD(100);
+						if ((i = pc_checkskill_imperial_guard(sd, 3)) > 0)
+							skillratio += skillratio * i / 100;
+						if (sc && sc->data[SC_HOLY_S])
+							skillratio += 20 * skill_lv;
 						break;
 					case CD_ARBITRIUM:
 					case CD_ARBITRIUM_ATK:
@@ -8408,7 +8478,12 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 			{
 				// Only trigger if the devoted player was hit
 				if( damage > 0 ){
+					int64 devotion_damage = damage;
 					struct map_session_data* dsd = BL_CAST( BL_PC, d_bl );
+					struct status_change *d_sc;
+
+					// Needed to check the devotion master for Rebound Shield status.
+					d_sc = status_get_sc(d_bl);
 
 					// The devoting player needs to stand up
 					if( dsd && pc_issit( dsd ) ){
@@ -8416,8 +8491,11 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 						skill_sit( dsd, 0 );
 					}
 
-					clif_damage(d_bl, d_bl, gettick(), wd.amotion, wd.dmotion, damage, 1, DMG_NORMAL, 0, false);
-					status_fix_damage(NULL, d_bl, damage, 0, CR_DEVOTION);
+					if (d_sc && d_sc->data[SC_REBOUND_S])
+						devotion_damage -= devotion_damage * d_sc->data[SC_REBOUND_S]->val2 / 100;
+
+					clif_damage(d_bl, d_bl, gettick(), wd.amotion, wd.dmotion, devotion_damage, 1, DMG_NORMAL, 0, false);
+					status_fix_damage(NULL, d_bl, devotion_damage, 0, CR_DEVOTION);
 				}
 			}
 			else

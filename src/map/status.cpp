@@ -1172,6 +1172,16 @@ void initChangeTables(void)
 	set_sc(          SHC_ENCHANTING_SHADOW, SC_SHADOW_WEAPON , EFST_SHADOW_WEAPON , SCB_NONE );
 	set_sc_with_vfx( SHC_FATAL_SHADOW_CROW, SC_DARKCROW      , EFST_DARKCROW      , SCB_NONE );
 
+	// Imperial Guard
+	set_sc(          IG_GUARD_STANCE,       SC_GUARD_STANCE,  EFST_GUARD_STANCE,  SCB_WATK|SCB_DEF );
+	set_sc(          IG_GUARDIAN_SHIELD,    SC_GUARDIAN_S,    EFST_GUARDIAN_S,    SCB_NONE );
+	set_sc(          IG_REBOUND_SHIELD,     SC_REBOUND_S,     EFST_REBOUND_S,     SCB_NONE );
+	set_sc(          IG_ATTACK_STANCE,      SC_ATTACK_STANCE, EFST_ATTACK_STANCE, SCB_WATK|SCB_DEF );
+	set_sc(          IG_ULTIMATE_SACRIFICE, SC_ULTIMATE_S,    EFST_ULTIMATE_S,    SCB_NONE );
+	set_sc_with_vfx( IG_HOLY_SHIELD,        SC_HOLY_S,        EFST_HOLY_S,        SCB_ALL );
+	set_sc_with_vfx( IG_GRAND_JUDGEMENT,    SC_SPEAR_SCAR,    EFST_SPEAR_SCAR,    SCB_NONE );
+	set_sc(          IG_SHIELD_SHOOTING,    SC_SHIELD_POWER,  EFST_SHIELD_POWER,  SCB_NONE );
+
 	// Abyss Chaser
 	set_sc(          ABC_FROM_THE_ABYSS, SC_ABYSSFORCEWEAPON, EFST_ABYSSFORCEWEAPON, SCB_NONE );
 
@@ -1770,6 +1780,8 @@ void initChangeTables(void)
 	StatusDisplayType[SC_SHADOW_EXCEED] = BL_PC;
 	StatusDisplayType[SC_DANCING_KNIFE] = BL_PC;
 	StatusDisplayType[SC_E_SLASH_COUNT] = BL_PC;
+	StatusDisplayType[SC_HOLY_S] = BL_PC;
+	StatusDisplayType[SC_SPEAR_SCAR] = BL_PC;
 
 	/* StatusChangeState (SCS_) NOMOVE */
 	StatusChangeStateTable[SC_ANKLE]				|= SCS_NOMOVE;
@@ -2290,6 +2302,18 @@ int status_damage(struct block_list *src,struct block_list *target,int64 dhp, in
 
 		return (int)(hp+sp+ap);
 	}
+
+	if (sc && sc->data[SC_ULTIMATE_S] && !map_flag_gvg2(target->m)) {// flag&8 = Disable Ultimate Sacrifice
+		status_revive(target, 100, 100, 0);
+		status_change_clear(target, 0);
+		clif_skill_nodamage(target, target, ALL_RESURRECTION, 1, 1);
+
+		if (target->type == BL_MOB)
+			((TBL_MOB*)target)->state.rebirth = 1;
+
+		return (int)(hp+sp+ap);
+	}
+
 	if (target->type == BL_MOB && sc && sc->data[SC_REBIRTH] && !((TBL_MOB*) target)->state.rebirth) { // Ensure the monster has not already rebirthed before doing so.
 		status_revive(target, sc->data[SC_REBIRTH]->val2, 0, 0);
 		status_change_clear(target,0);
@@ -4874,6 +4898,8 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 		base_status->hit += skill * 2;
 	if (pc_checkskill(sd, SU_POWEROFLIFE) > 0)
 		base_status->hit += 20;
+	if ((skill = pc_checkskill_imperial_guard(sd, 2)) > 0)// IG_SPEAR_SWORD_M
+		base_status->hit += skill * 3;
 
 	if ((skill = pc_checkskill(sd, SU_SOULATTACK)) > 0)
 		base_status->rhw.range += skill_get_range2(&sd->bl, SU_SOULATTACK, skill, true);
@@ -4906,6 +4932,10 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 		else if (sd->status.weapon == W_KATAR)
 			base_status->cri += 50 + skill * 20;
 	}
+
+// ----- PHYSICAL RESISTANCE CALCULATION -----
+	if ((skill = pc_checkskill_imperial_guard(sd, 1)) > 0)// IG_SHIELD_MASTERY
+		base_status->res += skill * 3;
 
 // ----- EQUIPMENT-DEF CALCULATION -----
 
@@ -5221,6 +5251,12 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 			sd->indexed_bonus.subele[ELE_FIRE] -= 100;
 		if (sc->data[SC_CLIMAX_CRYIMP])
 			sd->indexed_bonus.subele[ELE_WATER] += 30;
+		if (sc->data[SC_HOLY_S])
+		{
+			sd->indexed_bonus.subele[ELE_DARK] += sc->data[SC_HOLY_S]->val2;
+			sd->indexed_bonus.subele[ELE_UNDEAD] += sc->data[SC_HOLY_S]->val2;
+			sd->indexed_bonus.magic_atk_ele[ELE_HOLY] += sc->data[SC_HOLY_S]->val2;
+		}
 	}
 	status_cpy(&sd->battle_status, base_status);
 
@@ -7406,6 +7442,10 @@ static unsigned short status_calc_watk(struct block_list *bl, struct status_chan
 		watk += watk * sc->data[SC_SUNSTANCE]->val2 / 100;
 	if (sc->data[SC_SOULFALCON])
 		watk += sc->data[SC_SOULFALCON]->val2;
+	if (sc->data[SC_GUARD_STANCE])
+		watk -= sc->data[SC_GUARD_STANCE]->val3;
+	if (sc->data[SC_ATTACK_STANCE])
+		watk += sc->data[SC_ATTACK_STANCE]->val3;
 
 	return (unsigned short)cap_value(watk,0,USHRT_MAX);
 }
@@ -7892,6 +7932,10 @@ static defType status_calc_def(struct block_list *bl, struct status_change *sc, 
 		def += sc->data[SC_D_MACHINE]->val2;
 	if (sc->data[SC_CLIMAX_CRYIMP])
 		def += 300;
+	if (sc->data[SC_GUARD_STANCE])
+		def += sc->data[SC_GUARD_STANCE]->val2;
+	if (sc->data[SC_ATTACK_STANCE])
+		def -= sc->data[SC_ATTACK_STANCE]->val2;
 
 	return (defType)cap_value(def,DEFTYPE_MIN,DEFTYPE_MAX);
 }
@@ -10226,6 +10270,7 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 	break;
 	case SC_KYRIE:
 	case SC_TUNAPARTY:
+	case SC_GUARDIAN_S:
 		if (bl->type == BL_MOB)
 			return 0;
 	break;
@@ -10949,6 +10994,12 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 		status_change_end(bl,SC_FOOD_INT_CASH,INVALID_TIMER);
 		status_change_end(bl,SC_FOOD_DEX_CASH,INVALID_TIMER);
 		status_change_end(bl,SC_FOOD_LUK_CASH,INVALID_TIMER);
+		break;
+	case SC_GUARD_STANCE:
+		status_change_end(bl, SC_ATTACK_STANCE, INVALID_TIMER);
+		break;
+	case SC_ATTACK_STANCE:
+		status_change_end(bl, SC_GUARD_STANCE, INVALID_TIMER);
 		break;
 	case SC_FIGHTINGSPIRIT:
 	case SC_OVERED_BOOST:
@@ -13111,8 +13162,29 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 				tick_time = 500;// Avoid being brought down to 0.
 			val4 = tick - tick_time;// Remaining Time
 			break;
+		case SC_GUARD_STANCE:
+			val2 = 50 + 50 * val1;// DEF Increase
+			val3 = 50 * val1;// ATK Decrease
+			tick = INFINITE_TICK;
+			break;
+		case SC_GUARDIAN_S:
+			val2 = status->max_hp * (50 * val1) / 100;// Barrier HP
+			break;
+		case SC_REBOUND_S:
+			val2 = 10 * val1;// Reduced Damage From Devotion
+			if (val2 > 99)
+				val2 = 99;// Lets not let it reduce above 99.
+			break;
+		case SC_ATTACK_STANCE:
+			val2 = 40 * val1;// DEF Decrease
+			val3 = 5 + 5 * val1;// ATK Increase
+			tick = INFINITE_TICK;
+			break;
+		case SC_HOLY_S:
+			val2 = 5 + 2 * val1;// Damage Reduction / Holy Damage Increase
+			break;
 		case SC_MEDIALE:
-			val2 = 2 * val1;// Heal rate.
+			val2 = 2 * val1;// Heal Rate
 			val4 = tick / 2000;
 			tick_time = 2000;
 			break;
@@ -13900,6 +13972,8 @@ int status_change_clear(struct block_list* bl, int type)
 			case SC_REUSE_LIMIT_LUXANIMA:
 			case SC_SOULENERGY:
 			case SC_MADOGEAR:
+			case SC_GUARD_STANCE:
+			case SC_ATTACK_STANCE:
 			// Costumes
 			case SC_MOONSTAR:
 			case SC_SUPER_STAR:

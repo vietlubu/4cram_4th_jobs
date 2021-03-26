@@ -463,6 +463,45 @@ unsigned short skill_dummy2skill_id(unsigned short skill_id) {
 			return SU_LUNATICCARROTBEAT;
 		case NPC_REVERBERATION_ATK:
 			return NPC_REVERBERATION;
+		case DK_SERVANTWEAPON_ATK:
+			return DK_SERVANTWEAPON;
+		case DK_HACKANDSLASHER_ATK:
+			return DK_HACKANDSLASHER;
+		case AG_DESTRUCTIVE_HURRICANE_CLIMAX:
+			return AG_DESTRUCTIVE_HURRICANE;
+		case AG_VIOLENT_QUAKE_ATK:
+			return AG_VIOLENT_QUAKE;
+		case AG_ALL_BLOOM_ATK:
+		case AG_ALL_BLOOM_ATK2:
+			return AG_ALL_BLOOM;
+		case AG_CRYSTAL_IMPACT_ATK:
+			return AG_CRYSTAL_IMPACT;
+		case AG_ASTRAL_STRIKE_ATK:
+			return AG_ASTRAL_STRIKE;
+		case AG_CRIMSON_ARROW_ATK:
+			return AG_CRIMSON_ARROW;
+		case CD_ARBITRIUM_ATK:
+			return CD_ARBITRIUM;
+		case ABC_CHAIN_REACTION_SHOT_ATK:
+			return ABC_CHAIN_REACTION_SHOT;
+		case ABC_FROM_THE_ABYSS_ATK:
+			return ABC_FROM_THE_ABYSS;
+		case BO_ACIDIFIED_ZONE_WATER_ATK:
+			return BO_ACIDIFIED_ZONE_WATER;
+		case BO_ACIDIFIED_ZONE_GROUND_ATK:
+			return BO_ACIDIFIED_ZONE_GROUND;
+		case BO_ACIDIFIED_ZONE_WIND_ATK:
+			return BO_ACIDIFIED_ZONE_WIND;
+		case BO_ACIDIFIED_ZONE_FIRE_ATK:
+			return BO_ACIDIFIED_ZONE_FIRE;
+		case TR_ROSEBLOSSOM_ATK:
+			return TR_ROSEBLOSSOM;
+		case EM_ELEMENTAL_BUSTER_FIRE:
+		case EM_ELEMENTAL_BUSTER_WATER:
+		case EM_ELEMENTAL_BUSTER_WIND:
+		case EM_ELEMENTAL_BUSTER_GROUND:
+		case EM_ELEMENTAL_BUSTER_POISON:
+			return EM_ELEMENTAL_BUSTER;
 	}
 	return skill_id;
 }
@@ -569,8 +608,10 @@ int skill_calc_heal(struct block_list *src, struct block_list *target, uint16 sk
 		case CD_DILECTIO_HEAL:// Same question for this one too. [Rytech]
 			//hp = (status_get_lv(src) + status_get_int(src)) / 5 * 30 * pc_checkskill(sd, AL_HEAL) / 10;
 			hp = (status_get_lv(src) + status_get_int(src)) / 5 * 30;
+#ifdef RENEWAL
 			if (sd && ((skill = pc_checkskill(sd, HP_MEDITATIO)) > 0))
 				hp_bonus += skill * 2;
+#endif
 			break;
 		default:
 			if (skill_lv >= battle_config.max_heal_lv)
@@ -2058,7 +2099,8 @@ int skill_additional_effect(struct block_list* src, struct block_list *bl, uint1
 					case SC_SOULFALCON:		case SC_SOULGOLEM:		case SC_USE_SKILL_SP_SPA:
 					case SC_USE_SKILL_SP_SHA:	case SC_SP_SHA:
 					// 4th Jobs
-					case SC_SERVANTWEAPON:	case SC_SERVANT_SIGN:	case SC_ABYSSFORCEWEAPON:
+					case SC_SERVANTWEAPON:	case SC_SERVANT_SIGN:	case SC_GUARD_STANCE:
+					case SC_ATTACK_STANCE:  case SC_ABYSSFORCEWEAPON:
 #ifdef RENEWAL
 					case SC_EXTREMITYFIST2:
 #endif
@@ -4992,8 +5034,14 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 		skill_attack(BF_WEAPON,src,src,bl,skill_id,skill_lv,tick,flag);
 		break;
 
+	case IG_SHIELD_SHOOTING:
+		clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
+		skill_attack(BF_WEAPON, src, src, bl, skill_id, skill_lv, tick, flag);
+		sc_start(src, src, SC_SHIELD_POWER, 100, skill_lv, skill_get_time(skill_id, skill_lv));
+
 	case DK_DRAGONIC_AURA:
 	case DK_STORMSLASH:
+	case IG_GRAND_JUDGEMENT:
 	case CD_EFFLIGO:
 	case SHC_SHADOW_STAB:
 	case WH_HAWKRUSH:
@@ -5002,6 +5050,8 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 		skill_attack(BF_WEAPON, src, src, bl, skill_id, skill_lv, tick, flag);
 		if (skill_id == DK_DRAGONIC_AURA)
 			sc_start(src, src, SC_DRAGONIC_AURA, 100, skill_lv, skill_get_time(skill_id,skill_lv));
+		else if (skill_id == IG_GRAND_JUDGEMENT)
+			sc_start(src, src, SC_SPEAR_SCAR, 100, skill_lv, skill_get_time(skill_id, skill_lv));
 		break;
 
 	case SHC_ETERNAL_SLASH:
@@ -5351,6 +5401,7 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case AG_CRYSTAL_IMPACT_ATK:
 	case AG_ROCK_DOWN:
 	case AG_FROZEN_SLASH:
+	case IG_OVERSLASH:
 	case CD_ARBITRIUM_ATK:
 	case CD_PETITIO:
 	case CD_FRAMEN:
@@ -5377,6 +5428,10 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 			// Servant Weapon - Demol only hits if the target is marked with a sign by the attacking caster.
 			if (skill_id == DK_SERVANT_W_DEMOL && !(tsc && tsc->data[SC_SERVANT_SIGN] && tsc->data[SC_SERVANT_SIGN]->val1 == src->id))
 				break;
+
+			// Over Slash - Appears to deal a number of hits equal to 2 + Number of Enemys In AoE. Max of 5 hits.
+			if (skill_id == IG_OVERSLASH)
+				sflag |= skill_area_temp[0];
 
 			if( flag&SD_LEVEL )
 				sflag |= SD_LEVEL; // -1 will be used in packets instead of the skill level
@@ -5459,6 +5514,10 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 				case CD_PETITIO:
 				case CD_FRAMEN:
 					clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
+					break;
+				case IG_OVERSLASH:
+					clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
+					skill_area_temp[0] = map_foreachinallrange(skill_area_sub, bl, skill_get_splash(skill_id, skill_lv), BL_CHAR, src, skill_id, skill_lv, tick, BCT_ENEMY, skill_area_sub_count);
 					break;
 				case WH_GALESTORM:// Give AP if 3 or more targets are hit.
 					if (sd && map_foreachinallrange(skill_area_sub, bl, skill_get_splash(skill_id, skill_lv), BL_CHAR, src, skill_id, skill_lv, tick, BCT_ENEMY, skill_area_sub_count) >= 3)
@@ -5706,6 +5765,11 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case AG_DESTRUCTIVE_HURRICANE_CLIMAX:
 	case CD_ARBITRIUM:
 		skill_attack(BF_MAGIC,src,src,bl,skill_id,skill_lv,tick,flag);
+		break;
+
+	case IG_JUDGEMENT_CROSS:
+		clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
+		skill_attack(BF_MAGIC, src, src, bl, skill_id, skill_lv, tick, flag);
 		break;
 
 	case NPC_MAGICALATTACK:
@@ -7390,6 +7454,8 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case DK_CHARGINGPIERCE:
 	case DK_VIGOR:
 	case AG_CLIMAX:
+	case IG_REBOUND_SHIELD:
+	case IG_HOLY_SHIELD:
 	case CD_ARGUTUS_VITA:
 	case CD_ARGUTUS_TELUM:
 	case CD_PRESENS_ACIES:
@@ -8126,11 +8192,23 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case CASH_ASSUMPTIO:
 	case WM_FRIGG_SONG:
 	case NV_HELPANGEL:
+	case IG_GUARDIAN_SHIELD:
 		if( sd == NULL || sd->status.party_id == 0 || (flag & 1) )
 			clif_skill_nodamage(bl, bl, skill_id, skill_lv, sc_start(src,bl,type,100,skill_lv,skill_get_time(skill_id,skill_lv)));
 		else if( sd )
 			party_foreachsamemap(skill_area_sub, sd, skill_get_splash(skill_id, skill_lv), src, skill_id, skill_lv, tick, flag|BCT_PARTY|1, skill_castend_nodamage_id);
 		break;
+
+	case IG_ULTIMATE_SACRIFICE:
+		if (sd == NULL || sd->status.party_id == 0 || (flag & 1))
+			clif_skill_nodamage(bl, bl, skill_id, skill_lv, sc_start(src, bl, type, 100, skill_lv, skill_get_time(skill_id, skill_lv)));
+		else if (sd)
+		{
+			status_set_hp(src, 1, 0);
+			party_foreachsamemap(skill_area_sub, sd, skill_get_splash(skill_id, skill_lv), src, skill_id, skill_lv, tick, flag | BCT_PARTY | 1, skill_castend_nodamage_id);
+		}
+		break;
+
 	case MER_MAGNIFICAT:
 		if( mer != NULL )
 		{
@@ -8205,6 +8283,8 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case SJ_UNIVERSESTANCE:
 	case SJ_SUNSTANCE:
 	case SP_SOULCOLLECT:
+	case IG_GUARD_STANCE:
+	case IG_ATTACK_STANCE:
 		if( tsce )
 		{
 			clif_skill_nodamage(src,bl,skill_id,skill_lv,status_change_end(bl, type, INVALID_TIMER));
@@ -8958,7 +9038,8 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 					case SC_SOULFALCON:		case SC_SOULGOLEM:		case SC_USE_SKILL_SP_SPA:
 					case SC_USE_SKILL_SP_SHA:	case SC_SP_SHA:
 					// 4th Jobs
-					case SC_SERVANTWEAPON:	case SC_SERVANT_SIGN:	case SC_ABYSSFORCEWEAPON:
+					case SC_SERVANTWEAPON:	case SC_SERVANT_SIGN:	case SC_GUARD_STANCE:
+					case SC_ATTACK_STANCE:  case SC_ABYSSFORCEWEAPON:
 #ifdef RENEWAL
 					case SC_EXTREMITYFIST2:
 #endif
@@ -10497,7 +10578,8 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 					case SC_RECOGNIZEDSPELL:	case SC_CHASEWALK2: case SC_ACTIVE_MONSTER_TRANSFORM:
 					case SC_SPORE_EXPLOSION:
 					// 4th Jobs
-					case SC_SERVANTWEAPON:	case SC_SERVANT_SIGN:	case SC_ABYSSFORCEWEAPON:
+					case SC_SERVANTWEAPON:	case SC_SERVANT_SIGN:	case SC_GUARD_STANCE:
+					case SC_ATTACK_STANCE:  case SC_ABYSSFORCEWEAPON:
 #ifdef RENEWAL
 					case SC_EXTREMITYFIST2:
 #endif
@@ -13041,6 +13123,7 @@ int skill_castend_pos2(struct block_list* src, int x, int y, uint16 skill_id, ui
 	case AG_STRANTUM_TREMOR:
 	case AG_TORNADO_STORM:
 	case AG_FLORAL_FLARE_ROAD:
+	case IG_CROSS_RAIN:
 	case CD_PNEUMATICUS_PROCELLA:
 	case WH_DEEPBLINDTRAP:
 	case WH_SOLIDTRAP:
@@ -15013,6 +15096,7 @@ int skill_unit_onplace_timer(struct skill_unit *unit, struct block_list *bl, t_t
 		case UNT_STRANTUM_TREMOR:
 		case UNT_TORNADO_STORM:
 		case UNT_FLORAL_FLARE_ROAD:
+		case UNT_CROSS_RAIN:
 		case UNT_PNEUMATICUS_PROCELLA:
 		case UNT_DEEPBLINDTRAP:
 		case UNT_SOLIDTRAP:
@@ -22450,6 +22534,8 @@ int skill_disable_check(struct status_change *sc, uint16 skill_id)
 		case SJ_UNIVERSESTANCE:
 		case SJ_SUNSTANCE:
 		case SP_SOULCOLLECT:
+		case IG_GUARD_STANCE:
+		case IG_ATTACK_STANCE:
 			if( sc->data[status_skill2sc(skill_id)] )
 				return 1;
 			break;

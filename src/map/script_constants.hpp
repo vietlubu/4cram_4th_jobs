@@ -1670,6 +1670,158 @@
 	export_constant(SC_EMERGENCY_MOVE);
 	export_constant(SC_MADOGEAR);
 	export_constant(SC_NPC_HALLUCINATIONWALK);
+
+	// 4th Job Common Status
+	export_constant(SC_HANDICAPSTATE_DEEPBLIND);
+	export_constant(SC_HANDICAPSTATE_DEEPSILENCE);
+	export_constant(SC_HANDICAPSTATE_LASSITUDE);
+	export_constant(SC_HANDICAPSTATE_FROSTBITE);
+	export_constant(SC_HANDICAPSTATE_SWOONING);
+	export_constant(SC_HANDICAPSTATE_LIGHTNINGSTRIKE);
+	export_constant(SC_HANDICAPSTATE_CRYSTALLIZATION);
+	export_constant(SC_HANDICAPSTATE_CONFLAGRATION);
+	export_constant(SC_HANDICAPSTATE_MISFORTUNE);
+	export_constant(SC_HANDICAPSTATE_DEADLYPOISON);
+	export_constant(SC_HANDICAPSTATE_DEPRESSION);
+	export_constant(SC_HANDICAPSTATE_HOLYFLAME);
+
+	// Dragon Knight
+	export_constant(SC_SERVANTWEAPON);
+	export_constant(SC_SERVANT_SIGN);
+	export_constant(SC_CHARGINGPIERCE);
+	export_constant(SC_CHARGINGPIERCE_COUNT);
+	export_constant(SC_DRAGONIC_AURA);
+	export_constant(SC_BIG_SCAR);// The heck is this for??? [Rytech]
+	export_constant(SC_VIGOR);
+
+	// Arch Mage
+	export_constant(SC_DEADLY_DEFEASANCE);
+	export_constant(SC_CLIMAX_DES_HU);
+	export_constant(SC_CLIMAX);
+	export_constant(SC_CLIMAX_EARTH);
+	export_constant(SC_CLIMAX_BLOOM);
+	export_constant(SC_CLIMAX_CRYIMP);
+	export_constant(SC_CRYSTAL_IMPACT);
+
+	// Windhawk
+	export_constant(SC_WINDSIGN);
+	export_constant(SC_CRESCIVEBOLT);
+	export_constant(SC_CALAMITYGALE);
+
+	// Cardinal
+	export_constant(SC_MEDIALE);
+	export_constant(SC_A_VITA);
+	export_constant(SC_A_TELUM);
+	export_constant(SC_PRE_ACIES);
+	export_constant(SC_COMPETENTIA);
+	export_constant(SC_RELIGIO);
+	export_constant(SC_BENEDICTUM);
+
+	// Meister
+	export_constant(SC_AXE_STOMP);
+	export_constant(SC_A_MACHINE);
+	export_constant(SC_D_MACHINE);
+	export_constant(SC_MT_M_MACHINE_OPERATOR);
+	export_constant(SC_TWOAXEDEF);
+	export_constant(SC_ABR_BATTLE_WARIOR);
+	export_constant(SC_ABR_DUAL_CANNON);
+	export_constant(SC_ABR_MOTHER_NET);
+	export_constant(SC_ABR_INFINITY);
+
+	// Shadow Cross
+	export_constant(SC_SHADOW_EXCEED);
+	export_constant(SC_DANCING_KNIFE);
+	export_constant(SC_POTENT_VENOM);
+	export_constant(SC_SHADOW_SCAR);
+	export_constant(SC_E_SLASH_COUNT);
+	export_constant(SC_SHADOW_WEAPON);
+
+	// Imperial Guard
+	export_constant(SC_GUARD_STANCE);
+	export_constant(SC_ATTACK_STANCE);
+	export_constant(SC_GUARDIAN_S);
+	export_constant(SC_REBOUND_S);
+	export_constant(SC_SHIELD_MASTERY);
+	export_constant(SC_SPEAR_SWORD_M);
+	export_constant(SC_HOLY_S);
+	export_constant(SC_ULTIMATE_S);
+	export_constant(SC_SPEAR_SCAR);
+	export_constant(SC_SHIELD_POWER);
+
+	// Elemental Master
+	export_constant(SC_MAGIC_BOOK_M);
+	export_constant(SC_SPELL_ENCHANTING);
+	export_constant(SC_SUMMON_ELEMENTAL_ARDOR);
+	export_constant(SC_SUMMON_ELEMENTAL_DILUVIO);
+	export_constant(SC_SUMMON_ELEMENTAL_PROCELLA);
+	export_constant(SC_SUMMON_ELEMENTAL_TERREMOTUS);
+	export_constant(SC_SUMMON_ELEMENTAL_SERPENS);
+	export_constant(SC_ELEMENTAL_VEIL);
+
+	// Troubadour/Trouvere
+	export_constant(SC_STAGE_MANNER);
+	export_constant(SC_RETROSPECTION);
+	export_constant(SC_MYSTIC_SYMPHONY);
+	export_constant(SC_KVASIR_SONATA);
+	export_constant(SC_SOUNDBLEND);
+	export_constant(SC_GEF_NOCTURN);
+	export_constant(SC_AIN_RHAPSODY);
+	export_constant(SC_MUSICAL_INTERLUDE);
+	export_constant(SC_JAWAII_SERENADE);
+	export_constant(SC_PRON_MARCH);
+	export_constant(SC_ROSEBLOSSOM);
+
+	// Inquisitor
+	export_constant(SC_POWERFUL_FAITH);
+	export_constant(SC_SINCERE_FAITH);
+	export_constant(SC_FIRM_FAITH);
+	export_constant(SC_HOLY_OIL);
+	export_constant(SC_FIRST_BRAND);
+	export_constant(SC_SECOND_BRAND);
+	export_constant(SC_SECOND_JUDGE);
+	export_constant(SC_THIRD_EXOR_FLAME);
+	export_constant(SC_FIRST_FAITH_POWER);
+	export_constant(SC_MASSIVE_F_BLASTER);
+
+	// Biolo
+	export_constant(SC_PROTECTSHADOWEQUIP);
+	export_constant(SC_RESEARCHREPORT);
+	export_constant(SC_BO_HELL_DUSTY);
+	export_constant(SC_ACIDIFIED_ZONE_WATER);
+	export_constant(SC_ACIDIFIED_ZONE_GROUND);
+	export_constant(SC_ACIDIFIED_ZONE_WIND);
+	export_constant(SC_ACIDIFIED_ZONE_FIRE);
+
+	// Abyss Chaser
+	export_constant(SC_DAGGER_AND_BOW_M);
+	export_constant(SC_MAGIC_SWORD_M);
+	export_constant(SC_SHADOW_STRIP);
+	export_constant(SC_ABYSS_DAGGER);
+	export_constant(SC_ABYSSFORCEWEAPON);
+	export_constant(SC_ABYSS_SLAYER);
+
+	// Super Elementals
+	export_constant(SC_FLAMETECHNIC);
+	export_constant(SC_FLAMETECHNIC_OPTION);
+	export_constant(SC_FLAMEARMOR);
+	export_constant(SC_FLAMEARMOR_OPTION);
+	export_constant(SC_COLD_FORCE);
+	export_constant(SC_COLD_FORCE_OPTION);
+	export_constant(SC_CRYSTAL_ARMOR);
+	export_constant(SC_CRYSTAL_ARMOR_OPTION);
+	export_constant(SC_GRACE_BREEZE);
+	export_constant(SC_GRACE_BREEZE_OPTION);
+	export_constant(SC_EYES_OF_STORM);
+	export_constant(SC_EYES_OF_STORM_OPTION);
+	export_constant(SC_EARTH_CARE);
+	export_constant(SC_EARTH_CARE_OPTION);
+	export_constant(SC_STRONG_PROTECTION);
+	export_constant(SC_STRONG_PROTECTION_OPTION);
+	export_constant(SC_DEEP_POISONING);
+	export_constant(SC_DEEP_POISONING_OPTION);
+	export_constant(SC_POISON_SHIELD);
+	export_constant(SC_POISON_SHIELD_OPTION);
+
 #ifdef RENEWAL
 	export_constant(SC_EXTREMITYFIST2);
 #endif

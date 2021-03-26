@@ -6601,6 +6601,28 @@ uint8 pc_checkskill_summoner(map_session_data *sd, e_summoner_power_type type) {
 }
 
 /**
+* Checks for Imperial Guard's passive skills.
+* Flag&1 = IG_SHIELD_MASTERY
+* Flag&2 = IG_SPEAR_SWORD_M
+*/
+uint8 pc_checkskill_imperial_guard(struct map_session_data *sd, short flag)
+{
+	uint8 count = 0;
+	uint8 skill = 0;
+
+	if (sd == NULL)
+		return 0;
+
+	if (flag&1 && sd->status.shield > 0 && (skill = pc_checkskill(sd, IG_SHIELD_MASTERY)) > 0)
+		count += skill;
+
+	if (flag&2 && (sd->status.weapon == W_1HSWORD || sd->status.weapon == W_1HSPEAR || sd->status.weapon == W_2HSPEAR) && (skill = pc_checkskill(sd, IG_SPEAR_SWORD_M)) > 0)
+		count += skill;
+
+	return count;
+}
+
+/**
  * Check if we still have the correct weapon to continue the skill (actually status)
  * If not ending it
  * @param sd

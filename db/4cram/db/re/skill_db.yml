@@ -1389,67 +1389,342 @@ Body:
     Name: IG_GUARD_STANCE
     Description: Guard Stance
     MaxLevel: 5
+    TargetType: Self
+    DamageFlags:
+      NoDamage: true
+    Hit: Single
+    HitCount: 1
     CastCancel: true
+    FixedCastTime: 500
+    Requires:
+      SpCost: 50
+      State: Shield
   - Id: 5256
     Name: IG_GUARDIAN_SHIELD
     Description: Guardian Shield
     MaxLevel: 5
+    TargetType: Self
+    DamageFlags:
+      NoDamage: true
+      Splash: true
+    Hit: Single
+    HitCount: 1
+    SplashArea: 10
     CastCancel: true
+    CastTime: 2000
+    AfterCastActDelay: 500
+    Duration1: 60000
+    Cooldown: 15000
+    FixedCastTime: 1000
+    Requires:
+      SpCost: 60
+      Status:
+        Guard_Stance: true
   - Id: 5257
     Name: IG_REBOUND_SHIELD
     Description: Rebound Shield
     MaxLevel: 5
+    TargetType: Self
+    DamageFlags:
+      NoDamage: true
+    Hit: Single
+    HitCount: 1
     CastCancel: true
+    CastTime: 2000
+    AfterCastActDelay: 500
+    Duration1: 60000
+    Cooldown: 15000
+    FixedCastTime: 1000
+    Requires:
+      SpCost: 60
+      Status:
+        Guard_Stance: true
   - Id: 5258
     Name: IG_SHIELD_MASTERY
     Description: Shield Mastery
     MaxLevel: 10
-    CastCancel: true
   - Id: 5259
     Name: IG_SPEAR_SWORD_M
     Description: Spear And Sword Mastery
     MaxLevel: 10
-    CastCancel: true
   - Id: 5260
     Name: IG_ATTACK_STANCE
     Description: Attack Stance
     MaxLevel: 5
+    TargetType: Self
+    DamageFlags:
+      NoDamage: true
+    Hit: Single
+    HitCount: 1
     CastCancel: true
+    FixedCastTime: 500
+    Requires:
+      SpCost: 50
   - Id: 5261
     Name: IG_ULTIMATE_SACRIFICE
     Description: Ultimate Sacrifice
     MaxLevel: 5
+    TargetType: Self
+    DamageFlags:
+      NoDamage: true
+    Hit: Single
+    HitCount: 1
+    SplashArea:
+      - Level: 1
+        Area: 1
+      - Level: 2
+        Area: 1
+      - Level: 3
+        Area: 2
+      - Level: 4
+        Area: 2
+      - Level: 5
+        Area: 3
     CastCancel: true
+    CastTime: 2000
+    AfterCastActDelay: 500
+    Duration1: 300000
+    Cooldown:
+      - Level: 1
+        Time: 20000
+      - Level: 2
+        Time: 40000
+      - Level: 3
+        Time: 60000
+      - Level: 4
+        Time: 80000
+      - Level: 5
+        Time: 100000
+    FixedCastTime: 1000
+    Requires:
+      SpCost: 120
+      Status:
+        Guard_Stance: true
   - Id: 5262
     Name: IG_HOLY_SHIELD
     Description: Holy Shield
     MaxLevel: 5
+    TargetType: Self
+    DamageFlags:
+      NoDamage: true
+    Hit: Single
+    HitCount: 1
     CastCancel: true
+    CastTime: 2000
+    AfterCastActDelay: 500
+    Duration1: 180000
+    Cooldown: 120000
+    FixedCastTime: 1000
+    Requires:
+      SpCost: 60
+      State: Shield
   - Id: 5263
     Name: IG_GRAND_JUDGEMENT
     Description: Grand Judgement
     MaxLevel: 10
+    Type: Weapon
+    TargetType: Attack
+    DamageFlags:
+      Splash: true
+    Range: 9
+    Hit: Single
+    HitCount: 1
+    Element: Weapon
+    SplashArea: 3
     CastCancel: true
+    CastTime: 1000
+    AfterCastActDelay: 500
+    Duration1: 300000
+    Cooldown: 60000
+    FixedCastTime: 1000
+    Requires:
+      SpCost:
+        - Level: 1
+          Amount: 41
+        - Level: 2
+          Amount: 44
+        - Level: 3
+          Amount: 47
+        - Level: 4
+          Amount: 50
+        - Level: 5
+          Amount: 53
+        - Level: 6
+          Amount: 56
+        - Level: 7
+          Amount: 59
+        - Level: 8
+          Amount: 62
+        - Level: 9
+          Amount: 65
+        - Level: 10
+          Amount: 68
+      ApCost: 150
+      Weapon:
+        1hSpear: true
+        2hSpear: true
+      Status:
+        Attack_Stance: true
   - Id: 5264
     Name: IG_JUDGEMENT_CROSS
     Description: Judgement Cross
     MaxLevel: 10
+    Type: Magic
+    TargetType: Attack
+    Range: 9
+    Hit: Multi_Hit
+    HitCount: -10
+    Element: Holy
     CastCancel: true
+    CastTime: 2000
+    AfterCastActDelay: 1000
+    Cooldown: 60000
+    FixedCastTime: 1000
+    Requires:
+      SpCost: 150
+      ApCost: 150
   - Id: 5265
     Name: IG_SHIELD_SHOOTING
     Description: Shield Shooting
     MaxLevel: 5
+    Type: Weapon
+    TargetType: Attack
+    Range: 9
+    Hit: Multi_Hit
+    HitCount: -7
+    Element: Weapon
+    GiveAp: 2
     CastCancel: true
+    CastTime: 500
+    AfterCastActDelay: 500
+    Duration1: 10000
+    Cooldown: 2000
+    FixedCastTime: 500
+    Requires:
+      SpCost:
+        - Level: 1
+          Amount: 40
+        - Level: 2
+          Amount: 45
+        - Level: 3
+          Amount: 50
+        - Level: 4
+          Amount: 55
+        - Level: 5
+          Amount: 60
+      State: Shield
+      Status:
+        Attack_Stance: true
   - Id: 5266
     Name: IG_OVERSLASH
     Description: Overslash
     MaxLevel: 10
+    Type: Weapon
+    TargetType: Attack
+    DamageFlags:
+      Splash: true
+    Range: 1
+    Hit: Multi_Hit
+    HitCount: 2
+    Element: Weapon
+    SplashArea: 3
+    GiveAp: 3
     CastCancel: true
+    CastTime: 1000
+    AfterCastActDelay: 500
+    Cooldown: 3000
+    FixedCastTime: 1000
+    Requires:
+      SpCost:
+        - Level: 1
+          Amount: 41
+        - Level: 2
+          Amount: 44
+        - Level: 3
+          Amount: 47
+        - Level: 4
+          Amount: 50
+        - Level: 5
+          Amount: 53
+        - Level: 6
+          Amount: 56
+        - Level: 7
+          Amount: 59
+        - Level: 8
+          Amount: 62
+        - Level: 9
+          Amount: 65
+        - Level: 10
+          Amount: 68
+      Status:
+        Attack_Stance: true
   - Id: 5267
     Name: IG_CROSS_RAIN
     Description: Cross Rain
     MaxLevel: 10
+    Type: Magic
+    TargetType: Ground
+    Range: 9
+    Hit: Single
+    HitCount: 1
+    Element: Holy
+    GiveAp: 5
     CastCancel: true
+    CastTime: 1000
+    AfterCastActDelay: 500
+    Duration1: 4500
+    Cooldown: 5000
+    FixedCastTime: 1000
+    Requires:
+      SpCost:
+        - Level: 1
+          Amount: 50
+        - Level: 2
+          Amount: 54
+        - Level: 3
+          Amount: 58
+        - Level: 4
+          Amount: 62
+        - Level: 5
+          Amount: 66
+        - Level: 6
+          Amount: 70
+        - Level: 7
+          Amount: 74
+        - Level: 8
+          Amount: 78
+        - Level: 9
+          Amount: 82
+        - Level: 10
+          Amount: 86
+    Unit:
+      Id: Cross_Rain
+      Range:
+        - Level: 1
+          Size: 1
+        - Level: 2
+          Size: 1
+        - Level: 3
+          Size: 1
+        - Level: 4
+          Size: 2
+        - Level: 5
+          Size: 2
+        - Level: 6
+          Size: 2
+        - Level: 7
+          Size: 3
+        - Level: 8
+          Size: 3
+        - Level: 9
+          Size: 3
+        - Level: 10
+          Size: 4
+      Interval: 300
+      Target: Enemy
+      Flag:
+        NoOverlap: true
+        PathCheck: true
   - Id: 5268
     Name: CD_REPARATIO
     Description: Reparatio
