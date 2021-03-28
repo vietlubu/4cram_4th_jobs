@@ -8726,11 +8726,8 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 		}
 	}
 
-	if (sd && tsc)
-	{
-		if (wd.flag&BF_LONG && tsc->data[SC_WINDSIGN] && rand()%100 < tsc->data[SC_WINDSIGN]->val2)
-			status_heal(src, 0, 0, 1, 0);
-	}
+	if (sd && tsc && wd.flag&BF_LONG && tsc->data[SC_WINDSIGN] && rand()%100 < tsc->data[SC_WINDSIGN]->val2)
+		status_heal(src, 0, 0, 1, 0);
 
 	map_freeblock_unlock();
 	return wd.dmg_lv;

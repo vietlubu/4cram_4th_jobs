@@ -3957,11 +3957,8 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 			battle_drain(sd, bl, dmg.damage, dmg.damage2, tstatus->race, tstatus->class_);
 	}
 
-	if (sd && tsc)
-	{
-		if (skill_get_range2(src, skill_id, skill_lv, true) > 3 && tsc->data[SC_WINDSIGN] && rand() % 100 < tsc->data[SC_WINDSIGN]->val2)
-			status_heal(src, 0, 0, 1, 0);
-	}
+	if (sd && tsc && dmg.flag&BF_LONG && tsc->data[SC_WINDSIGN] && rand()%100 < tsc->data[SC_WINDSIGN]->val2)
+		status_heal(src, 0, 0, 1, 0);
 
 	if( damage > 0 ) { // Post-damage effects
 		switch( skill_id ) {
