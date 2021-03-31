@@ -996,6 +996,7 @@ bool skill_isNotOk(uint16 skill_id, struct map_session_data *sd)
 		case WM_LULLABY_DEEPSLEEP:
 		case WM_GLOOMYDAY:
 		case WM_SATURDAY_NIGHT_FEVER:
+		case EM_ACTIVITY_BURN:
 			if( !mapdata_flag_vs(mapdata) ) {
 				clif_skill_teleportmessage(sd,2); // This skill uses this msg instead of skill fails.
 				return true;
@@ -2220,6 +2221,21 @@ int skill_additional_effect(struct block_list* src, struct block_list *bl, uint1
 		break;
 	case WH_FLAMETRAP:
 		sc_start(src, bl, SC_HANDICAPSTATE_CONFLAGRATION, 50, skill_lv, skill_get_time2(skill_id, skill_lv));
+		break;
+	case EM_DIAMOND_STORM:
+		sc_start(src, bl, SC_HANDICAPSTATE_FROSTBITE, 40 + 10 * skill_lv, skill_lv, skill_get_time2(skill_id, skill_lv));
+		break;
+	case EM_LIGHTNING_LAND:
+		sc_start(src, bl, SC_HANDICAPSTATE_LIGHTNINGSTRIKE, 10 + 10 * skill_lv, skill_lv, skill_get_time2(skill_id, skill_lv));
+		break;
+	case EM_VENOM_SWAMP:
+		sc_start(src, bl, SC_HANDICAPSTATE_DEADLYPOISON, 10 + 10 * skill_lv, skill_lv, skill_get_time2(skill_id, skill_lv));
+		break;
+	case EM_CONFLAGRATION:
+		sc_start(src, bl, SC_HANDICAPSTATE_CONFLAGRATION, 10 + 10 * skill_lv, skill_lv, skill_get_time2(skill_id, skill_lv));
+		break;
+	case EM_TERRA_DRIVE:
+		sc_start(src, bl, SC_HANDICAPSTATE_CRYSTALLIZATION, 40 + 10 * skill_lv, skill_lv, skill_get_time2(skill_id, skill_lv));
 		break;
 	} //end switch skill_id
 
@@ -5411,6 +5427,11 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case MT_A_MACHINE:
 	case WH_GALESTORM:
 	case ABC_FROM_THE_ABYSS_ATK:
+	case EM_ELEMENTAL_BUSTER_FIRE:
+	case EM_ELEMENTAL_BUSTER_WATER:
+	case EM_ELEMENTAL_BUSTER_WIND:
+	case EM_ELEMENTAL_BUSTER_GROUND:
+	case EM_ELEMENTAL_BUSTER_POISON:
 		if( flag&1 ) {//Recursive invocation
 			int sflag = skill_area_temp[0] & 0xFFF;
 			int heal = 0;
@@ -7464,6 +7485,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case MT_D_MACHINE:
 	case WH_WIND_SIGN:
 	case WH_CALAMITYGALE:
+	case EM_SPELL_ENCHANTING:
 		clif_skill_nodamage(src,bl,skill_id,skill_lv,
 			sc_start(src,bl,type,100,skill_lv,skill_get_time(skill_id,skill_lv)));
 		break;
@@ -7558,6 +7580,28 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 		}
 		else if (sd)
 			party_foreachsamemap(skill_area_sub, sd, skill_get_splash(skill_id, skill_lv), src, skill_id, skill_lv, tick, flag|BCT_PARTY|1, skill_castend_nodamage_id);
+		break;
+
+	case EM_ACTIVITY_BURN:
+		if (bl->type == BL_PC && rnd() % 100 < 20 + 10 * skill_lv)
+		{
+			short ap_burn[5] = { 20, 30, 50, 60, 70 };
+
+			clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
+			status_fix_apdamage(src, bl, ap_burn[skill_lv - 1], 0, skill_id);
+		}
+		else
+			clif_skill_fail(sd, skill_id, USESKILL_FAIL, 0);
+		break;
+
+	case EM_INCREASING_ACTIVITY:
+		if (bl->type == BL_PC)
+		{
+			clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
+			status_heal(bl, 0, 0, 20 + 5 * skill_lv, 0);
+		}
+		else
+			clif_skill_fail(sd, skill_id, USESKILL_FAIL, 0);
 		break;
 
 	case SJ_GRAVITYCONTROL: {
@@ -8068,6 +8112,18 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 		else
 			clif_skill_nodamage(src, bl, skill_id, skill_lv, sc_start(src, bl, type, 100, skill_lv, skill_get_time(skill_id, skill_lv)));
 		break;
+
+	case EM_ELEMENTAL_BUSTER:
+	{// Temp coding for now until the super elementals are working.
+		short blasters[5] = { EM_ELEMENTAL_BUSTER_FIRE, EM_ELEMENTAL_BUSTER_WATER, EM_ELEMENTAL_BUSTER_WIND, EM_ELEMENTAL_BUSTER_GROUND, EM_ELEMENTAL_BUSTER_POISON };
+		short blaster_element = blasters[rnd()%5];
+
+		skill_area_temp[1] = 0;
+		clif_skill_nodamage(src, bl, blaster_element, skill_lv, 1);// Animation for the triggered blaster element.
+		clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);// Triggered after blaster animation to make correct skill name scream appear.
+		map_foreachinrange(skill_area_sub, bl, 6, BL_CHAR|BL_SKILL, src, blaster_element, skill_lv, tick, flag|BCT_ENEMY|SD_SPLASH|1, skill_castend_damage_id);
+	}
+	break;
 
 	case NPC_IGNITIONBREAK:
 	case RK_IGNITIONBREAK:
@@ -13126,6 +13182,11 @@ int skill_castend_pos2(struct block_list* src, int x, int y, uint16 skill_id, ui
 	case WH_SOLIDTRAP:
 	case WH_SWIFTTRAP:
 	case WH_FLAMETRAP:
+	case EM_DIAMOND_STORM:
+	case EM_LIGHTNING_LAND:
+	case EM_VENOM_SWAMP:
+	case EM_CONFLAGRATION:
+	case EM_TERRA_DRIVE:
 		flag|=1;//Set flag to 1 to prevent deleting ammo (it will be deleted on group-delete).
 	case GS_GROUNDDRIFT: //Ammo should be deleted right away.
 	case GN_WALLOFTHORN:
@@ -15095,6 +15156,9 @@ int skill_unit_onplace_timer(struct skill_unit *unit, struct block_list *bl, t_t
 		case UNT_FLORAL_FLARE_ROAD:
 		case UNT_CROSS_RAIN:
 		case UNT_PNEUMATICUS_PROCELLA:
+		case UNT_LIGHTNING_LAND:
+		case UNT_VENOM_SWAMP:
+		case UNT_CONFLAGRATION:
 		case UNT_DEEPBLINDTRAP:
 		case UNT_SOLIDTRAP:
 		case UNT_SWIFTTRAP:

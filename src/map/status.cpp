@@ -1173,14 +1173,22 @@ void initChangeTables(void)
 	set_sc_with_vfx( SHC_FATAL_SHADOW_CROW, SC_DARKCROW      , EFST_DARKCROW      , SCB_NONE );
 
 	// Imperial Guard
-	set_sc(          IG_GUARD_STANCE,       SC_GUARD_STANCE,  EFST_GUARD_STANCE,  SCB_WATK|SCB_DEF );
-	set_sc(          IG_GUARDIAN_SHIELD,    SC_GUARDIAN_S,    EFST_GUARDIAN_S,    SCB_NONE );
-	set_sc(          IG_REBOUND_SHIELD,     SC_REBOUND_S,     EFST_REBOUND_S,     SCB_NONE );
-	set_sc(          IG_ATTACK_STANCE,      SC_ATTACK_STANCE, EFST_ATTACK_STANCE, SCB_WATK|SCB_DEF );
-	set_sc(          IG_ULTIMATE_SACRIFICE, SC_ULTIMATE_S,    EFST_ULTIMATE_S,    SCB_NONE );
-	set_sc_with_vfx( IG_HOLY_SHIELD,        SC_HOLY_S,        EFST_HOLY_S,        SCB_ALL );
-	set_sc_with_vfx( IG_GRAND_JUDGEMENT,    SC_SPEAR_SCAR,    EFST_SPEAR_SCAR,    SCB_NONE );
-	set_sc(          IG_SHIELD_SHOOTING,    SC_SHIELD_POWER,  EFST_SHIELD_POWER,  SCB_NONE );
+	set_sc(          IG_GUARD_STANCE      , SC_GUARD_STANCE , EFST_GUARD_STANCE , SCB_WATK|SCB_DEF );
+	set_sc(          IG_GUARDIAN_SHIELD   , SC_GUARDIAN_S   , EFST_GUARDIAN_S   , SCB_NONE );
+	set_sc(          IG_REBOUND_SHIELD    , SC_REBOUND_S    , EFST_REBOUND_S    , SCB_NONE );
+	set_sc(          IG_ATTACK_STANCE     , SC_ATTACK_STANCE, EFST_ATTACK_STANCE, SCB_WATK|SCB_DEF );
+	set_sc(          IG_ULTIMATE_SACRIFICE, SC_ULTIMATE_S   , EFST_ULTIMATE_S   , SCB_NONE );
+	set_sc_with_vfx( IG_HOLY_SHIELD       , SC_HOLY_S       , EFST_HOLY_S       , SCB_ALL );
+	set_sc_with_vfx( IG_GRAND_JUDGEMENT   , SC_SPEAR_SCAR   , EFST_SPEAR_SCAR   , SCB_NONE );
+	set_sc(          IG_SHIELD_SHOOTING   , SC_SHIELD_POWER , EFST_SHIELD_POWER , SCB_NONE );
+
+	// Elemental Master
+	set_sc(          EM_SPELL_ENCHANTING, SC_SPELL_ENCHANTING             , EFST_SPELL_ENCHANTING             , SCB_SMATK );
+	set_sc_with_vfx( EM_DIAMOND_STORM   , SC_HANDICAPSTATE_FROSTBITE      , EFST_HANDICAPSTATE_FROSTBITE      , SCB_NONE );
+	set_sc_with_vfx( EM_LIGHTNING_LAND  , SC_HANDICAPSTATE_LIGHTNINGSTRIKE, EFST_HANDICAPSTATE_LIGHTNINGSTRIKE, SCB_NONE );
+	set_sc_with_vfx( EM_VENOM_SWAMP     , SC_HANDICAPSTATE_DEADLYPOISON   , EFST_HANDICAPSTATE_DEADLYPOISON   , SCB_NONE );
+	set_sc_with_vfx( EM_CONFLAGRATION   , SC_HANDICAPSTATE_CONFLAGRATION  , EFST_HANDICAPSTATE_CONFLAGRATION  , SCB_NONE );
+	set_sc_with_vfx( EM_TERRA_DRIVE     , SC_HANDICAPSTATE_CRYSTALLIZATION, EFST_HANDICAPSTATE_CRYSTALLIZATION, SCB_NONE );
 
 	// Abyss Chaser
 	set_sc(          ABC_FROM_THE_ABYSS, SC_ABYSSFORCEWEAPON, EFST_ABYSSFORCEWEAPON, SCB_NONE );
@@ -1757,9 +1765,16 @@ void initChangeTables(void)
 	// 4th Job Common Status
 	StatusDisplayType[SC_HANDICAPSTATE_DEEPBLIND] = BL_PC;
 	StatusDisplayType[SC_HANDICAPSTATE_DEEPSILENCE] = BL_PC;
+	StatusDisplayType[SC_HANDICAPSTATE_LASSITUDE] = BL_PC;
+	StatusDisplayType[SC_HANDICAPSTATE_FROSTBITE] = BL_PC;
+	StatusDisplayType[SC_HANDICAPSTATE_SWOONING] = BL_PC;
 	StatusDisplayType[SC_HANDICAPSTATE_LIGHTNINGSTRIKE] = BL_PC;
 	StatusDisplayType[SC_HANDICAPSTATE_CRYSTALLIZATION] = BL_PC;
 	StatusDisplayType[SC_HANDICAPSTATE_CONFLAGRATION] = BL_PC;
+	StatusDisplayType[SC_HANDICAPSTATE_MISFORTUNE] = BL_PC;
+	StatusDisplayType[SC_HANDICAPSTATE_DEADLYPOISON] = BL_PC;
+	StatusDisplayType[SC_HANDICAPSTATE_DEPRESSION] = BL_PC;
+	StatusDisplayType[SC_HANDICAPSTATE_HOLYFLAME] = BL_PC;
 
 	// 4th Jobs
 	StatusDisplayType[SC_SERVANT_SIGN] = BL_PC;
@@ -5106,6 +5121,15 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 		sd->indexed_bonus.subsize[SZ_SMALL] += small_def[skill-1];
 		sd->indexed_bonus.subsize[SZ_MEDIUM] += medium_def[skill-1];
 		sd->indexed_bonus.subsize[SZ_BIG] += large_def[skill-1];
+	}
+
+	if ((skill = pc_checkskill(sd, EM_MAGIC_BOOK_M)) > 0 && sd->status.weapon == W_BOOK)
+	{
+		sd->indexed_bonus.magic_atk_ele[ELE_WATER] += skill;
+		sd->indexed_bonus.magic_atk_ele[ELE_EARTH] += skill;
+		sd->indexed_bonus.magic_atk_ele[ELE_FIRE] += skill;
+		sd->indexed_bonus.magic_atk_ele[ELE_WIND] += skill;
+		sd->indexed_bonus.magic_atk_ele[ELE_POISON] += skill;
 	}
 
 	if(sc->count) {
@@ -8702,6 +8726,8 @@ static signed short status_calc_smatk(struct block_list *bl, struct status_chang
 
 	if (sc->data[SC_COMPETENTIA])
 		smatk += sc->data[SC_COMPETENTIA]->val2;
+	if (sc->data[SC_SPELL_ENCHANTING])
+		smatk += sc->data[SC_SPELL_ENCHANTING]->val2;
 
 	return (short)cap_value(smatk, 0, SHRT_MAX);
 }
@@ -13227,6 +13253,9 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			break;
 		case SC_CALAMITYGALE:// Unlimit runs along with this.
 			sc_start(bl, bl, SC_UNLIMIT, 100, 5, skill_get_time(RA_UNLIMIT, 5));
+			break;
+		case SC_SPELL_ENCHANTING:
+			val2 = 4 * val1;// SMatk Increase
 			break;
 
 		default:

@@ -7279,8 +7279,38 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 						skillratio += -100 + 500 + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
 						break;
+					case EM_DIAMOND_STORM:
+						skillratio += -100 + 700 * skill_lv + 5 * sstatus->spl;
+						RE_LVL_DMOD(100);
+						break;
+					case EM_LIGHTNING_LAND:
+						skillratio += -100 + 150 * skill_lv + 5 * sstatus->spl;
+						RE_LVL_DMOD(100);
+						break;
+					case EM_VENOM_SWAMP:
+						skillratio += -100 + 150 * skill_lv + 5 * sstatus->spl;
+						RE_LVL_DMOD(100);
+						break;
+					case EM_CONFLAGRATION:
+						skillratio += -100 + 150 * skill_lv + 5 * sstatus->spl;
+						RE_LVL_DMOD(100);
+						break;
+					case EM_TERRA_DRIVE:
+						skillratio += -100 + 700 * skill_lv + 5 * sstatus->spl;
+						RE_LVL_DMOD(100);
+						break;
 					case ABC_FROM_THE_ABYSS_ATK:
 						skillratio += 150 + 70 * skill_lv + 5 * sstatus->spl;
+						RE_LVL_DMOD(100);
+						break;
+					case EM_ELEMENTAL_BUSTER_FIRE:
+					case EM_ELEMENTAL_BUSTER_WATER:
+					case EM_ELEMENTAL_BUSTER_WIND:
+					case EM_ELEMENTAL_BUSTER_GROUND:
+					case EM_ELEMENTAL_BUSTER_POISON:
+						skillratio += -100 + 480 * skill_lv + 10 * sstatus->spl;
+						if (tstatus->race == RC_FORMLESS || tstatus->race == RC_DRAGON)
+							skillratio += 620 * skill_lv;
 						RE_LVL_DMOD(100);
 						break;
 				}

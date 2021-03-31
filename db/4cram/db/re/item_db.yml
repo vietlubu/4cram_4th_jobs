@@ -76,31 +76,31 @@ Body:
     AegisName: Wind_Stone_4th
     Name: Wind Stone 4th
     Type: Etc
-    Buy: 20
+    Buy: 1000
     Weight: 1
   - Id: 1000292
     AegisName: Earth_Stone_4th
     Name: Earth Stone 4th
     Type: Etc
-    Buy: 20
+    Buy: 1000
     Weight: 1
   - Id: 1000293
     AegisName: Flame_Stone_4th
     Name: Flame Stone 4th
     Type: Etc
-    Buy: 20
+    Buy: 1000
     Weight: 1
   - Id: 1000294
     AegisName: Poison_Stone_4th
     Name: Poison Stone 4th
     Type: Etc
-    Buy: 20
+    Buy: 1000
     Weight: 1
   - Id: 1000295
     AegisName: Ice_Stone_4th
     Name: Ice Stone 4th
     Type: Etc
-    Buy: 20
+    Buy: 1000
     Weight: 1
   - Id: 1000311
     AegisName: Hawk_Flute

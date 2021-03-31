@@ -24,11 +24,11 @@
 1000290,Auto_Battle_Capsule,Auto Battle Capsule,3,20,,10,,,,,,,,,,,,,{},{},{}
 
 // Elemental Master Items
-1000291,Wind_Stone_4th,Wind Stone 4th,3,20,,1,,,,,,,,,,,,,{},{},{}
-1000292,Earth_Stone_4th,Earth Stone 4th,3,20,,1,,,,,,,,,,,,,{},{},{}
-1000293,Flame_Stone_4th,Flame Stone 4th,3,20,,1,,,,,,,,,,,,,{},{},{}
-1000294,Poison_Stone_4th,Poison Stone 4th,3,20,,1,,,,,,,,,,,,,{},{},{}
-1000295,Ice_Stone_4th,Ice Stone 4th,3,20,,1,,,,,,,,,,,,,{},{},{}
+1000291,Wind_Stone_4th,Wind Stone 4th,3,1000,,1,,,,,,,,,,,,,{},{},{}
+1000292,Earth_Stone_4th,Earth Stone 4th,3,1000,,1,,,,,,,,,,,,,{},{},{}
+1000293,Flame_Stone_4th,Flame Stone 4th,3,1000,,1,,,,,,,,,,,,,{},{},{}
+1000294,Poison_Stone_4th,Poison Stone 4th,3,1000,,1,,,,,,,,,,,,,{},{},{}
+1000295,Ice_Stone_4th,Ice Stone 4th,3,1000,,1,,,,,,,,,,,,,{},{},{}
 
 // Windhawk Items
 1000311,Hawk_Flute,Hawk Flute,3,20,,0,,,,,,,,,,,,,{},{},{}
