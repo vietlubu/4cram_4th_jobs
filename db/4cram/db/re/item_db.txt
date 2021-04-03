@@ -11,7 +11,7 @@
 100371,Homunculus_Supplement,Homunculus Supplement,2,20,,10,,,,,,,,,,,,,{},{},{}
 
 // Biolo Items
-1000275,Beaker,Beaker,3,20,,1,,,,,,,,,,,,,{},{},{}
+1000275,Beaker,Beaker,3,1000,,1,,,,,,,,,,,,,{},{},{}
 1000276,Flame_Acid_Bottle,Flame Acid Bottle,3,20,,1,,,,,,,,,,,,,{},{},{}
 1000277,Earth_Acid_Bottle,Earth Acid Bottle,3,20,,1,,,,,,,,,,,,,{},{},{}
 1000278,Gale_Acid_Bottle,Gale Acid Bottle,3,20,,1,,,,,,,,,,,,,{},{},{}

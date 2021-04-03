@@ -5041,6 +5041,10 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case RL_SLUGSHOT:
 	case RL_AM_BLAST:
 	case DK_SERVANTWEAPON_ATK:
+	case BO_ACIDIFIED_ZONE_WATER_ATK:
+	case BO_ACIDIFIED_ZONE_GROUND_ATK:
+	case BO_ACIDIFIED_ZONE_WIND_ATK:
+	case BO_ACIDIFIED_ZONE_FIRE_ATK:
 	case ABR_BATTLE_BUSTER:
 	case ABR_DUAL_CANNON_FIRE:
 	case ABR_INFINITY_BUSTER:
@@ -5427,6 +5431,10 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case MT_A_MACHINE:
 	case WH_GALESTORM:
 	case ABC_FROM_THE_ABYSS_ATK:
+	case BO_ACIDIFIED_ZONE_WATER:
+	case BO_ACIDIFIED_ZONE_GROUND:
+	case BO_ACIDIFIED_ZONE_WIND:
+	case BO_ACIDIFIED_ZONE_FIRE:
 	case EM_ELEMENTAL_BUSTER_FIRE:
 	case EM_ELEMENTAL_BUSTER_WATER:
 	case EM_ELEMENTAL_BUSTER_WIND:
@@ -5540,6 +5548,14 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 				case WH_GALESTORM:// Give AP if 3 or more targets are hit.
 					if (sd && map_foreachinallrange(skill_area_sub, bl, skill_get_splash(skill_id, skill_lv), BL_CHAR, src, skill_id, skill_lv, tick, BCT_ENEMY, skill_area_sub_count) >= 3)
 						status_heal(src, 0, 0, 10, 0);
+					break;
+				case BO_ACIDIFIED_ZONE_WATER:
+				case BO_ACIDIFIED_ZONE_GROUND:
+				case BO_ACIDIFIED_ZONE_WIND:
+				case BO_ACIDIFIED_ZONE_FIRE:
+					clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
+					if (bl->type == BL_PC)// Place single cell AoE if hitting a player.
+						skill_castend_pos2(src, bl->x, bl->y, skill_id, skill_lv, tick, 0);
 					break;
 			}
 
@@ -7485,6 +7501,8 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case MT_D_MACHINE:
 	case WH_WIND_SIGN:
 	case WH_CALAMITYGALE:
+	case BO_ADVANCE_PROTECTION:
+	case BO_RESEARCHREPORT:
 	case EM_SPELL_ENCHANTING:
 		clif_skill_nodamage(src,bl,skill_id,skill_lv,
 			sc_start(src,bl,type,100,skill_lv,skill_get_time(skill_id,skill_lv)));
@@ -8259,6 +8277,25 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 		{
 			status_set_hp(src, 1, 0);
 			party_foreachsamemap(skill_area_sub, sd, skill_get_splash(skill_id, skill_lv), src, skill_id, skill_lv, tick, flag | BCT_PARTY | 1, skill_castend_nodamage_id);
+		}
+		break;
+
+	case BO_THE_WHOLE_PROTECTION:
+		if (sd == NULL || sd->status.party_id == 0 || (flag & 1))
+		{
+			unsigned int equip[] = { EQP_WEAPON, EQP_SHIELD, EQP_ARMOR, EQP_HEAD_TOP };
+			int i_eqp, skilltime = skill_get_time(skill_id, skill_lv);
+
+			for (i_eqp = 0; i_eqp < 4; i_eqp++) {
+				if (bl->type != BL_PC || (dstsd && pc_checkequip(dstsd, equip[i_eqp]) < 0))
+					continue;
+				sc_start(src, bl, (sc_type)(SC_CP_WEAPON + i_eqp), 100, skill_lv, skilltime);
+			}
+		}
+		else if (sd)
+		{
+			clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
+			party_foreachsamemap(skill_area_sub, sd, skill_get_splash(skill_id, skill_lv), src, skill_id, skill_lv, tick, flag|BCT_PARTY|1, skill_castend_nodamage_id);
 		}
 		break;
 
@@ -11760,11 +11797,15 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 		break;
 
 	case MT_M_MACHINE:
+	case BO_BIONIC_PHARMACY:
 		if (sd)
 		{
 			sd->skill_id_old = skill_id;
 			sd->skill_lv_old = skill_lv;
-			clif_cooking_list(sd, 31, skill_id, 7 + skill_lv, 7);
+			if (skill_id == MT_M_MACHINE)
+				clif_cooking_list(sd, 31, skill_id, 7 + skill_lv, 7);
+			else// BO_BIONIC_PHARMACY
+				clif_cooking_list(sd, 32, skill_id, 10 + skill_lv, 8);
 			clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
 		}
 		break;
@@ -11876,6 +11917,28 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 		if (md) {
 			md->master_id = src->id;
 			md->special_state.ai = AI_ABR;
+			if (md->deletetimer != INVALID_TIMER)
+				delete_timer(md->deletetimer, mob_timer_delete);
+			md->deletetimer = add_timer(gettick() + skill_get_time(skill_id, skill_lv), mob_timer_delete, md->bl.id, 0);
+			mob_spawn(md);
+		}
+	}
+	break;
+
+	case BO_WOODENWARRIOR:
+	case BO_WOODEN_FAIRY:
+	case BO_CREEPER:
+	case BO_HELLTREE:
+	{// A poring is used in the 4th slot as a dummy since the Research Report skill is in between the Creeper and Hell Tree skills.
+		short bionics[5] = { MOBID_BIONIC_WOODENWARRIOR, MOBID_BIONIC_WOODEN_FAIRY, MOBID_BIONIC_CREEPER, MOBID_PORING, MOBID_BIONIC_HELLTREE };
+		struct mob_data *md;
+
+		clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
+		sc_start(src, bl, type, 100, skill_lv, skill_get_time(skill_id, skill_lv));
+		md = mob_once_spawn_sub(src, src->m, src->x, src->y, "--ja--", bionics[4 - (BO_HELLTREE - skill_id)], "", SZ_SMALL, AI_BIONIC);
+		if (md) {
+			md->master_id = src->id;
+			md->special_state.ai = AI_BIONIC;
 			if (md->deletetimer != INVALID_TIMER)
 				delete_timer(md->deletetimer, mob_timer_delete);
 			md->deletetimer = add_timer(gettick() + skill_get_time(skill_id, skill_lv), mob_timer_delete, md->bl.id, 0);
@@ -13182,6 +13245,10 @@ int skill_castend_pos2(struct block_list* src, int x, int y, uint16 skill_id, ui
 	case WH_SOLIDTRAP:
 	case WH_SWIFTTRAP:
 	case WH_FLAMETRAP:
+	case BO_ACIDIFIED_ZONE_WATER:
+	case BO_ACIDIFIED_ZONE_GROUND:
+	case BO_ACIDIFIED_ZONE_WIND:
+	case BO_ACIDIFIED_ZONE_FIRE:
 	case EM_DIAMOND_STORM:
 	case EM_LIGHTNING_LAND:
 	case EM_VENOM_SWAMP:
@@ -15166,6 +15233,22 @@ int skill_unit_onplace_timer(struct skill_unit *unit, struct block_list *bl, t_t
 			skill_attack(skill_get_type(sg->skill_id),ss,&unit->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
 			break;
 
+		case UNT_ACIDIFIED_ZONE_WATER:
+			skill_attack(skill_get_type(BO_ACIDIFIED_ZONE_WATER_ATK), ss, &unit->bl, bl, BO_ACIDIFIED_ZONE_WATER_ATK, sg->skill_lv, tick, 0);
+			break;
+
+		case UNT_ACIDIFIED_ZONE_GROUND:
+			skill_attack(skill_get_type(BO_ACIDIFIED_ZONE_GROUND_ATK), ss, &unit->bl, bl, BO_ACIDIFIED_ZONE_GROUND_ATK, sg->skill_lv, tick, 0);
+			break;
+
+		case UNT_ACIDIFIED_ZONE_WIND:
+			skill_attack(skill_get_type(BO_ACIDIFIED_ZONE_WIND_ATK), ss, &unit->bl, bl, BO_ACIDIFIED_ZONE_WIND_ATK, sg->skill_lv, tick, 0);
+			break;
+
+		case UNT_ACIDIFIED_ZONE_FIRE:
+			skill_attack(skill_get_type(BO_ACIDIFIED_ZONE_FIRE_ATK), ss, &unit->bl, bl, BO_ACIDIFIED_ZONE_FIRE_ATK, sg->skill_lv, tick, 0);
+			break;
+
 		case UNT_DUMMYSKILL:
 			switch (sg->skill_id) {
 				case SG_SUN_WARM: //SG skills [Komurka]
@@ -16280,7 +16363,41 @@ static int skill_check_condition_mob_master_sub(struct block_list *bl, va_list a
 	skill=va_arg(ap,int);
 	c=va_arg(ap,int *);
 
-	ai = (unsigned)(skill == AM_SPHEREMINE?AI_SPHERE:skill == KO_ZANZOU?AI_ZANZOU:skill == MH_SUMMON_LEGION?AI_LEGION:skill == NC_SILVERSNIPER?AI_FAW:skill == NC_MAGICDECOY?AI_FAW:skill == MT_SUMMON_ABR_BATTLE_WARIOR?AI_ABR:skill == MT_SUMMON_ABR_DUAL_CANNON?AI_ABR:skill == MT_SUMMON_ABR_MOTHER_NET?AI_ABR:skill == MT_SUMMON_ABR_INFINITY?AI_ABR:AI_FLORA);
+	switch (skill)
+	{
+		case AM_SPHEREMINE:
+			ai = AI_SPHERE;
+			break;
+		case AM_CANNIBALIZE:
+			ai = AI_FLORA;
+			break;
+		case KO_ZANZOU:
+			ai = AI_ZANZOU;
+			break;
+		case MH_SUMMON_LEGION:
+			ai = AI_LEGION;
+			break;
+		case NC_SILVERSNIPER:
+		case NC_MAGICDECOY:
+			ai = AI_FAW;
+			break;
+		case MT_SUMMON_ABR_BATTLE_WARIOR:
+		case MT_SUMMON_ABR_DUAL_CANNON:
+		case MT_SUMMON_ABR_MOTHER_NET:
+		case MT_SUMMON_ABR_INFINITY:
+			ai = AI_ABR;
+			break;
+		case BO_WOODENWARRIOR:
+		case BO_WOODEN_FAIRY:
+		case BO_CREEPER:
+		case BO_HELLTREE:
+			ai = AI_BIONIC;
+			break;
+		default:
+			ai = AI_FLORA;
+			break;
+	}
+
 	if( md->master_id != src_id || md->special_state.ai != ai)
 		return 0; //Non alchemist summoned mobs have nothing to do here.
 
@@ -16410,6 +16527,7 @@ bool skill_check_condition_castbegin(struct map_session_data* sd, uint16 skill_i
 		case GN_S_PHARMACY:
 		case GN_CHANGEMATERIAL:
 		case MT_M_MACHINE:
+		case BO_BIONIC_PHARMACY:
 			if( sd->menuskill_id != skill_id )
 				return false;
 			break;
@@ -17472,6 +17590,7 @@ bool skill_check_condition_castend(struct map_session_data* sd, uint16 skill_id,
 		case GN_S_PHARMACY:
 		case GN_CHANGEMATERIAL:
 		case MT_M_MACHINE:
+		case BO_BIONIC_PHARMACY:
 			if( sd->menuskill_id != skill_id )
 				return false;
 			break;
@@ -17548,6 +17667,25 @@ bool skill_check_condition_castend(struct map_session_data* sd, uint16 skill_id,
 			if (battle_config.land_skill_limit && maxcount > 0 && (battle_config.land_skill_limit&BL_PC))
 			{
 				map_foreachinmap(skill_check_condition_mob_master_sub, sd->bl.m, BL_MOB, sd->bl.id, abrs[3 - (MT_SUMMON_ABR_INFINITY - skill_id)], skill_id, &c);
+				if (c >= maxcount)
+				{
+					clif_skill_fail(sd, skill_id, USESKILL_FAIL_LEVEL, 0);
+					return false;
+				}
+			}
+			break;
+		}
+		case BO_WOODENWARRIOR:
+		case BO_WOODEN_FAIRY:
+		case BO_CREEPER:
+		case BO_HELLTREE:
+		{
+			short c = 0;
+			short bionics[5] = { MOBID_BIONIC_WOODENWARRIOR, MOBID_BIONIC_WOODEN_FAIRY, MOBID_BIONIC_CREEPER, MOBID_PORING, MOBID_BIONIC_HELLTREE };
+			short maxcount = skill_get_maxcount(skill_id, skill_lv);
+			if (battle_config.land_skill_limit && maxcount > 0 && (battle_config.land_skill_limit&BL_PC))
+			{
+				map_foreachinmap(skill_check_condition_mob_master_sub, sd->bl.m, BL_MOB, sd->bl.id, bionics[4 - (BO_HELLTREE - skill_id)], skill_id, &c);
 				if (c >= maxcount)
 				{
 					clif_skill_fail(sd, skill_id, USESKILL_FAIL_LEVEL, 0);
@@ -21122,8 +21260,12 @@ bool skill_produce_mix(struct map_session_data *sd, uint16 skill_id, t_itemid na
 				}
 				break;
 			case MT_M_MACHINE:
+			case BO_BIONIC_PHARMACY:
 			{// Difficulty formula unknown. Making it 100% success for now. [Rytech]
-				qty = 7 + skill_lv;
+				if (skill_id == MT_M_MACHINE)
+					qty = 7 + skill_lv;
+				else// BO_BIONIC_PHARMACY
+					qty = 10 + skill_lv;
 				make_per = 100000;
 			}
 			break;
@@ -21339,6 +21481,7 @@ bool skill_produce_mix(struct map_session_data *sd, uint16 skill_id, t_itemid na
 					clif_msg_skill(sd, skill_id, ITEM_PRODUCE_SUCCESS);
 					break;
 				case MT_M_MACHINE:
+				case BO_BIONIC_PHARMACY:
 					clif_produceeffect(sd, 0, nameid);
 					clif_misceffect(&sd->bl, 3);
 					break;

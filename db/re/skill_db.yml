@@ -27569,7 +27569,7 @@ Body:
         Size: 10
       - Level: 5
         Size: 11
-    Hit: Single
+    Hit: Multi_Hit
     HitCount: 1
     Element: Weapon
     SplashArea:

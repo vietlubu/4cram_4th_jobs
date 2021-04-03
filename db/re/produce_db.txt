@@ -693,9 +693,27 @@
 // Unripe Apple (619) <-- 10 Sticky Mucus, 20 Green Herbs, 10 Apples
 280,619,30,0,0,11058,0,938,10,511,20,512,10
 
-//===== Capsules === ItemLV=31 =================
+//===== Manufacture Machine === ItemLV=31 ======
 // Device Capsule (1000289) <-- MT_M_MACHINE Lvl, Device Creation Guide, 5 Mini Furnace, 5 Oridecon Hammer, 50 Magic Gear Fuel
 281,1000289,31,5297,1,1000352,0,612,5,615,5,6146,50
 // Auto Battle Capsule (1000290) <-- MT_M_MACHINE Lvl, Device Creation Guide, 5 Mini Furnace, 5 Oridecon Hammer, 75 Magic Gear Fuel
 282,1000290,31,5297,1,1000352,0,612,5,615,5,6146,75
+//==============================================
+
+//===== Bionic Pharmacy === ItemLV=32 ==========
+// Flame Acid Bottle (1000276) <-- BO_BIONIC_PHARMACY Lvl, 1 Beaker, 5 Fire Bottle, 5 Acid Bottle, 2 Bloody Red
+283,1000276,32,5336,1,1000275,1,7135,5,7136,5,990,2
+// Earth Acid Bottle (1000277) <-- BO_BIONIC_PHARMACY Lvl, 1 Beaker, 5 Fire Bottle, 5 Acid Bottle, 2 Yellow Live
+284,1000277,32,5336,1,1000275,1,7135,5,7136,5,993,2
+// Gale Acid Bottle (1000278) <-- BO_BIONIC_PHARMACY Lvl, 1 Beaker, 5 Fire Bottle, 5 Acid Bottle, 2 Wind of Verdure
+285,1000278,32,5336,1,1000275,1,7135,5,7136,5,992,2
+// Icicle Acid Bottle (1000279) <-- BO_BIONIC_PHARMACY Lvl, 1 Beaker, 5 Fire Bottle, 5 Acid Bottle, 2 Crystal Blue
+286,1000279,32,5336,1,1000275,1,7135,5,7136,5,991,2
+// High Coating Bottle (1000280) <-- BO_BIONIC_PHARMACY Lvl, 1 Beaker, 5 Empty Bottle, 10 Coating Bottle
+287,1000280,32,5336,1,1000275,1,713,5,7139,10
+// High Plant Bottle (1000281) <-- BO_BIONIC_PHARMACY Lvl, 1 Beaker, 2 Seed Of Thorny Plant, 2 Bloodsuck Plant Seed, 5 Mandragora Flowerpot, 10 Plant Bottle
+288,1000281,32,5336,1,1000275,1,6210,2,6211,2,6217,5,7137,10
+// Add new cure items in later.
+//  (1000276) <-- BO_BIONIC_PHARMACY Lvl, 1 Beaker, 
+//289,1000276,32,5336,1,1000275,1, 
 //==============================================

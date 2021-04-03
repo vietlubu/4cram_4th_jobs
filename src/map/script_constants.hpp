@@ -1791,6 +1791,10 @@
 	export_constant(SC_ACIDIFIED_ZONE_GROUND);
 	export_constant(SC_ACIDIFIED_ZONE_WIND);
 	export_constant(SC_ACIDIFIED_ZONE_FIRE);
+	export_constant(SC_BIONIC_WOODENWARRIOR);
+	export_constant(SC_BIONIC_WOODEN_FAIRY);
+	export_constant(SC_BIONIC_CREEPER);
+	export_constant(SC_BIONIC_HELLTREE);
 
 	// Abyss Chaser
 	export_constant(SC_DAGGER_AND_BOW_M);

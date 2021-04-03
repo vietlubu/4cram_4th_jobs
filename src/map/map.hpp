@@ -384,6 +384,7 @@ enum mob_ai {
 	AI_FAW,
 	AI_GUILD,
 	AI_ABR,
+	AI_BIONIC,
 	AI_MAX
 };
 

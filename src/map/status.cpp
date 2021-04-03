@@ -1190,6 +1190,14 @@ void initChangeTables(void)
 	set_sc_with_vfx( EM_CONFLAGRATION   , SC_HANDICAPSTATE_CONFLAGRATION  , EFST_HANDICAPSTATE_CONFLAGRATION  , SCB_NONE );
 	set_sc_with_vfx( EM_TERRA_DRIVE     , SC_HANDICAPSTATE_CRYSTALLIZATION, EFST_HANDICAPSTATE_CRYSTALLIZATION, SCB_NONE );
 
+	// Biolo
+	set_sc(          BO_ADVANCE_PROTECTION, SC_PROTECTSHADOWEQUIP  , EFST_PROTECTSHADOWEQUIP, SCB_NONE );
+	set_sc(          BO_WOODENWARRIOR     , SC_BIONIC_WOODENWARRIOR, EFST_BLANK             , SCB_NONE );
+	set_sc(          BO_WOODEN_FAIRY      , SC_BIONIC_WOODEN_FAIRY , EFST_BLANK             , SCB_NONE );
+	set_sc(          BO_CREEPER           , SC_BIONIC_CREEPER      , EFST_BLANK             , SCB_NONE );
+	set_sc(          BO_RESEARCHREPORT    , SC_RESEARCHREPORT      , EFST_RESEARCHREPORT    , SCB_NONE );
+	set_sc(          BO_HELLTREE          , SC_BIONIC_HELLTREE     , EFST_BLANK             , SCB_NONE );
+
 	// Abyss Chaser
 	set_sc(          ABC_FROM_THE_ABYSS, SC_ABYSSFORCEWEAPON, EFST_ABYSSFORCEWEAPON, SCB_NONE );
 
@@ -3564,6 +3572,46 @@ int status_calc_mob_(struct mob_data* md, enum e_status_calc_opt opt)
 					// ABR's and im guessing has a much higher MaxHP due to it being a AP
 					// costing summon. [Rytech]
 					if (ud->skill_id == MT_SUMMON_ABR_INFINITY)
+					{
+						status->max_hp += 20000;
+						status->rhw.atk += 1400;// 70% of 2000
+						status->rhw.atk2 += 2000;
+					}
+
+					break;
+				}
+				case BO_WOODENWARRIOR:
+				case BO_WOODEN_FAIRY:
+				case BO_CREEPER:
+				case BO_HELLTREE:
+				{
+					struct map_session_data* msd = BL_CAST(BL_PC, mbl);
+					struct status_data *mstatus = status_get_status_data(mbl);
+					short bionic_mastery = 0;
+
+					if (!msd || !mstatus)
+						break;
+
+					bionic_mastery = pc_checkskill(msd, BO_BIONICS_M);
+
+					// Custom formulas for bionic's.
+					// Its unknown how the summoner's stats affects the bionic's stats.
+					// I decided to do something similar to elementals for now until I know.
+					// Also added hit increase from Bionic-Mastery for balance reasons. [Rytech]
+					status->max_hp = (5000 + 2000 * bionic_mastery) * mstatus->vit / 100;
+					//status->max_sp = (50 + 20 * bionic_mastery) * mstatus->int_ / 100;// Wait what??? Bionic Mastery increases MaxSP? They have SP???
+					status->rhw.atk = (2 * mstatus->batk + 200 * bionic_mastery) * 70 / 100;
+					status->rhw.atk2 = 2 * mstatus->batk + 200 * bionic_mastery;
+					status->def = mstatus->def + 20 * bionic_mastery;
+					status->mdef = mstatus->mdef + 4 * bionic_mastery;
+					status->hit = mstatus->hit + 5 * bionic_mastery / 2;
+					status->flee = mstatus->flee + 10 * bionic_mastery;
+					status->speed = mstatus->speed;
+
+					// The Hell Tree bionic appears to have a much higher attack then other
+					// bionic's and im guessing has a much higher MaxHP due to it being a AP
+					// costing summon. [Rytech]
+					if (ud->skill_id == BO_HELLTREE)
 					{
 						status->max_hp += 20000;
 						status->rhw.atk += 1400;// 70% of 2000

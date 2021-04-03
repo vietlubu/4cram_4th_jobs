@@ -4721,6 +4721,8 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 				skillratio += -100 + 100 * skill_lv;
 				if(sd && sd->cart_weight)
 					skillratio += sd->cart_weight / 10 / (150 - min(sd->status.str,120)) + pc_checkskill(sd,GN_REMODELING_CART) * 50;
+				if (sc && sc->data[SC_BIONIC_WOODENWARRIOR])
+					skillratio *= 2;
 			}
 			break;
 		case GN_CARTCANNON:
@@ -4733,6 +4735,8 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			if (wd->miscflag & 8)
 				skillratio += 200 + sstatus->int_; // Target receives extra damage
 			RE_LVL_DMOD(100);
+			if (sc && sc->data[SC_BIONIC_WOODEN_FAIRY])
+				skillratio *= 2;
 			break;
 		case GN_WALLOFTHORN:
 			skillratio += 10 * skill_lv;
@@ -5132,6 +5136,29 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			skillratio += -100 + 250 * skill_lv + 5 * sstatus->con;
 			RE_LVL_DMOD(100);
 			skillratio += skillratio * (20 * (sd ? pc_checkskill(sd, WH_ADVANCED_TRAP) : 5)) / 100;
+			break;
+		case BO_ACIDIFIED_ZONE_WATER:
+		case BO_ACIDIFIED_ZONE_GROUND:
+		case BO_ACIDIFIED_ZONE_WIND:
+		case BO_ACIDIFIED_ZONE_FIRE:
+		case BO_ACIDIFIED_ZONE_WATER_ATK:// These deal the same damage? [Rytech]
+		case BO_ACIDIFIED_ZONE_GROUND_ATK:
+		case BO_ACIDIFIED_ZONE_WIND_ATK:
+		case BO_ACIDIFIED_ZONE_FIRE_ATK:
+			skillratio += -100 + 250 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			if (sc && sc->data[SC_RESEARCHREPORT])// Does this also affect skills like acid demo? [Rytech]
+			{
+				skillratio += skillratio * 50 / 100;
+
+				if (tstatus->race == RC_FORMLESS || tstatus->race == RC_PLANT)
+					skillratio += skillratio * 50 / 100;
+
+				// Skill description is sounding a bit too crazy.
+				// I need more info on this before allowing this part to work to avoid overpowered issues. [Rytech]
+				//skillratio += 5 * sstatus->pow;
+				//RE_LVL_DMOD(100);
+			}
 			break;
 		case ABR_BATTLE_BUSTER:// Need official formula.
 		case ABR_DUAL_CANNON_FIRE:// Need official formula.
@@ -6044,6 +6071,10 @@ static struct Damage initialize_weapon_data(struct block_list *src, struct block
 			case LG_HESPERUSLIT:
 				if( sc && sc->data[SC_BANDING] && sc->data[SC_BANDING]->val2 > 3 )
 					wd.div_ = sc->data[SC_BANDING]->val2;
+				break;
+			case GN_CARTCANNON:
+				if (sc && sc->data[SC_BIONIC_WOODENWARRIOR])
+					wd.div_ = 2;
 				break;
 			case DK_SERVANT_W_PHANTOM:
 			case DK_SERVANT_W_DEMOL:
