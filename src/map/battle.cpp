@@ -2404,6 +2404,8 @@ static int battle_range_type(struct block_list *src, struct block_list *target, 
 		case SHC_SAVAGE_IMPACT:// 7 cell cast range.
 		case SHC_FATAL_SHADOW_CROW:// 9 cell cast range.
 		case MT_RUSH_QUAKE:// 9 cell cast range.
+		case ABC_UNLUCKY_RUSH:// 7 cell cast range.
+		//case ABC_DEFT_STAB:// 2 cell cast range???
 			return BF_SHORT;// Melee
 
 		case DK_HACKANDSLASHER_ATK:// 2 cell cast range.
@@ -4511,6 +4513,8 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 		case SC_FATALMENACE:
 			skillratio += 100 * skill_lv;
 			RE_LVL_DMOD(100);
+			if (sc && sc->data[SC_ABYSS_DAGGER])
+				skillratio += skillratio * 50 / 100;
 			break;
 		case SC_TRIANGLESHOT:
 			skillratio += 200 + (skill_lv - 1) * status_get_agi(src) / 2;
@@ -5094,6 +5098,27 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			break;
 		case MT_A_MACHINE:// Formula unknown. Using Dancing Knife's formula for now. [Rytech]
 			skillratio += -100 + 200 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			break;
+		case ABC_ABYSS_DAGGER:
+			skillratio += -100 + 550 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			break;
+		case ABC_UNLUCKY_RUSH:
+			skillratio += -100 + 500 * skill_lv + 5 * sstatus->crt;
+			RE_LVL_DMOD(100);
+			break;
+		case ABC_CHAIN_REACTION_SHOT:
+		case ABC_CHAIN_REACTION_SHOT_ATK:// Same damage formula? [Rytech]
+			skillratio += -100 + 600 * skill_lv + 5 * sstatus->con;
+			RE_LVL_DMOD(100);
+			break;
+		case ABC_DEFT_STAB:
+			skillratio += -100 + 360 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			break;
+		case ABC_FRENZY_SHOT:
+			skillratio += -100 + 350 * skill_lv + 5 * sstatus->con;
 			RE_LVL_DMOD(100);
 			break;
 		case WH_HAWKRUSH:
@@ -7310,6 +7335,14 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 						skillratio += -100 + 500 + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
 						break;
+					case ABC_ABYSS_STRIKE:
+						skillratio += -100 + 600 * skill_lv + 10 * sstatus->spl;
+						if (tstatus->race == RC_DEMON || tstatus->race == RC_ANGEL)
+							skillratio += 550 * skill_lv;
+						break;
+					case ABC_ABYSS_SQUARE:
+						skillratio += -100 + 140 * skill_lv + 5 * sstatus->spl;
+						break;
 					case EM_DIAMOND_STORM:
 						skillratio += -100 + 700 * skill_lv + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
@@ -7331,7 +7364,7 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 						RE_LVL_DMOD(100);
 						break;
 					case ABC_FROM_THE_ABYSS_ATK:
-						skillratio += 150 + 70 * skill_lv + 5 * sstatus->spl;
+						skillratio += 50 + 70 * skill_lv + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
 						break;
 					case EM_ELEMENTAL_BUSTER_FIRE:

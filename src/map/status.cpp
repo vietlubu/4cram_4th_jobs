@@ -1199,7 +1199,11 @@ void initChangeTables(void)
 	set_sc(          BO_HELLTREE          , SC_BIONIC_HELLTREE     , EFST_BLANK             , SCB_NONE );
 
 	// Abyss Chaser
-	set_sc(          ABC_FROM_THE_ABYSS, SC_ABYSSFORCEWEAPON, EFST_ABYSSFORCEWEAPON, SCB_NONE );
+	set_sc(          ABC_STRIP_SHADOW  , SC_SHADOW_STRIP            , EFST_SHADOW_STRIP            , SCB_RES|SCB_MRES );
+	set_sc(          ABC_ABYSS_DAGGER  , SC_ABYSS_DAGGER            , EFST_ABYSS_DAGGER            , SCB_NONE );
+	set_sc_with_vfx( ABC_UNLUCKY_RUSH  , SC_HANDICAPSTATE_MISFORTUNE, EFST_HANDICAPSTATE_MISFORTUNE, SCB_NONE );
+	set_sc(          ABC_FROM_THE_ABYSS, SC_ABYSSFORCEWEAPON        , EFST_ABYSSFORCEWEAPON        , SCB_NONE );
+	set_sc_with_vfx( ABC_ABYSS_SLAYER  , SC_ABYSS_SLAYER            , EFST_ABYSS_SLAYER            , SCB_HIT|SCB_PATK|SCB_SMATK );
 
 #ifdef RENEWAL
 	set_sc( NV_HELPANGEL			, SC_HELPANGEL		, EFST_HELPANGEL	, SCB_NONE );
@@ -1805,6 +1809,7 @@ void initChangeTables(void)
 	StatusDisplayType[SC_E_SLASH_COUNT] = BL_PC;
 	StatusDisplayType[SC_HOLY_S] = BL_PC;
 	StatusDisplayType[SC_SPEAR_SCAR] = BL_PC;
+	StatusDisplayType[SC_ABYSS_SLAYER] = BL_PC;
 
 	/* StatusChangeState (SCS_) NOMOVE */
 	StatusChangeStateTable[SC_ANKLE]				|= SCS_NOMOVE;
@@ -5170,7 +5175,32 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 		sd->indexed_bonus.subsize[SZ_MEDIUM] += medium_def[skill-1];
 		sd->indexed_bonus.subsize[SZ_BIG] += large_def[skill-1];
 	}
+	if ((skill = pc_checkskill(sd, ABC_DAGGER_AND_BOW_M)) > 0 && (sd->status.weapon == W_DAGGER || sd->status.weapon == W_BOW || 
+		sd->status.weapon == W_DOUBLE_DD || sd->status.weapon == W_DOUBLE_DS || sd->status.weapon == W_DOUBLE_DA))
+	{
+		short small_atk[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+		short medium_atk[10] = { 2, 3, 5, 6, 8, 9, 11, 12, 14, 15 };
+		short large_atk[10] = { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20 };
 
+		sd->right_weapon.addsize[SZ_SMALL] += small_atk[skill-1];
+		sd->left_weapon.addsize[SZ_SMALL] += small_atk[skill-1];
+		sd->right_weapon.addsize[SZ_MEDIUM] += medium_atk[skill-1];
+		sd->left_weapon.addsize[SZ_MEDIUM] += medium_atk[skill-1];
+		sd->right_weapon.addsize[SZ_BIG] += large_atk[skill-1];
+		sd->left_weapon.addsize[SZ_BIG] += large_atk[skill-1];
+	}
+	if ((skill = pc_checkskill(sd, ABC_MAGIC_SWORD_M)) > 0 && (sd->status.weapon == W_DAGGER || sd->status.weapon == W_1HSWORD || 
+		sd->status.weapon == W_DOUBLE_DD || sd->status.weapon == W_DOUBLE_SS || sd->status.weapon == W_DOUBLE_DS || 
+		sd->status.weapon == W_DOUBLE_DA || sd->status.weapon == W_DOUBLE_SA))
+	{
+		short small_matk[10] = { 2, 3, 5, 6, 8, 9, 11, 12, 14, 15 };
+		short medium_matk[10] = { 2, 3, 5, 6, 8, 9, 11, 12, 14, 15 };
+		short large_matk[10] = { 2, 3, 5, 6, 8, 9, 11, 12, 14, 15 };
+
+		sd->indexed_bonus.magic_addsize[SZ_SMALL] += small_matk[skill-1];
+		sd->indexed_bonus.magic_addsize[SZ_MEDIUM] += medium_matk[skill-1];
+		sd->indexed_bonus.magic_addsize[SZ_BIG] += large_matk[skill-1];
+	}
 	if ((skill = pc_checkskill(sd, EM_MAGIC_BOOK_M)) > 0 && sd->status.weapon == W_BOOK)
 	{
 		sd->indexed_bonus.magic_atk_ele[ELE_WATER] += skill;
@@ -7762,6 +7792,8 @@ static signed short status_calc_hit(struct block_list *bl, struct status_change 
 		hit += sc->data[SC_SOULFALCON]->val3;
 	if (sc->data[SC_SATURDAYNIGHTFEVER])
 		hit -= 50 + 50 * sc->data[SC_SATURDAYNIGHTFEVER]->val1;
+	if (sc->data[SC_ABYSS_SLAYER])
+		hit += sc->data[SC_ABYSS_SLAYER]->val3;
 
 	return (short)cap_value(hit,1,SHRT_MAX);
 }
@@ -8756,6 +8788,8 @@ static signed short status_calc_patk(struct block_list *bl, struct status_change
 
 	if (sc->data[SC_COMPETENTIA])
 		patk += sc->data[SC_COMPETENTIA]->val2;
+	if (sc->data[SC_ABYSS_SLAYER])
+		patk += sc->data[SC_ABYSS_SLAYER]->val2;
 
 	return (short)cap_value(patk, 0, SHRT_MAX);
 }
@@ -8774,6 +8808,8 @@ static signed short status_calc_smatk(struct block_list *bl, struct status_chang
 
 	if (sc->data[SC_COMPETENTIA])
 		smatk += sc->data[SC_COMPETENTIA]->val2;
+	if (sc->data[SC_ABYSS_SLAYER])
+		smatk += sc->data[SC_ABYSS_SLAYER]->val2;
 	if (sc->data[SC_SPELL_ENCHANTING])
 		smatk += sc->data[SC_SPELL_ENCHANTING]->val2;
 
@@ -13223,19 +13259,6 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 				tick_time = 500;// Avoid being brought down to 0.
 			val4 = tick - tick_time;// Remaining Time
 			break;
-		case SC_ABYSSFORCEWEAPON:
-			if (sd)
-			{
-				short i;
-				for (i = 0; i < MAX_ABYSSBALL; i++)// Generate 5 abyss spheres on start.
-					pc_addabyssball(sd, MAX_ABYSSBALL, 1);// Don't send the effect packet yet.
-				clif_abyssball(&sd->bl);// Send the effect packet after abyss gen. Avoids packet and sound spam.
-			}
-			tick_time = skill_get_time2(ABC_FROM_THE_ABYSS, val1);// Abyss Regen Interval
-			if (tick_time < 500)
-				tick_time = 500;// Avoid being brought down to 0.
-			val4 = tick - tick_time;// Remaining Time
-			break;
 		case SC_GUARD_STANCE:
 			val2 = 50 + 50 * val1;// DEF Increase
 			val3 = 50 * val1;// ATK Decrease
@@ -13293,6 +13316,23 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 		case SC_D_MACHINE:
 			val2 = 200 + 50 * val1;// DEF Increase
 			val3 = 20 * val1;// Res Increase
+			break;
+		case SC_ABYSSFORCEWEAPON:
+			if (sd)
+			{
+				short i;
+				for (i = 0; i < MAX_ABYSSBALL; i++)// Generate 5 abyss spheres on start.
+					pc_addabyssball(sd, MAX_ABYSSBALL, 1);// Don't send the effect packet yet.
+				clif_abyssball(&sd->bl);// Send the effect packet after abyss gen. Avoids packet and sound spam.
+			}
+			tick_time = skill_get_time2(ABC_FROM_THE_ABYSS, val1);// Abyss Regen Interval
+			if (tick_time < 500)
+				tick_time = 500;// Avoid being brought down to 0.
+			val4 = tick - tick_time;// Remaining Time
+			break;
+		case SC_ABYSS_SLAYER:
+			val2 = 10 + 2 * val1;// PAtk/SMatk Increase
+			val3 = 100 + 20 * val1;// Hit Increase
 			break;
 		case SC_WINDSIGN:
 			val2 = 8 + 6 * val1;// Chance to gain AP on attack.

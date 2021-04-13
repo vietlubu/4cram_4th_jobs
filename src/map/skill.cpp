@@ -2210,6 +2210,12 @@ int skill_additional_effect(struct block_list* src, struct block_list *bl, uint1
 		sc_start(src, bl, SC_DARKCROW, 100, dark_claw_lv, skill_get_time(skill_id, skill_lv));
 	}
 		break;
+	case ABC_UNLUCKY_RUSH:
+		sc_start(src, bl, SC_HANDICAPSTATE_MISFORTUNE, 30 + 10 * skill_lv, skill_lv, skill_get_time(skill_id, skill_lv));
+		break;
+	case ABC_CHAIN_REACTION_SHOT:
+		skill_castend_damage_id(src, bl, ABC_CHAIN_REACTION_SHOT_ATK, skill_lv, tick, SD_LEVEL);
+		break;
 	case WH_DEEPBLINDTRAP:// Need official success chances for all 4 Windhawk traps.
 		sc_start(src, bl, SC_HANDICAPSTATE_DEEPBLIND, 50, skill_lv, skill_get_time2(skill_id, skill_lv));
 		break;
@@ -3840,6 +3846,9 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 		case AG_CRIMSON_ARROW:
 			dmg.dmotion = clif_skill_damage(dsrc, bl, tick, dmg.amotion, dmg.dmotion, damage, dmg.div_, skill_id, skill_lv, DMG_SPLASH);
 			break;
+		case ABC_FROM_THE_ABYSS_ATK:
+			dmg.dmotion = clif_skill_damage(dsrc, bl, tick, dmg.amotion, dmg.dmotion, damage, dmg.div_, skill_id, -1, DMG_SPLASH);
+			break;
 		//case AB_DUPLELIGHT_MELEE:
 		//case AB_DUPLELIGHT_MAGIC:
 		//	dmg.amotion = 300;/* makes the damage value not overlap with previous damage (when displayed by the client) */
@@ -4008,6 +4017,14 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 			case SU_PICKYPECK:
 				if (status_get_lv(src) > 29 && rnd() % 100 < 10 * status_get_lv(src) / 30)
 					skill_addtimerskill(src, tick + dmg.amotion + skill_get_delay(skill_id, skill_lv), bl->id, 0, 0, skill_id, skill_lv, attack_type, flag|2);
+				break;
+			case ABC_DEFT_STAB:
+				if (skill_area_temp[1] == bl->id && rnd()%100 < 4 * skill_lv)// Need official autocast chance. [Rytech]
+					skill_addtimerskill(src, tick + dmg.amotion, bl->id, 0, 0, skill_id, skill_lv, BF_WEAPON, 2);
+				break;
+			case ABC_FRENZY_SHOT:
+				if (rnd()%100 < 4 * skill_lv)// Need official autocast chance. [Rytech]
+					skill_addtimerskill(src, tick + dmg.amotion, bl->id, 0, 0, skill_id, skill_lv, BF_WEAPON, 2);
 				break;
 		}
 	}
@@ -4575,6 +4592,10 @@ static TIMER_FUNC(skill_timerskill){
 						}
 					}
 					break;
+				case ABC_DEFT_STAB:
+				case ABC_FRENZY_SHOT:
+					skill_castend_damage_id(src, target, skl->skill_id, skl->skill_lv, tick, skl->flag);
+					break;
 				default:
 					skill_attack(skl->type,src,src,target,skl->skill_id,skl->skill_lv,tick,skl->flag);
 					break;
@@ -5045,6 +5066,7 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case BO_ACIDIFIED_ZONE_GROUND_ATK:
 	case BO_ACIDIFIED_ZONE_WIND_ATK:
 	case BO_ACIDIFIED_ZONE_FIRE_ATK:
+	case ABC_CHAIN_REACTION_SHOT_ATK:
 	case ABR_BATTLE_BUSTER:
 	case ABR_DUAL_CANNON_FIRE:
 	case ABR_INFINITY_BUSTER:
@@ -5061,6 +5083,7 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case IG_GRAND_JUDGEMENT:
 	case CD_EFFLIGO:
 	case SHC_SHADOW_STAB:
+	case ABC_FRENZY_SHOT:
 	case WH_HAWKRUSH:
 	case WH_HAWKBOOMERANG:
 		clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
@@ -5101,6 +5124,19 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 		}
 		else
 			sc_start(src, src, SC_CRESCIVEBOLT, 100, 1, skill_get_time(skill_id, skill_lv));
+		break;
+
+	case ABC_UNLUCKY_RUSH:
+	{
+		uint8 dir = map_calc_dir(bl, src->x, src->y);
+
+		// Jump to the target before attacking.
+		if (skill_check_unit_movepos(5, src, bl->x, bl->y, 0, 1))
+			skill_blown(src, src, 1, (dir + 4) % 8, BLOWN_NONE);
+
+		clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
+		skill_attack(BF_WEAPON, src, src, bl, skill_id, skill_lv, tick, flag);
+	}
 		break;
 
 	case MO_TRIPLEATTACK:
@@ -5429,12 +5465,15 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case MT_AXE_STOMP:
 	case MT_RUSH_QUAKE:
 	case MT_A_MACHINE:
+	case ABC_ABYSS_DAGGER:
+	case ABC_CHAIN_REACTION_SHOT:
+	case ABC_DEFT_STAB:
 	case WH_GALESTORM:
-	case ABC_FROM_THE_ABYSS_ATK:
 	case BO_ACIDIFIED_ZONE_WATER:
 	case BO_ACIDIFIED_ZONE_GROUND:
 	case BO_ACIDIFIED_ZONE_WIND:
 	case BO_ACIDIFIED_ZONE_FIRE:
+	case ABC_FROM_THE_ABYSS_ATK:
 	case EM_ELEMENTAL_BUSTER_FIRE:
 	case EM_ELEMENTAL_BUSTER_WATER:
 	case EM_ELEMENTAL_BUSTER_WIND:
@@ -5458,6 +5497,10 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 			// Over Slash - Appears to deal a number of hits equal to 2 + Number of Enemys In AoE. Max of 5 hits.
 			if (skill_id == IG_OVERSLASH)
 				sflag |= skill_area_temp[0];
+
+			// Deft Stab - Make sure the flag of 2 is passed on when the skill is double casted.
+			if (skill_id == ABC_DEFT_STAB && flag&2)
+				sflag |= 2;
 
 			if( flag&SD_LEVEL )
 				sflag |= SD_LEVEL; // -1 will be used in packets instead of the skill level
@@ -5539,6 +5582,8 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 				case AG_ROCK_DOWN:
 				case CD_PETITIO:
 				case CD_FRAMEN:
+				case ABC_DEFT_STAB:
+				case ABC_CHAIN_REACTION_SHOT:
 					clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
 					break;
 				case IG_OVERSLASH:
@@ -7499,6 +7544,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case SHC_POTENT_VENOM:
 	case SHC_ENCHANTING_SHADOW:
 	case MT_D_MACHINE:
+	case ABC_ABYSS_SLAYER:
 	case WH_WIND_SIGN:
 	case WH_CALAMITYGALE:
 	case BO_ADVANCE_PROTECTION:
@@ -8085,6 +8131,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case AG_FROZEN_SLASH:
 	case SHC_IMPACT_CRATER:
 	case MT_AXE_STOMP:
+	case ABC_ABYSS_DAGGER:
 	{
 		struct status_change *sc = status_get_sc(src);
 		int starget = BL_CHAR|BL_SKILL;
@@ -8108,7 +8155,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 			}
 			status_change_end(src, SC_DIMENSION, INVALID_TIMER);
 		}
-		if (skill_id == SHC_IMPACT_CRATER || skill_id == MT_AXE_STOMP)
+		if (skill_id == SHC_IMPACT_CRATER || skill_id == MT_AXE_STOMP || skill_id == ABC_ABYSS_DAGGER)
 			sc_start(src, bl, type, 100, skill_lv, skill_get_time(skill_id, skill_lv));
 
 		skill_area_temp[1] = 0;
@@ -11803,9 +11850,9 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 			sd->skill_id_old = skill_id;
 			sd->skill_lv_old = skill_lv;
 			if (skill_id == MT_M_MACHINE)
-				clif_cooking_list(sd, 31, skill_id, 7 + skill_lv, 7);
+				clif_cooking_list(sd, 31, skill_id, 1, 7);
 			else// BO_BIONIC_PHARMACY
-				clif_cooking_list(sd, 32, skill_id, 10 + skill_lv, 8);
+				clif_cooking_list(sd, 32, skill_id, 1, 8);
 			clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
 		}
 		break;
@@ -13241,6 +13288,8 @@ int skill_castend_pos2(struct block_list* src, int x, int y, uint16 skill_id, ui
 	case AG_FLORAL_FLARE_ROAD:
 	case IG_CROSS_RAIN:
 	case CD_PNEUMATICUS_PROCELLA:
+	case ABC_ABYSS_STRIKE:
+	case ABC_ABYSS_SQUARE:
 	case WH_DEEPBLINDTRAP:
 	case WH_SOLIDTRAP:
 	case WH_SWIFTTRAP:
@@ -15223,6 +15272,7 @@ int skill_unit_onplace_timer(struct skill_unit *unit, struct block_list *bl, t_t
 		case UNT_FLORAL_FLARE_ROAD:
 		case UNT_CROSS_RAIN:
 		case UNT_PNEUMATICUS_PROCELLA:
+		case UNT_ABYSS_SQUARE:
 		case UNT_LIGHTNING_LAND:
 		case UNT_VENOM_SWAMP:
 		case UNT_CONFLAGRATION:
@@ -21369,7 +21419,7 @@ bool skill_produce_mix(struct map_session_data *sd, uint16 skill_id, t_itemid na
 			tmp_item.amount = 0;
 
 			for (i = 0; i < qty; i++) {	//Apply quantity modifiers.
-				if ((skill_id == GN_MIX_COOKING || skill_id == GN_MAKEBOMB || skill_id == GN_S_PHARMACY) && make_per > 1) {
+				if ((skill_id == GN_MIX_COOKING || skill_id == GN_MAKEBOMB || skill_id == GN_S_PHARMACY || skill_id == MT_M_MACHINE || skill_id == BO_BIONIC_PHARMACY) && make_per > 1) {
 					tmp_item.amount = qty;
 					break;
 				}
@@ -21481,9 +21531,14 @@ bool skill_produce_mix(struct map_session_data *sd, uint16 skill_id, t_itemid na
 					clif_msg_skill(sd, skill_id, ITEM_PRODUCE_SUCCESS);
 					break;
 				case MT_M_MACHINE:
-				case BO_BIONIC_PHARMACY:
 					clif_produceeffect(sd, 0, nameid);
 					clif_misceffect(&sd->bl, 3);
+					clif_msg_skill(sd, skill_id, ITEM_PRODUCE_SUCCESS);
+					break;
+				case BO_BIONIC_PHARMACY:
+					clif_produceeffect(sd, 2, nameid);
+					clif_misceffect(&sd->bl, 5);
+					clif_msg_skill(sd, skill_id, ITEM_PRODUCE_SUCCESS);
 					break;
 			}
 			return true;
@@ -21560,6 +21615,16 @@ bool skill_produce_mix(struct map_session_data *sd, uint16 skill_id, t_itemid na
 				clif_produceeffect(sd,7,nameid);
 				clif_misceffect(&sd->bl,6);
 				clif_msg_skill(sd,skill_id,ITEM_PRODUCE_FAIL);
+				break;
+			case MT_M_MACHINE:
+				clif_produceeffect(sd, 1, nameid);
+				clif_misceffect(&sd->bl, 2);
+				clif_msg_skill(sd, skill_id, ITEM_PRODUCE_FAIL);
+				break;
+			case BO_BIONIC_PHARMACY:
+				clif_produceeffect(sd, 3, nameid);
+				clif_misceffect(&sd->bl, 6);
+				clif_msg_skill(sd, skill_id, ITEM_PRODUCE_FAIL);
 				break;
 			default:
 				if (skill_produce_db[idx].itemlv > 10 && skill_produce_db[idx].itemlv <= 20 ) { //Cooking items.
