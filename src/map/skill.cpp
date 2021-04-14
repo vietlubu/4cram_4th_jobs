@@ -2101,7 +2101,8 @@ int skill_additional_effect(struct block_list* src, struct block_list *bl, uint1
 					case SC_USE_SKILL_SP_SHA:	case SC_SP_SHA:
 					// 4th Jobs
 					case SC_SERVANTWEAPON:	case SC_SERVANT_SIGN:	case SC_GUARD_STANCE:
-					case SC_ATTACK_STANCE:  case SC_ABYSSFORCEWEAPON:
+					case SC_ATTACK_STANCE:  case SC_PROTECTSHADOWEQUIP: case SC_SHADOW_STRIP:
+					case SC_ABYSSFORCEWEAPON:
 #ifdef RENEWAL
 					case SC_EXTREMITYFIST2:
 #endif
@@ -2751,9 +2752,9 @@ int skill_counter_additional_effect (struct block_list* src, struct block_list *
 --------------------------------------------------------------------------*/
 int skill_break_equip(struct block_list *src, struct block_list *bl, unsigned short where, int rate, int flag)
 {
-	const int where_list[4]     = {EQP_WEAPON, EQP_ARMOR, EQP_SHIELD, EQP_HELM};
-	const enum sc_type scatk[4] = {SC_STRIPWEAPON, SC_STRIPARMOR, SC_STRIPSHIELD, SC_STRIPHELM};
-	const enum sc_type scdef[4] = {SC_CP_WEAPON, SC_CP_ARMOR, SC_CP_SHIELD, SC_CP_HELM};
+	const int where_list[6]     = { EQP_WEAPON, EQP_ARMOR, EQP_SHIELD, EQP_HELM, EQP_ACC, EQP_SHADOW_GEAR };
+	const enum sc_type scatk[6] = { SC_STRIPWEAPON, SC_STRIPARMOR, SC_STRIPSHIELD, SC_STRIPHELM, SC__STRIPACCESSORY, SC_SHADOW_STRIP };
+	const enum sc_type scdef[6] = { SC_CP_WEAPON, SC_CP_ARMOR, SC_CP_SHIELD, SC_CP_HELM, SC_NONE, SC_PROTECTSHADOWEQUIP };
 	struct status_change *sc = status_get_sc(bl);
 	int i;
 	TBL_PC *sd;
@@ -2792,7 +2793,7 @@ int skill_break_equip(struct block_list *src, struct block_list *bl, unsigned sh
 			rate = rate*battle_config.equip_self_break_rate/100;
 	}
 
-	for (i = 0; i < 4; i++) {
+	for (i = 0; i < 6; i++) {
 		if (where&where_list[i]) {
 			if (sc && sc->count && sc->data[scdef[i]])
 				where&=~where_list[i];
@@ -2829,6 +2830,30 @@ int skill_break_equip(struct block_list *src, struct block_list *bl, unsigned sh
 				case EQI_GARMENT:
 					flag = (where&EQP_GARMENT);
 					break;
+				case EQI_ACC_L:
+					flag = (where&EQP_ACC_L);
+					break;
+				case EQI_ACC_R:
+					flag = (where&EQP_ACC_R);
+					break;
+				case EQI_SHADOW_ARMOR:
+					flag = (where&EQP_SHADOW_ARMOR);
+					break;
+				case EQI_SHADOW_WEAPON:
+					flag = (where&EQP_SHADOW_WEAPON);
+					break;
+				case EQI_SHADOW_SHIELD:
+					flag = (where&EQP_SHADOW_SHIELD);
+					break;
+				case EQI_SHADOW_SHOES:
+					flag = (where&EQP_SHADOW_SHOES);
+					break;
+				case EQI_SHADOW_ACC_R:
+					flag = (where&EQP_SHADOW_ACC_R);
+					break;
+				case EQI_SHADOW_ACC_L:
+					flag = (where&EQP_SHADOW_ACC_L);
+					break;
 				default:
 					continue;
 			}
@@ -2861,9 +2886,9 @@ bool skill_strip_equip(struct block_list *src, struct block_list *target, uint16
 	if (!tsc || tsc->option&OPTION_MADOGEAR) // Mado Gear cannot be divested [Ind]
 		return false;
 
-	const int pos[5]             = {EQP_WEAPON, EQP_SHIELD, EQP_ARMOR, EQP_HELM, EQP_ACC};
-	const enum sc_type sc_atk[5] = {SC_STRIPWEAPON, SC_STRIPSHIELD, SC_STRIPARMOR, SC_STRIPHELM, SC__STRIPACCESSORY};
-	const enum sc_type sc_def[5] = {SC_CP_WEAPON, SC_CP_SHIELD, SC_CP_ARMOR, SC_CP_HELM, SC_NONE};
+	const int pos[6]             = { EQP_WEAPON, EQP_SHIELD, EQP_ARMOR, EQP_HELM, EQP_ACC, EQP_SHADOW_GEAR };
+	const enum sc_type sc_atk[6] = { SC_STRIPWEAPON, SC_STRIPSHIELD, SC_STRIPARMOR, SC_STRIPHELM, SC__STRIPACCESSORY, SC_SHADOW_STRIP };
+	const enum sc_type sc_def[6] = { SC_CP_WEAPON, SC_CP_SHIELD, SC_CP_ARMOR, SC_CP_HELM, SC_NONE, SC_PROTECTSHADOWEQUIP };
 	struct status_data *sstatus = status_get_status_data(src), *tstatus = status_get_status_data(target);
 	int rate, time, location, mod = 100;
 
@@ -2899,6 +2924,10 @@ bool skill_strip_equip(struct block_list *src, struct block_list *target, uint16
 		case SC_STRIPACCESSARY:
 			rate = 12 + 2 * skill_lv;
 			break;
+		case ABC_STRIP_SHADOW:
+			rate = 50 * (skill_lv + 3) + 2 * (sstatus->dex - tstatus->dex);
+			mod = 1000;
+			break;
 		default:
 			return false;
 	}
@@ -2918,6 +2947,7 @@ bool skill_strip_equip(struct block_list *src, struct block_list *target, uint16
 		case RG_STRIPHELM:
 		case GC_WEAPONCRUSH:
 		case ST_FULLSTRIP:
+		case ABC_STRIP_SHADOW:
 			if (skill_id == WL_EARTHSTRAIN)
 				time = skill_get_time2(skill_id, skill_lv);
 			else
@@ -2952,6 +2982,9 @@ bool skill_strip_equip(struct block_list *src, struct block_list *target, uint16
 			break;
 		case SC_STRIPACCESSARY:
 			location = EQP_ACC;
+			break;
+		case ABC_STRIP_SHADOW:
+			location = EQP_SHADOW_GEAR;
 			break;
 	}
 
@@ -7547,7 +7580,6 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case ABC_ABYSS_SLAYER:
 	case WH_WIND_SIGN:
 	case WH_CALAMITYGALE:
-	case BO_ADVANCE_PROTECTION:
 	case BO_RESEARCHREPORT:
 	case EM_SPELL_ENCHANTING:
 		clif_skill_nodamage(src,bl,skill_id,skill_lv,
@@ -7645,6 +7677,18 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 		else if (sd)
 			party_foreachsamemap(skill_area_sub, sd, skill_get_splash(skill_id, skill_lv), src, skill_id, skill_lv, tick, flag|BCT_PARTY|1, skill_castend_nodamage_id);
 		break;
+
+	case BO_ADVANCE_PROTECTION:
+	{
+		if (sd && (bl->type != BL_PC || (dstsd && pc_checkequip(dstsd, EQP_SHADOW_GEAR) < 0))) {
+			clif_skill_fail(sd, skill_id, USESKILL_FAIL_LEVEL, 0);
+			map_freeblock_unlock();// Don't consume item requirements
+			return 0;
+		}
+		clif_skill_nodamage(src, bl, skill_id, skill_lv,
+			sc_start(src, bl, type, 100, skill_lv, skill_get_time(skill_id, skill_lv)));
+	}
+	break;
 
 	case EM_ACTIVITY_BURN:
 		if (bl->type == BL_PC && rnd() % 100 < 20 + 10 * skill_lv)
@@ -8890,7 +8934,9 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case RG_STRIPHELM:
 	case ST_FULLSTRIP:
 	case GC_WEAPONCRUSH:
-	case SC_STRIPACCESSARY: {
+	case SC_STRIPACCESSARY:
+	case ABC_STRIP_SHADOW:
+	{
 		bool i;
 
 		//Special message when trying to use strip on FCP [Jobbie]
@@ -9176,7 +9222,8 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 					case SC_USE_SKILL_SP_SHA:	case SC_SP_SHA:
 					// 4th Jobs
 					case SC_SERVANTWEAPON:	case SC_SERVANT_SIGN:	case SC_GUARD_STANCE:
-					case SC_ATTACK_STANCE:  case SC_ABYSSFORCEWEAPON:
+					case SC_ATTACK_STANCE:  case SC_PROTECTSHADOWEQUIP: case SC_SHADOW_STRIP:
+					case SC_ABYSSFORCEWEAPON:
 #ifdef RENEWAL
 					case SC_EXTREMITYFIST2:
 #endif
@@ -10716,7 +10763,8 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 					case SC_SPORE_EXPLOSION:
 					// 4th Jobs
 					case SC_SERVANTWEAPON:	case SC_SERVANT_SIGN:	case SC_GUARD_STANCE:
-					case SC_ATTACK_STANCE:  case SC_ABYSSFORCEWEAPON:
+					case SC_ATTACK_STANCE:  case SC_PROTECTSHADOWEQUIP: case SC_SHADOW_STRIP:
+					case SC_ABYSSFORCEWEAPON:
 #ifdef RENEWAL
 					case SC_EXTREMITYFIST2:
 #endif

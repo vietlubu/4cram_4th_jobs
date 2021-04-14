@@ -8830,6 +8830,8 @@ static signed short status_calc_res(struct block_list *bl, struct status_change 
 
 	if (sc->data[SC_D_MACHINE])
 		res += sc->data[SC_D_MACHINE]->val3;
+	//if (sc->data[SC_SHADOW_STRIP] && bl->type != BL_PC)
+	//	res -= res * sc->data[SC_SHADOW_STRIP]->val2 / 100;
 
 	return (short)cap_value(res, 0, SHRT_MAX);
 }
@@ -8845,6 +8847,9 @@ static signed short status_calc_mres(struct block_list *bl, struct status_change
 {
 	if (!sc || !sc->count)
 		return cap_value(mres, 0, SHRT_MAX);
+
+	//if (sc->data[SC_SHADOW_STRIP] && bl->type != BL_PC)
+	//	mres -= mres * sc->data[SC_SHADOW_STRIP]->val2 / 100;
 
 	return (short)cap_value(mres, 0, SHRT_MAX);
 }
@@ -10508,6 +10513,46 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 		}
 		if (tick == 1) return 1; // Minimal duration: Only strip without causing the SC
 	break;
+	case SC_SHADOW_STRIP:
+		if (sd && !(flag&SCSTART_LOADED)) {
+			short i;
+			opt_flag = 0;
+			if (sd->bonus.unstripable_equip&EQP_SHADOW_GEAR)
+				return 0;
+			i = sd->equip_index[EQI_SHADOW_ARMOR];
+			if (i >= 0 && sd->inventory_data[i]) {
+				opt_flag |= 1;
+				pc_unequipitem(sd, i, 3);
+			}
+			i = sd->equip_index[EQI_SHADOW_WEAPON];
+			if (i >= 0 && sd->inventory_data[i]) {
+				opt_flag |= 2;
+				pc_unequipitem(sd, i, 3);
+			}
+			i = sd->equip_index[EQI_SHADOW_SHIELD];
+			if (i >= 0 && sd->inventory_data[i]) {
+				opt_flag |= 4;
+				pc_unequipitem(sd, i, 3);
+			}
+			i = sd->equip_index[EQI_SHADOW_SHOES];
+			if (i >= 0 && sd->inventory_data[i]) {
+				opt_flag |= 8;
+				pc_unequipitem(sd, i, 3);
+			}
+			i = sd->equip_index[EQI_SHADOW_ACC_R];
+			if (i >= 0 && sd->inventory_data[i]) {
+				opt_flag |= 16;
+				pc_unequipitem(sd, i, 3);
+			}
+			i = sd->equip_index[EQI_SHADOW_ACC_L];
+			if (i >= 0 && sd->inventory_data[i]) {
+				opt_flag |= 32;
+				pc_unequipitem(sd, i, 3);
+			}
+			if (!opt_flag) return 0;
+		}
+		if (tick == 1) return 1;
+		break;
 	case SC_MERC_FLEEUP:
 	case SC_MERC_ATKUP:
 	case SC_MERC_HPUP:
@@ -10705,6 +10750,7 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			case SC_BITESCAR:
 			case SC_SP_SHA:
 			case SC_FRESHSHRIMP:
+			case SC_SHADOW_STRIP:
 				return 0;
 		}
 	}
@@ -13316,6 +13362,11 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 		case SC_D_MACHINE:
 			val2 = 200 + 50 * val1;// DEF Increase
 			val3 = 20 * val1;// Res Increase
+			break;
+		case SC_SHADOW_STRIP:
+			// Disabled until monsters have Res/MRes support.
+			//if (!sd)// Res/MRes on mobs only.
+			//	val2 = 25;// Need official reduction amount.
 			break;
 		case SC_ABYSSFORCEWEAPON:
 			if (sd)
@@ -16362,6 +16413,7 @@ void status_change_clear_buffs(struct block_list* bl, uint8 type)
 			case SC_CP_SHIELD:
 			case SC_CP_ARMOR:
 			case SC_CP_HELM:
+			case SC_PROTECTSHADOWEQUIP:
 				if(!(type&SCCB_CHEM_PROTECT))
 					continue;
 				break;
@@ -16403,6 +16455,7 @@ void status_change_clear_buffs(struct block_list* bl, uint8 type)
 			case SC_MAGNETICFIELD:
 			case SC_NETHERWORLD:
 			case SC_CREATINGSTAR:
+			case SC_SHADOW_STRIP:
 				if (!(type&SCCB_DEBUFFS))
 					continue;
 				break;

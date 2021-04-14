@@ -211,14 +211,14 @@
 5311,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	ABC_DAGGER_AND_BOW_M,Dagger And Bow Mastery
 5312,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	ABC_MAGIC_SWORD_M,Magic Sword Mastery
 5313,1,6,1,0,0x1,0,5,1,yes,0,0,0,none,0,0,0,	ABC_STRIP_SHADOW,Strip Shadow// Is the range really 3? I think it should be 1.
-5314,0,6,4,-1,0x2,2,5,1,yes,0,0,0,weapon,0,0,0,	ABC_ABYSS_DAGGER,Abyss Dagger
+5314,0,6,4,-1,0x2,2,5,1,yes,0,0,0,weapon,0,0,0,	ABC_ABYSS_DAGGER,Abyss Dagger// ^--Also Res/MRes part on mobs disabled until mobs support it.
 5315,7,6,1,-1,0,0,5,1,yes,0,0,0,weapon,0,0,0,	ABC_UNLUCKY_RUSH,Unlucky Rush
 5316,9,6,1,-1,0x2,1:1:2:2:3,5,1,yes,0,0,0,weapon,0,0,0,	ABC_CHAIN_REACTION_SHOT,Chain Reaction Shot
 5317,0,6,4,0,0x1,0,5,1,yes,0,0,0,none,0,0,0,	ABC_FROM_THE_ABYSS,From The Abyss
 5318,0,6,4,0,0x1,0,10,1,yes,0,0,0,none,0,0,0,	ABC_ABYSS_SLAYER,Abyss Slayer
 5319,9,6,2,0,0,0,10,1,yes,0,0,0,magic,0,0,0,	ABC_ABYSS_STRIKE,Abyss Strike
-5320,2,8,1,-1,0x2,1:1:1:1:1:2:2:2:2:2,10,-5,yes,0,0,0,weapon,0,0,2,	ABC_DEFT_STAB,Deft Stab// Dash skill? Is it really a 2 cell range?
-5321,9,8,2,0,0,0,5,1,yes,0,0,0,magic,0,0,4,	ABC_ABYSS_SQUARE,Abyss Square// Splash needed to check for caster?
+5320,2,8,1,-1,0x2,1:1:1:1:1:2:2:2:2:2,10,-5,yes,0,0,0,weapon,0,0,2,	ABC_DEFT_STAB,Deft Stab// Dash skill??? Is it really a 2 cell range?
+5321,9,8,2,0,0,0,5,1,yes,0,0,0,magic,0,0,4,	ABC_ABYSS_SQUARE,Abyss Square// Splash needed to check for caster? Code in double hit later.
 5322,9,8,1,-1,0x100,0,10,-10,yes,0,0,0,weapon,0,0,2,	ABC_FRENZY_SHOT,Frenzy Shot
 
 // Windhawk

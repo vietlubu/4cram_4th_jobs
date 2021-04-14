@@ -8792,6 +8792,30 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 				}
 			}
 		}
+		// It has a success chance of triggering even tho the description says nothing about it.
+		// Need to find out what the official success chance is. [Rytech]
+		if (sc && sc->data[SC_ABYSSFORCEWEAPON] && rnd() % 100 < 20)
+		{
+			uint16 skill_id = ABC_ABYSS_SQUARE;
+			uint16 skill_lv = pc_checkskill(sd, ABC_ABYSS_SQUARE);
+			struct unit_data *ud = unit_bl2ud(src);
+
+			sd->state.autocast = 1;
+			skill_castend_pos2(src, target->x, target->y, skill_id, skill_lv, tick, flag);
+			sd->state.autocast = 0;
+
+			if (ud)
+			{
+				int autospell_tick = skill_delayfix(src, skill_id, skill_lv);
+
+				if (DIFF_TICK(ud->canact_tick, tick + autospell_tick) < 0)
+				{
+					ud->canact_tick = i64max(tick + autospell_tick, ud->canact_tick);
+					if (battle_config.display_status_timers && sd)
+						clif_status_change(src, EFST_POSTDELAY, 1, autospell_tick, 0, 0, 0);
+				}
+			}
+		}
 		if (wd.flag & BF_WEAPON && src != target && damage > 0) {
 			if (battle_config.left_cardfix_to_right)
 				battle_drain(sd, target, wd.damage, wd.damage, tstatus->race, tstatus->class_);
