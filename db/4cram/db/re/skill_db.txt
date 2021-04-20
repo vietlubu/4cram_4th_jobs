@@ -123,23 +123,23 @@
 5237,0,6,4,1,0x2,2:2:3:3:4,5,1,yes,0,0,0,magic,0,0,4,	AG_FROZEN_SLASH,Frozen Slash
 
 // Inquisitor
-5238,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_POWERFUL_FAITH,Powerful Faith
-5239,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_FIRM_FAITH,Firm Faith
+5238,0,6,4,0,0x1,0,5,1,yes,0,0,0,none,0,0,0,	IQ_POWERFUL_FAITH,Powerful Faith
+5239,0,6,4,0,0x1,0,5,1,yes,0,0,0,none,0,0,0,	IQ_FIRM_FAITH,Firm Faith
 5240,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	IQ_WILL_OF_FAITH,Will Of Faith
-5241,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_OLEUM_SANCTUM,Oleum Sanctum
-5242,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_SINCERE_FAITH,Sincere Faith
-5243,0,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,	IQ_MASSIVE_F_BLASTER,Massive Flame Blaster
-5244,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_EXPOSION_BLASTER,Exposion Blaster
-5245,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_FIRST_BRAND,First Brand
-5246,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_FIRST_FAITH_POWER,First Faith Power
-5247,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_JUDGE,Judge
-5248,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_SECOND_FLAME,Second Flame
-5249,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_SECOND_FAITH,Second Faith
-5250,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_SECOND_JUDGEMENT,Second Judgement
-5251,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_THIRD_PUNISH,Third Punish
-5252,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_THIRD_FLAME_BOMB,Third Flame Bomb
-5253,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_THIRD_CONSECRATION,Third Consecration
-5254,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	IQ_THIRD_EXOR_FLAME,Third Exor Flame
+5241,9,6,4,-1,0x2,1:1:2:2:3,5,1,yes,0,0,0,weapon,0,0,0,	IQ_OLEUM_SANCTUM,Oleum Sanctum
+5242,0,6,4,0,0x1,0,5,1,yes,0,0,0,none,0,0,0,	IQ_SINCERE_FAITH,Sincere Faith
+5243,9,6,4,-1,0x2,4,10,1,yes,0,0,0,weapon,0,0,0,	IQ_MASSIVE_F_BLASTER,Massive Flame Blaster// Need official splash size.
+5244,9,6,4,-1,0x2,2:2:3:3:4,5,1,yes,0,0,0,weapon,0,0,5,	IQ_EXPOSION_BLASTER,Exposion Blaster
+5245,2,6,1,-1,0x2,1:1:2:2:3,5,1,yes,0,0,0,weapon,0,0,0,	IQ_FIRST_BRAND,First Brand
+5246,0,6,4,0,0x1,0,5,1,yes,0,0,0,none,0,0,0,	IQ_FIRST_FAITH_POWER,First Faith Power
+5247,0,6,4,0,0x1,0,5,1,yes,0,0,0,none,0,0,0,	IQ_JUDGE,Judge
+5248,3,6,1,-1,0x2,1:1:2:2:3,5,1,yes,0,0,0,weapon,0,0,3,	IQ_SECOND_FLAME,Second Flame
+5249,3,8,1,-1,0x2,1:1:2:2:3,5,-2,yes,0,0,0,weapon,0,0,1,	IQ_SECOND_FAITH,Second Faith
+5250,3,8,1,-1,0x2,1:1:2:2:3,5,-3,yes,0,0,0,weapon,0,0,2,	IQ_SECOND_JUDGEMENT,Second Judgement
+5251,3,8,1,-1,0x2,1:1:2:2:3,5,-2,yes,0,0,0,weapon,0,0,0,	IQ_THIRD_PUNISH,Third Punish
+5252,3,8,1,-1,0x2,1:1:2:2:3,5,1,yes,0,0,0,weapon,0,0,0,	IQ_THIRD_FLAME_BOMB,Third Flame Bomb
+5253,3,8,1,-1,0x2,1:1:2:2:3,5,-3,yes,0,0,0,weapon,0,0,0,	IQ_THIRD_CONSECRATION,Third Consecration
+5254,0,6,4,0,0x1,0,5,1,yes,0,0,0,none,0,0,0,	IQ_THIRD_EXOR_FLAME,Third Exor Flame
 
 // Imperial Guard
 5255,0,6,4,0,0x1,0,5,1,yes,0,0,0,none,0,0,0,	IG_GUARD_STANCE,Guard Stance

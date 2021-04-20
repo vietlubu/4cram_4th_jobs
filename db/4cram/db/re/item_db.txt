@@ -5,6 +5,8 @@
 //
 // 4CrAM Items
 //=============================================================
+523,Holy_Water,Holy Water,0,20,,30,,,,,0xFFFFFFFF,63,2,,,,,,{ sc_end SC_CURSE; },{},{}
+
 7940,Special_Alloy_Trap,Special Alloy Trap,3,300,,2,,,,,,,,,,,,,{},{},{}
 
 // Homunculus Supplement - Increases homunculus intimacy

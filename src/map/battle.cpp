@@ -1506,6 +1506,8 @@ int64 battle_calc_damage(struct block_list *src,struct block_list *bl,struct Dam
 			damage <<= 1;
 		if (sc->data[SC_DARKCROW] && (flag&(BF_SHORT|BF_MAGIC)) == BF_SHORT)
 			damage += damage * sc->data[SC_DARKCROW]->val2 / 100;
+		if (sc->data[SC_HOLY_OIL] && (flag&(BF_LONG|BF_WEAPON)) == (BF_LONG|BF_WEAPON))
+			damage += damage * 50 / 100;// Need official adjustment. [Rytech]
 
 		// Damage reductions
 		// Assumptio increases DEF on RE mode, otherwise gives a reduction on the final damage. [Igniz]
@@ -5024,6 +5026,50 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			if (sc && sc->data[SC_GIANTGROWTH])
 				skillratio *= 2;
 			break;
+		case IQ_OLEUM_SANCTUM:
+			skillratio += -100 + 400 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			break;
+		case IQ_MASSIVE_F_BLASTER:
+			skillratio += -100 + 800 * skill_lv + 10 * sstatus->pow;
+			if (tstatus->race == RC_BRUTE || tstatus->race == RC_DEMON)
+				skillratio += 300 * skill_lv;
+			RE_LVL_DMOD(100);
+			break;
+		case IQ_EXPOSION_BLASTER:
+			skillratio += -100 + 450 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			if (tsc && tsc->data[SC_HOLY_OIL])
+				skillratio += skillratio * 50 / 100;
+			break;
+		case IQ_FIRST_BRAND:
+			skillratio += -100 + 450 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			break;
+		case IQ_SECOND_FLAME:
+			skillratio += -100 + 550 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			break;
+		case IQ_SECOND_FAITH:
+			skillratio += -100 + 500 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			break;
+		case IQ_SECOND_JUDGEMENT:
+			skillratio += -100 + 500 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			break;
+		case IQ_THIRD_PUNISH:
+			skillratio += -100 + 550 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			break;
+		case IQ_THIRD_FLAME_BOMB:
+			skillratio += -100 + 650 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			break;
+		case IQ_THIRD_CONSECRATION:
+			skillratio += -100 + 650 * skill_lv + 5 * sstatus->pow;
+			RE_LVL_DMOD(100);
+			break;
 		case IG_GRAND_JUDGEMENT:
 			skillratio += -100 + 750 * skill_lv + 10 * sstatus->pow;
 			if (tstatus->race == RC_PLANT || tstatus->race == RC_INSECT)
@@ -6108,6 +6154,11 @@ static struct Damage initialize_weapon_data(struct block_list *src, struct block
 					if ((sd->servantball + sd->servantball_old) < wd.div_)
 						wd.div_ = sd->servantball + sd->servantball_old;
 				}
+				break;
+			case IQ_THIRD_FLAME_BOMB:
+				wd.div_ += wd.miscflag;
+				if (wd.div_ > 3)// Number of hits doesn't go above 3.
+					wd.div_ = 3;
 				break;
 			case IG_OVERSLASH:
 				wd.div_ += wd.miscflag;

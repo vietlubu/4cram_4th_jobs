@@ -3,6 +3,20 @@ Header:
   Version: 1
 
 Body:
+  - Id: 523
+    AegisName: Holy_Water
+    Name: Holy Water
+    Type: Healing
+    Buy: 20
+    Weight: 30
+    Classes:
+      All_Third: true
+      Normal: true
+      Upper: true
+      Baby: true
+      All_Baby: true
+    Script: |
+      sc_end SC_CURSE;
   - Id: 7940
     AegisName: Special_Alloy_Trap
     Name: Special Alloy Trap

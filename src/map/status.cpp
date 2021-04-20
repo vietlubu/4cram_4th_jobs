@@ -1190,6 +1190,20 @@ void initChangeTables(void)
 	set_sc_with_vfx( EM_CONFLAGRATION   , SC_HANDICAPSTATE_CONFLAGRATION  , EFST_HANDICAPSTATE_CONFLAGRATION  , SCB_NONE );
 	set_sc_with_vfx( EM_TERRA_DRIVE     , SC_HANDICAPSTATE_CRYSTALLIZATION, EFST_HANDICAPSTATE_CRYSTALLIZATION, SCB_NONE );
 
+	// Inquisitor
+	set_sc(          IQ_POWERFUL_FAITH   , SC_POWERFUL_FAITH   , EFST_POWERFUL_FAITH   , SCB_WATK|SCB_PATK);
+	set_sc(          IQ_FIRM_FAITH       , SC_FIRM_FAITH       , EFST_FIRM_FAITH       , SCB_MAXHP|SCB_RES);
+	set_sc_with_vfx( IQ_OLEUM_SANCTUM    , SC_HOLY_OIL         , EFST_HOLY_OIL         , SCB_NONE);
+	set_sc(          IQ_SINCERE_FAITH    , SC_SINCERE_FAITH    , EFST_SINCERE_FAITH    , SCB_ALL);
+	set_sc(          IQ_MASSIVE_F_BLASTER, SC_MASSIVE_F_BLASTER, EFST_MASSIVE_F_BLASTER, SCB_NONE);
+	set_sc_with_vfx( IQ_FIRST_BRAND      , SC_FIRST_BRAND      , EFST_FIRST_BRAND      , SCB_NONE);
+	set_sc_with_vfx( IQ_FIRST_FAITH_POWER, SC_FIRST_FAITH_POWER, EFST_FIRST_FAITH_POWER, SCB_NONE);
+	set_sc_with_vfx( IQ_JUDGE            , SC_SECOND_JUDGE     , EFST_SECOND_JUDGE     , SCB_NONE);
+	set_sc_with_vfx( IQ_SECOND_FLAME     , SC_SECOND_BRAND     , EFST_SECOND_BRAND     , SCB_NONE);
+	set_sc_with_vfx( IQ_SECOND_FAITH     , SC_SECOND_BRAND     , EFST_SECOND_BRAND     , SCB_NONE);
+	set_sc_with_vfx( IQ_SECOND_JUDGEMENT , SC_SECOND_BRAND     , EFST_SECOND_BRAND     , SCB_NONE);
+	set_sc_with_vfx( IQ_THIRD_EXOR_FLAME , SC_THIRD_EXOR_FLAME , EFST_THIRD_EXOR_FLAME , SCB_NONE);
+
 	// Biolo
 	set_sc(          BO_ADVANCE_PROTECTION, SC_PROTECTSHADOWEQUIP  , EFST_PROTECTSHADOWEQUIP, SCB_NONE );
 	set_sc(          BO_WOODENWARRIOR     , SC_BIONIC_WOODENWARRIOR, EFST_BLANK             , SCB_NONE );
@@ -1809,6 +1823,12 @@ void initChangeTables(void)
 	StatusDisplayType[SC_E_SLASH_COUNT] = BL_PC;
 	StatusDisplayType[SC_HOLY_S] = BL_PC;
 	StatusDisplayType[SC_SPEAR_SCAR] = BL_PC;
+	StatusDisplayType[SC_HOLY_OIL] = BL_PC;
+	StatusDisplayType[SC_FIRST_BRAND] = BL_PC;
+	StatusDisplayType[SC_SECOND_BRAND] = BL_PC;
+	StatusDisplayType[SC_FIRST_FAITH_POWER] = BL_PC;
+	StatusDisplayType[SC_SECOND_JUDGE] = BL_PC;
+	StatusDisplayType[SC_THIRD_EXOR_FLAME] = BL_PC;
 	StatusDisplayType[SC_ABYSS_SLAYER] = BL_PC;
 
 	/* StatusChangeState (SCS_) NOMOVE */
@@ -3828,6 +3848,8 @@ static int status_get_hpbonus(struct block_list *bl, enum e_status_bonus type) {
 				bonus += sc->data[SC_LUNARSTANCE]->val2;
 			if (sc->data[SC_LUXANIMA])
 				bonus += sc->data[SC_LUXANIMA]->val3;
+			if (sc->data[SC_FIRM_FAITH])
+				bonus += sc->data[SC_FIRM_FAITH]->val2;
 
 			//Decreasing
 			if (sc->data[SC_VENOMBLEED] && sc->data[SC_VENOMBLEED]->val3 == 1)
@@ -5146,6 +5168,18 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 		sd->indexed_bonus.subsize[SZ_MEDIUM] += medium_def[skill-1];
 		sd->indexed_bonus.subsize[SZ_BIG] += large_def[skill-1];
 	}
+	if ((skill = pc_checkskill(sd, IQ_WILL_OF_FAITH)) > 0 && sd->status.weapon == W_KNUCKLE)
+	{
+		short race_atk[10] = { 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+		short race_def[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+		sd->right_weapon.addrace[RC_UNDEAD] += race_atk[skill-1];
+		sd->left_weapon.addrace[RC_UNDEAD] += race_atk[skill-1];
+		sd->right_weapon.addrace[RC_DEMON] += race_atk[skill - 1];
+		sd->left_weapon.addrace[RC_DEMON] += race_atk[skill - 1];
+		sd->indexed_bonus.subrace[RC_UNDEAD] += race_def[skill - 1];
+		sd->indexed_bonus.subrace[RC_DEMON] += race_def[skill-1];
+	}
 	if ((skill = pc_checkskill(sd, CD_MACE_BOOK_M)) > 0 && (sd->status.weapon == W_MACE || sd->status.weapon == W_2HMACE || sd->status.weapon == W_BOOK))
 	{
 		short small_atk[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
@@ -5353,6 +5387,8 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 			sd->indexed_bonus.subele[ELE_FIRE] -= 100;
 		if (sc->data[SC_CLIMAX_CRYIMP])
 			sd->indexed_bonus.subele[ELE_WATER] += 30;
+		if (sc->data[SC_SINCERE_FAITH])
+			sd->bonus.perfect_hit += sc->data[SC_SINCERE_FAITH]->val3;
 		if (sc->data[SC_HOLY_S])
 		{
 			sd->indexed_bonus.subele[ELE_DARK] += sc->data[SC_HOLY_S]->val2;
@@ -7544,6 +7580,8 @@ static unsigned short status_calc_watk(struct block_list *bl, struct status_chan
 		watk += watk * sc->data[SC_SUNSTANCE]->val2 / 100;
 	if (sc->data[SC_SOULFALCON])
 		watk += sc->data[SC_SOULFALCON]->val2;
+	if (sc->data[SC_POWERFUL_FAITH])
+		watk += sc->data[SC_POWERFUL_FAITH]->val2;
 	if (sc->data[SC_GUARD_STANCE])
 		watk -= sc->data[SC_GUARD_STANCE]->val3;
 	if (sc->data[SC_ATTACK_STANCE])
@@ -8591,6 +8629,8 @@ static short status_calc_fix_aspd(struct block_list *bl, struct status_change *s
 		aspd -= sc->data[SC_HEAT_BARREL]->val1 * 10;
 	if (sc->data[SC_EP16_2_BUFF_SS])
 		aspd -= 100; // +10 ASPD
+	if (sc->data[SC_SINCERE_FAITH])
+		aspd -= 10 * sc->data[SC_SINCERE_FAITH]->val2;
 
 	return cap_value(aspd, 0, 2000); // Will be recap for proper bl anyway
 }
@@ -8786,6 +8826,8 @@ static signed short status_calc_patk(struct block_list *bl, struct status_change
 	if (!sc || !sc->count)
 		return cap_value(patk, 0, SHRT_MAX);
 
+	if (sc->data[SC_POWERFUL_FAITH])
+		patk += sc->data[SC_POWERFUL_FAITH]->val3;
 	if (sc->data[SC_COMPETENTIA])
 		patk += sc->data[SC_COMPETENTIA]->val2;
 	if (sc->data[SC_ABYSS_SLAYER])
@@ -8828,6 +8870,8 @@ static signed short status_calc_res(struct block_list *bl, struct status_change 
 	if (!sc || !sc->count)
 		return cap_value(res, 0, SHRT_MAX);
 
+	if (sc->data[SC_FIRM_FAITH])
+		res += sc->data[SC_FIRM_FAITH]->val3;
 	if (sc->data[SC_D_MACHINE])
 		res += sc->data[SC_D_MACHINE]->val3;
 	//if (sc->data[SC_SHADOW_STRIP] && bl->type != BL_PC)
@@ -11151,6 +11195,25 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 		status_change_end(bl,SC_FOOD_DEX_CASH,INVALID_TIMER);
 		status_change_end(bl,SC_FOOD_LUK_CASH,INVALID_TIMER);
 		break;
+	case SC_POWERFUL_FAITH:
+	case SC_FIRM_FAITH:
+	case SC_SINCERE_FAITH:
+		status_change_end(bl, SC_POWERFUL_FAITH, INVALID_TIMER);
+		status_change_end(bl, SC_FIRM_FAITH, INVALID_TIMER);
+		status_change_end(bl, SC_SINCERE_FAITH, INVALID_TIMER);
+		break;
+	case SC_FIRST_FAITH_POWER:
+	case SC_SECOND_JUDGE:
+	case SC_THIRD_EXOR_FLAME:
+		status_change_end(bl, SC_FIRST_FAITH_POWER, INVALID_TIMER);
+		status_change_end(bl, SC_SECOND_JUDGE, INVALID_TIMER);
+		status_change_end(bl, SC_THIRD_EXOR_FLAME, INVALID_TIMER);
+		break;
+	case SC_FIRST_BRAND:
+	case SC_SECOND_BRAND:
+		status_change_end(bl, SC_FIRST_BRAND, INVALID_TIMER);
+		status_change_end(bl, SC_SECOND_BRAND, INVALID_TIMER);
+		break;
 	case SC_GUARD_STANCE:
 		status_change_end(bl, SC_ATTACK_STANCE, INVALID_TIMER);
 		break;
@@ -13304,6 +13367,18 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			if (tick_time < 500)
 				tick_time = 500;// Avoid being brought down to 0.
 			val4 = tick - tick_time;// Remaining Time
+			break;
+		case SC_POWERFUL_FAITH:
+			val2 = 5 + 5 * val1;// ATK Increase
+			val3 = 5 + 2 * val1;// PAtk Increase
+			break;
+		case SC_FIRM_FAITH:
+			val2 = 2 * val1;// MaxHP Increase
+			val3 = 8 * val1;// Res Increase
+			break;
+		case SC_SINCERE_FAITH:
+			val2 = (1 + val1) / 2;// ASPD Increase
+			val3 = 4 * val1;// Perfect Hit Increase
 			break;
 		case SC_GUARD_STANCE:
 			val2 = 50 + 50 * val1;// DEF Increase

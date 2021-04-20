@@ -2197,6 +2197,22 @@ int skill_additional_effect(struct block_list* src, struct block_list *bl, uint1
 	case AG_CRYSTAL_IMPACT:// Targets hit are dealt aftershock damage.
 		skill_castend_damage_id(src, bl, AG_CRYSTAL_IMPACT_ATK, skill_lv, tick, SD_LEVEL);
 		break;
+	case IQ_OLEUM_SANCTUM:
+		sc_start(src, bl, SC_HOLY_OIL, 100, skill_lv, skill_get_time(skill_id, skill_lv));
+		break;
+	case IQ_FIRST_BRAND:
+		sc_start(src, bl, SC_FIRST_BRAND, 100, skill_lv, skill_get_time(skill_id, skill_lv));
+		break;
+	case IQ_SECOND_FLAME:
+	case IQ_SECOND_FAITH:
+	case IQ_SECOND_JUDGEMENT:
+		sc_start(src, bl, SC_SECOND_BRAND, 100, skill_lv, skill_get_time(skill_id, skill_lv));
+		break;
+	case IQ_THIRD_PUNISH:
+	case IQ_THIRD_FLAME_BOMB:
+	case IQ_THIRD_CONSECRATION:
+		status_change_end(bl, SC_SECOND_BRAND, INVALID_TIMER);
+		break;
 	case CD_ARBITRIUM:// Target is Deep Silenced by chance and is then dealt a 2nd splash hit.
 		sc_start(src, bl, SC_HANDICAPSTATE_DEEPSILENCE, 20 + 5 * skill_lv, skill_lv, skill_get_time(skill_id, skill_lv));
 		skill_castend_damage_id(src, bl, CD_ARBITRIUM_ATK, skill_lv, tick, SD_LEVEL);
@@ -5487,6 +5503,16 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case AG_CRYSTAL_IMPACT_ATK:
 	case AG_ROCK_DOWN:
 	case AG_FROZEN_SLASH:
+	case IQ_OLEUM_SANCTUM:
+	case IQ_MASSIVE_F_BLASTER:
+	case IQ_EXPOSION_BLASTER:
+	case IQ_FIRST_BRAND:
+	case IQ_SECOND_FLAME:
+	case IQ_SECOND_FAITH:
+	case IQ_SECOND_JUDGEMENT:
+	case IQ_THIRD_PUNISH:
+	case IQ_THIRD_FLAME_BOMB:
+	case IQ_THIRD_CONSECRATION:
 	case IG_OVERSLASH:
 	case CD_ARBITRIUM_ATK:
 	case CD_PETITIO:
@@ -5526,10 +5552,6 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 			// Servant Weapon - Demol only hits if the target is marked with a sign by the attacking caster.
 			if (skill_id == DK_SERVANT_W_DEMOL && !(tsc && tsc->data[SC_SERVANT_SIGN] && tsc->data[SC_SERVANT_SIGN]->val1 == src->id))
 				break;
-
-			// Over Slash - Appears to deal a number of hits equal to 2 + Number of Enemys In AoE. Max of 5 hits.
-			if (skill_id == IG_OVERSLASH)
-				sflag |= skill_area_temp[0];
 
 			// Deft Stab - Make sure the flag of 2 is passed on when the skill is double casted.
 			if (skill_id == ABC_DEFT_STAB && flag&2)
@@ -5613,11 +5635,36 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 						splash_size = 2;// Gives the aftershock hit a 5x5 splash AoE.
 					break;
 				case AG_ROCK_DOWN:
+				case IQ_FIRST_BRAND:
+				case IQ_SECOND_FLAME:
+				case IQ_SECOND_FAITH:
+				case IQ_SECOND_JUDGEMENT:
 				case CD_PETITIO:
 				case CD_FRAMEN:
 				case ABC_DEFT_STAB:
 				case ABC_CHAIN_REACTION_SHOT:
 					clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
+					break;
+				case IQ_THIRD_PUNISH:
+					clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
+					if (sd)
+					{
+						short i;
+						short limit = 5;
+						if (sc && sc->data[SC_RAISINGDRAGON])
+							limit += sc->data[SC_RAISINGDRAGON]->val1;
+						for (i = 0; i < limit; i++)
+							pc_addspiritball(sd, skill_get_time(skill_id, skill_lv), limit);
+					}
+					break;
+				case IQ_THIRD_FLAME_BOMB:
+					clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
+					if (sd && sd->spiritball / 5 > 1)
+						skill_area_temp[0] = sd->spiritball / 5 - 1;
+					break;
+				case IQ_THIRD_CONSECRATION:
+					clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
+					status_heal(src, status_get_max_hp(src) * skill_lv / 100, status_get_max_sp(src) * skill_lv / 100, 0, 0);
 					break;
 				case IG_OVERSLASH:
 					clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
@@ -7566,6 +7613,12 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case DK_CHARGINGPIERCE:
 	case DK_VIGOR:
 	case AG_CLIMAX:
+	case IQ_POWERFUL_FAITH:
+	case IQ_FIRM_FAITH:
+	case IQ_SINCERE_FAITH:
+	case IQ_FIRST_FAITH_POWER:
+	case IQ_JUDGE:
+	case IQ_THIRD_EXOR_FLAME:
 	case IG_REBOUND_SHIELD:
 	case IG_HOLY_SHIELD:
 	case CD_ARGUTUS_VITA:
@@ -8173,6 +8226,9 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case SJ_FALLINGSTAR_ATK:
 	case DK_SERVANT_W_DEMOL:
 	case AG_FROZEN_SLASH:
+	case IQ_OLEUM_SANCTUM:
+	case IQ_MASSIVE_F_BLASTER:
+	case IQ_EXPOSION_BLASTER:
 	case SHC_IMPACT_CRATER:
 	case MT_AXE_STOMP:
 	case ABC_ABYSS_DAGGER:
@@ -8199,7 +8255,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 			}
 			status_change_end(src, SC_DIMENSION, INVALID_TIMER);
 		}
-		if (skill_id == SHC_IMPACT_CRATER || skill_id == MT_AXE_STOMP || skill_id == ABC_ABYSS_DAGGER)
+		if (skill_id == IQ_MASSIVE_F_BLASTER || skill_id == SHC_IMPACT_CRATER || skill_id == MT_AXE_STOMP || skill_id == ABC_ABYSS_DAGGER)
 			sc_start(src, bl, type, 100, skill_lv, skill_get_time(skill_id, skill_lv));
 
 		skill_area_temp[1] = 0;
@@ -12576,6 +12632,18 @@ static int8 skill_castend_id_check(struct block_list *src, struct block_list *ta
 				if (skill_get_inf2(su->group->skill_id, INF2_ISTRAP))
 					return USESKILL_FAIL_MAX;
 			}
+			break;
+		case IQ_SECOND_FLAME:
+		case IQ_SECOND_FAITH:
+		case IQ_SECOND_JUDGEMENT:
+			if (!tsc || !(tsc->data[SC_FIRST_BRAND] || tsc->data[SC_SECOND_BRAND]))
+				return USESKILL_FAIL_LEVEL;
+			break;
+		case IQ_THIRD_PUNISH:
+		case IQ_THIRD_FLAME_BOMB:
+		case IQ_THIRD_CONSECRATION:
+			if (!tsc || !tsc->data[SC_SECOND_BRAND])
+				return USESKILL_FAIL_LEVEL;
 			break;
 	}
 
@@ -17356,6 +17424,21 @@ bool skill_check_condition_castbegin(struct map_session_data* sd, uint16 skill_i
 			else
 				sd->servantball_old = require.spiritball;
 			break;
+		case IQ_SECOND_FAITH:
+		case IQ_THIRD_PUNISH:
+			if (!(sc && (sc->data[SC_FIRST_FAITH_POWER] || sc->data[SC_SECOND_JUDGE] || sc->data[SC_THIRD_EXOR_FLAME])))
+				return false;
+			break;
+		case IQ_SECOND_JUDGEMENT:
+		case IQ_THIRD_CONSECRATION:
+			if (!(sc && (sc->data[SC_SECOND_JUDGE] || sc->data[SC_THIRD_EXOR_FLAME])))
+				return false;
+			break;
+		case IQ_SECOND_FLAME:
+		case IQ_THIRD_FLAME_BOMB:
+			if (!(sc && sc->data[SC_THIRD_EXOR_FLAME]))
+				return false;
+			break;
 	}
 
 	/* check state required */
@@ -18290,9 +18373,26 @@ struct s_skill_condition skill_get_requirement(struct map_session_data* sd, uint
 		case LG_RAGEBURST:
 			req.spiritball = sd->spiritball?sd->spiritball:1;
 			break;
+		case SR_FALLENEMPIRE:
+			if (sc && (sc->data[SC_FIRST_FAITH_POWER] || sc->data[SC_SECOND_JUDGE] || sc->data[SC_THIRD_EXOR_FLAME]))
+				req.spiritball = 0;
+			break;
+		case SR_TIGERCANNON:
+			if (sc && sc->data[SC_THIRD_EXOR_FLAME])
+				req.spiritball = 0;
+			break;
+		case SR_RAMPAGEBLASTER:
+		case SR_RIDEINLIGHTNING:
+			if (sc && sc->data[SC_MASSIVE_F_BLASTER])
+				req.spiritball = 0;
+			break;
 		case SR_GATEOFHELL:
 			if( sc && sc->data[SC_COMBO] && sc->data[SC_COMBO]->val1 == SR_FALLENEMPIRE )
 				req.sp -= req.sp * 10 / 100;
+			break;
+		case SR_FLASHCOMBO:
+			if (sc && (sc->data[SC_SECOND_JUDGE] || sc->data[SC_THIRD_EXOR_FLAME]))
+				req.spiritball = 0;
 			break;
 		case SO_SUMMON_AGNI:
 		case SO_SUMMON_AQUA:
