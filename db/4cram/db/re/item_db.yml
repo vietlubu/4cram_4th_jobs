@@ -23,6 +23,20 @@ Body:
     Type: Etc
     Buy: 300
     Weight: 2
+  - Id: 11513
+    AegisName: Protect_Neck_Candy
+    Name: Protect Neck Candy
+    Type: Healing
+    Buy: 200
+    Weight: 1
+    Classes:
+      All_Third: true
+      Normal: true
+      Upper: true
+      Baby: true
+      All_Baby: true
+    Script: |
+      itemheal rand(5,25),0;
   - Id: 100371
     AegisName: Homunculus_Supplement
     Name: Homunculus Supplement

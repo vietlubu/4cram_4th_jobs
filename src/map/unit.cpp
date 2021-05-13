@@ -1818,6 +1818,15 @@ int unit_skilluse_id2(struct block_list *src, int target_id, uint16 skill_id, ui
 					}
 				}
 				break;
+			case TR_RETROSPECTION:
+				// Prevent using the song skill if you no longer have the skill in your tree.
+				if (!sd->skill_id_song || pc_checkskill(sd, sd->skill_id_song) <= 0) {
+					clif_skill_fail(sd, skill_id, USESKILL_FAIL_LEVEL, 0);
+					return 0;
+				}
+
+				sd->skill_id_old = skill_id;
+				break;
 		}
 
 		if (!skill_check_condition_castbegin(sd, skill_id, skill_lv))

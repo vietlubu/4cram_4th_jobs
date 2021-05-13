@@ -148,7 +148,7 @@
 5258,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	IG_SHIELD_MASTERY,Shield Mastery
 5259,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	IG_SPEAR_SWORD_M,Spear And Sword Mastery
 5260,0,6,4,0,0x1,0,5,1,yes,0,0,0,none,0,0,0,	IG_ATTACK_STANCE,Attack Stance
-5261,0,6,4,0,0x1,1:1:2:2:3,5,1,yes,0,0,0,none,0,0,0,	IG_ULTIMATE_SACRIFICE,Ultimate Sacrifice
+5261,0,6,4,0,0x1,1:1:2:2:3,5,1,yes,0,0,0,none,0,0,0,	IG_ULTIMATE_SACRIFICE,Ultimate Sacrifice// Recheck animation.
 5262,0,6,4,0,0x1,0,5,1,yes,0,0,0,none,0,0,0,	IG_HOLY_SHIELD,Holy Shield
 5263,9,6,1,-1,0x2,3,10,1,yes,0,0,0,weapon,0,0,0,	IG_GRAND_JUDGEMENT,Grand Judgement
 5264,9,8,1,6,0,0,10,-10,yes,0,0,0,magic,0,0,0,	IG_JUDGEMENT_CROSS,Judgement Cross
@@ -187,12 +187,12 @@
 5293,0,6,4,0,0x1,0,5,1,yes,0,0,0,none,0,0,0,	SHC_ENCHANTING_SHADOW,Enchanting Shadow// How does the damage increase work?
 5294,9,6,1,-1,0x2,3,10,1,yes,0,0,0,weapon,0,0,0,	SHC_FATAL_SHADOW_CROW,Fatal Shadow Crow// Whats official splash size?
 
-// Meister
+// Meister - Make all skills work in mado.
 5295,0,8,4,-1,0x2,1:1:2:2:3,5,1,yes,0,0,0,weapon,0,0,2,	MT_AXE_STOMP,Axe Stomp
 5296,9,6,1,-1,0x2,1:1:1:1:2:2:2:2:3:3,10,1,yes,0,0,0,weapon,0,0,0,	MT_RUSH_QUAKE,Rush Quake
 5297,0,6,4,0,0x1,0,5,1,yes,0,0,0,none,0,0,0,	MT_M_MACHINE,Manufacture Machine
 5298,1,6,16,-1,0x2,1:1:2:2:3,5,1,yes,0,0x400,0,weapon,0,0,0,	MT_A_MACHINE,Attack Machine
-5299,1,6,16,0,0x1,0,5,1,yes,0,0x400,0,none,0,0,0,	MT_D_MACHINE,Defense Machine
+5299,1,6,16,0,0x1,0,5,1,yes,0,0x400,0,none,0,0,0,	MT_D_MACHINE,Defense Machine// Needs update for level gap limit.
 5300,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	MT_TWOAXEDEF,Two Hand Axe Def
 5301,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	MT_ABR_M,ABR Mastery
 5302,0,6,4,0,0x1,0,4,1,yes,0,0,1,none,0,0,20,	MT_SUMMON_ABR_BATTLE_WARIOR,ABR Battle Warior
@@ -251,23 +251,23 @@
 5347,0,6,4,0,0x1,0,1,1,yes,0,0,0,none,0,0,0,	BO_RESEARCHREPORT,Research Report
 5348,0,6,4,0,0x1,0,5,1,yes,0,0,1,none,0,0,0,	BO_HELLTREE,Hell Tree
 
-// Troubadour/Trouvere
-5349,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_STAGE_MANNER,Stage Manner
-5350,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	TR_RETROSPECTION,Retrospection
-5351,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	TR_MYSTIC_SYMPHONY,Mystic Symphony
-5352,0,0,0,0,0,0,1,0,yes,0,0,0,none,0,0,0,	TR_KVASIR_SONATA,Kvasir Sonata
-5353,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_ROSEBLOSSOM,Rose Blossom
-5354,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	TR_ROSEBLOSSOM_ATK,Rose Blossom Attack
-5355,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_RHYTHMSHOOTING,Rhythm Shooting
-5356,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_METALIC_FURY,Metalic Fury
-5357,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_SOUNDBLEND,Sound Blend
-5358,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_GEF_NOCTURN,Geffenia Nocturn
-5359,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_ROKI_CAPRICCIO,Roki Capriccio
-5360,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_AIN_RHAPSODY,Ain Rhapsody
-5361,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_MUSICAL_INTERLUDE,Musical Interlude
-5362,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_JAWAII_SERENADE,Jawaii Serenade
-5363,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_NIPELHEIM_REQUIEM,Nipelheim Requiem
-5364,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_PRON_MARCH,Pron March
+// Troubadour/Trouvere - Performance skills AoE size appears to be a typo in desc. Using what it might be for now.
+5349,0,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,	TR_STAGE_MANNER,Stage Manner// How does this affect song skills?
+5350,0,6,4,0,0x1,0,1,1,yes,0,0,0,none,0,0,0,	TR_RETROSPECTION,Retrospection
+5351,0,6,4,0,0x1,0,1,1,yes,0,0,0,none,0,0,0,	TR_MYSTIC_SYMPHONY,Mystic Symphony
+5352,0,6,4,0,0x1,0,1,1,yes,0,0,0,none,0,0,0,	TR_KVASIR_SONATA,Kvasir Sonata
+5353,9,8,1,-1,0,0,5,-2,yes,0,0,0,weapon,0,0,5,	TR_ROSEBLOSSOM,Rose Blossom
+5354,9,6,1,-1,0x2,1:1:2:2:3,5,1,no,0,0,0,weapon,0,0,0,	TR_ROSEBLOSSOM_ATK,Rose Blossom Attack
+5355,9,8,1,-1,0,0,5,3,yes,0,0,0,weapon,0,0,1:1:1:2:2,	TR_RHYTHMSHOOTING,Rhythm Shooting
+5356,9,8,1,-1,0x2,2:2:2:3:3,5,1,yes,0,0,0,magic,0,0,4:4:4:5:5,	TR_METALIC_FURY,Metalic Fury// Sound Blend status ends after hit?
+5357,9,6,1,-1,0x1,0,5,1,yes,0,0,0,magic,0,0,2:2:2:3:3,	TR_SOUNDBLEND,Sound Blend// Need video on updated behavior and cooldown.
+5358,0,6,4,0,0x3,7:8:9:10:11,5,1,yes,0,0,0,none,0,0,20,	TR_GEF_NOCTURN,Geffenia Nocturn
+5359,0,6,4,0,0x3,7:8:9:10:11,5,1,yes,0,0,0,none,0,0,20,	TR_ROKI_CAPRICCIO,Roki Capriccio
+5360,0,6,4,0,0x3,7:8:9:10:11,5,1,yes,0,0,0,none,0,0,20,	TR_AIN_RHAPSODY,Ain Rhapsody
+5361,0,6,4,0,0x3,7:8:9:10:11,5,1,yes,0,0,0,none,0,0,10,	TR_MUSICAL_INTERLUDE,Musical Interlude
+5362,0,6,4,0,0x3,7:8:9:10:11,5,1,yes,0,0,0,none,0,0,10,	TR_JAWAII_SERENADE,Jawaii Serenade
+5363,0,6,4,0,0x3,7:8:9:10:11,5,1,yes,0,0,0,none,0,0,20,	TR_NIPELHEIM_REQUIEM,Nipelheim Requiem
+5364,0,6,4,0,0x3,7:8:9:10:11,5,1,yes,0,0,0,none,0,0,10,	TR_PRON_MARCH,Pron March
 
 // Elemental Master
 5365,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	EM_MAGIC_BOOK_M,Magic Book Mastery

@@ -5173,9 +5173,9 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			break;
 		case WH_HAWKBOOMERANG:// Affected by trait stats??? CON for sure but the other one unknown. Likely POW. [Rytech]
 			skillratio += -100 + 500 * skill_lv + 10 * sstatus->pow + 10 * sstatus->con;
-			RE_LVL_DMOD(100);
 			if (tstatus->race == RC_BRUTE || tstatus->race == RC_FISH)
 				skillratio += 250 * skill_lv;
+			RE_LVL_DMOD(100);
 			break;
 		case WH_GALESTORM:
 			skillratio += -100 + 250 * skill_lv + 5 * sstatus->con;
@@ -5230,6 +5230,33 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 				//skillratio += 5 * sstatus->pow;
 				//RE_LVL_DMOD(100);
 			}
+			break;
+		case TR_ROSEBLOSSOM:
+		case TR_ROSEBLOSSOM_ATK:// Same damage formula? [Rytech]
+			skillratio += -100 + 500 * skill_lv + (sd ? pc_checkskill(sd, TR_STAGE_MANNER) : 5) * sstatus->con;
+			RE_LVL_DMOD(100);
+			if (sc && sc->data[SC_MYSTIC_SYMPHONY])
+			{
+				skillratio += skillratio * 40 / 100;
+
+				if (tstatus->race == RC_FISH || tstatus->race == RC_DEMIHUMAN)
+					skillratio += skillratio * 50 / 100;
+			}
+			if (tsc && tsc->data[SC_SOUNDBLEND])
+				skillratio += skillratio * 50 / 100;
+			break;
+		case TR_RHYTHMSHOOTING:
+			skillratio += -100 + 120 * skill_lv + (sd ? pc_checkskill(sd, TR_STAGE_MANNER) : 5) * sstatus->con;
+			RE_LVL_DMOD(100);
+			if (sc && sc->data[SC_MYSTIC_SYMPHONY])
+			{
+				skillratio += skillratio * 40 / 100;
+
+				if (tstatus->race == RC_FISH || tstatus->race == RC_DEMIHUMAN)
+					skillratio += skillratio * 50 / 100;
+			}
+			if (tsc && tsc->data[SC_SOUNDBLEND])
+				skillratio += skillratio * 50 / 100;
 			break;
 		case ABR_BATTLE_BUSTER:// Need official formula.
 		case ABR_DUAL_CANNON_FIRE:// Need official formula.
@@ -6694,6 +6721,11 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 			if (sc && sc->data[SC_CLIMAX] && sc->data[SC_CLIMAX]->val1 == 2)
 				ad.div_ = 2;
 			break;
+		case TR_METALIC_FURY:// Deals up to 5 additional hits. But what affects the number of hits? [Rytech]
+			ad.div_ += mflag;
+			if (ad.div_ > 5)// Number of hits doesn't go above 5.
+				ad.div_ = 5;
+			break;
 	}
 
 	//Set miscellaneous data that needs be filled
@@ -7091,11 +7123,15 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 						if (tsc && tsc->data[SC_SLEEP])
 							skillratio += 100; // !TODO: Confirm target sleeping bonus
 						RE_LVL_DMOD(100);
+						if (tsc && tsc->data[SC_SOUNDBLEND])
+							skillratio += skillratio * 50 / 100;
 						break;
 					case WM_REVERBERATION:
 						// MATK [{(Skill Level x 300) + 400} x Casters Base Level / 100] %
 						skillratio += -100 + 700 + 300 * skill_lv;
 						RE_LVL_DMOD(100);
+						if (tsc && tsc->data[SC_SOUNDBLEND])
+							skillratio += skillratio * 50 / 100;
 						break;
 					case SO_FIREWALK:
 						skillratio += -100 + 60 * skill_lv;
@@ -7390,9 +7426,26 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 						skillratio += -100 + 600 * skill_lv + 10 * sstatus->spl;
 						if (tstatus->race == RC_DEMON || tstatus->race == RC_ANGEL)
 							skillratio += 550 * skill_lv;
+						RE_LVL_DMOD(100);
 						break;
 					case ABC_ABYSS_SQUARE:
 						skillratio += -100 + 140 * skill_lv + 5 * sstatus->spl;
+						RE_LVL_DMOD(100);
+						break;
+					case TR_METALIC_FURY:
+						skillratio += -100 + 600 * skill_lv + 5 * sstatus->spl;
+						RE_LVL_DMOD(100);
+						break;
+					case TR_SOUNDBLEND:
+						skillratio += -100 + 120 * skill_lv + 5 * sstatus->spl;
+						RE_LVL_DMOD(100);
+						if (sc && sc->data[SC_MYSTIC_SYMPHONY])
+						{
+							skillratio += skillratio * 40 / 100;
+
+							if (tstatus->race == RC_FISH || tstatus->race == RC_DEMIHUMAN)
+								skillratio += skillratio * 50 / 100;
+						}
 						break;
 					case EM_DIAMOND_STORM:
 						skillratio += -100 + 700 * skill_lv + 5 * sstatus->spl;

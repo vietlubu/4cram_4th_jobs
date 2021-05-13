@@ -1190,6 +1190,17 @@ void initChangeTables(void)
 	set_sc_with_vfx( EM_CONFLAGRATION   , SC_HANDICAPSTATE_CONFLAGRATION  , EFST_HANDICAPSTATE_CONFLAGRATION  , SCB_NONE );
 	set_sc_with_vfx( EM_TERRA_DRIVE     , SC_HANDICAPSTATE_CRYSTALLIZATION, EFST_HANDICAPSTATE_CRYSTALLIZATION, SCB_NONE );
 
+	// Troubadour/Trouvere
+	set_sc_with_vfx( TR_MYSTIC_SYMPHONY  , SC_MYSTIC_SYMPHONY  , EFST_MYSTIC_SYMPHONY  , SCB_NONE);
+	set_sc(          TR_KVASIR_SONATA    , SC_KVASIR_SONATA    , EFST_KVASIR_SONATA    , SCB_NONE);
+	set_sc(          TR_ROSEBLOSSOM      , SC_ROSEBLOSSOM      , EFST_ROSEBLOSSOM      , SCB_NONE);
+	set_sc_with_vfx( TR_SOUNDBLEND       , SC_SOUNDBLEND       , EFST_SOUNDBLEND       , SCB_NONE);
+	set_sc(          TR_GEF_NOCTURN      , SC_GEF_NOCTURN      , EFST_GEF_NOCTURN      , SCB_MRES);
+	set_sc(          TR_AIN_RHAPSODY     , SC_AIN_RHAPSODY     , EFST_AIN_RHAPSODY     , SCB_RES);
+	set_sc(          TR_MUSICAL_INTERLUDE, SC_MUSICAL_INTERLUDE, EFST_MUSICAL_INTERLUDE, SCB_RES);
+	set_sc(          TR_JAWAII_SERENADE  , SC_JAWAII_SERENADE  , EFST_JAWAII_SERENADE  , SCB_SMATK);
+	set_sc(          TR_PRON_MARCH       , SC_PRON_MARCH       , EFST_PRON_MARCH       , SCB_PATK);
+
 	// Inquisitor
 	set_sc(          IQ_POWERFUL_FAITH   , SC_POWERFUL_FAITH   , EFST_POWERFUL_FAITH   , SCB_WATK|SCB_PATK);
 	set_sc(          IQ_FIRM_FAITH       , SC_FIRM_FAITH       , EFST_FIRM_FAITH       , SCB_MAXHP|SCB_RES);
@@ -1823,6 +1834,8 @@ void initChangeTables(void)
 	StatusDisplayType[SC_E_SLASH_COUNT] = BL_PC;
 	StatusDisplayType[SC_HOLY_S] = BL_PC;
 	StatusDisplayType[SC_SPEAR_SCAR] = BL_PC;
+	StatusDisplayType[SC_MYSTIC_SYMPHONY] = BL_PC;
+	StatusDisplayType[SC_SOUNDBLEND] = BL_PC;
 	StatusDisplayType[SC_HOLY_OIL] = BL_PC;
 	StatusDisplayType[SC_FIRST_BRAND] = BL_PC;
 	StatusDisplayType[SC_SECOND_BRAND] = BL_PC;
@@ -5021,6 +5034,13 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 			base_status->cri += 100 + skill * 40;
 		else if (sd->status.weapon == W_KATAR)
 			base_status->cri += 50 + skill * 20;
+	}
+
+// ----- P.Atk/S.Matk CALCULATION -----
+	if ((skill = pc_checkskill(sd, TR_STAGE_MANNER)) > 0 && (sd->status.weapon == W_BOW || sd->status.weapon == W_MUSICAL || sd->status.weapon == W_WHIP))
+	{
+		base_status->patk += skill * 3;
+		base_status->smatk += skill * 3;
 	}
 
 // ----- PHYSICAL RESISTANCE CALCULATION -----
@@ -8832,6 +8852,8 @@ static signed short status_calc_patk(struct block_list *bl, struct status_change
 		patk += sc->data[SC_COMPETENTIA]->val2;
 	if (sc->data[SC_ABYSS_SLAYER])
 		patk += sc->data[SC_ABYSS_SLAYER]->val2;
+	if (sc->data[SC_PRON_MARCH])
+		patk += sc->data[SC_PRON_MARCH]->val2;
 
 	return (short)cap_value(patk, 0, SHRT_MAX);
 }
@@ -8852,6 +8874,8 @@ static signed short status_calc_smatk(struct block_list *bl, struct status_chang
 		smatk += sc->data[SC_COMPETENTIA]->val2;
 	if (sc->data[SC_ABYSS_SLAYER])
 		smatk += sc->data[SC_ABYSS_SLAYER]->val2;
+	if (sc->data[SC_JAWAII_SERENADE])
+		smatk += sc->data[SC_JAWAII_SERENADE]->val2;
 	if (sc->data[SC_SPELL_ENCHANTING])
 		smatk += sc->data[SC_SPELL_ENCHANTING]->val2;
 
@@ -8874,8 +8898,12 @@ static signed short status_calc_res(struct block_list *bl, struct status_change 
 		res += sc->data[SC_FIRM_FAITH]->val3;
 	if (sc->data[SC_D_MACHINE])
 		res += sc->data[SC_D_MACHINE]->val3;
+	if (sc->data[SC_MUSICAL_INTERLUDE])
+		res += sc->data[SC_MUSICAL_INTERLUDE]->val2;
 	//if (sc->data[SC_SHADOW_STRIP] && bl->type != BL_PC)
 	//	res -= res * sc->data[SC_SHADOW_STRIP]->val2 / 100;
+	if (sc->data[SC_AIN_RHAPSODY])
+		res -= sc->data[SC_AIN_RHAPSODY]->val2;
 
 	return (short)cap_value(res, 0, SHRT_MAX);
 }
@@ -8894,6 +8922,8 @@ static signed short status_calc_mres(struct block_list *bl, struct status_change
 
 	//if (sc->data[SC_SHADOW_STRIP] && bl->type != BL_PC)
 	//	mres -= mres * sc->data[SC_SHADOW_STRIP]->val2 / 100;
+	if (sc->data[SC_GEF_NOCTURN])
+		mres -= sc->data[SC_GEF_NOCTURN]->val2;
 
 	return (short)cap_value(mres, 0, SHRT_MAX);
 }
@@ -13468,6 +13498,23 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 		case SC_CALAMITYGALE:// Unlimit runs along with this.
 			sc_start(bl, bl, SC_UNLIMIT, 100, 5, skill_get_time(RA_UNLIMIT, 5));
 			break;
+		case SC_GEF_NOCTURN:// MRes Reduction. Official formula unknown.
+		case SC_AIN_RHAPSODY:// Res Reduction. Official formula unknown.
+		case SC_MUSICAL_INTERLUDE:
+			val2 = 5 + 5 * val1;// Res Increase
+			if (val3&2)// Bonus if partner is found in party.
+				val2 *= 2;
+			break;
+		case SC_JAWAII_SERENADE:
+			val2 = 3 * val1;// SMatk Increase
+			if (val3 & 2)// Bonus if partner is found in party.
+				val2 *= 2;
+			break;
+		case SC_PRON_MARCH:
+			val2 = 3 * val1;// PAtk Increase
+			if (val3 & 2)// Bonus if partner is found in party.
+				val2 *= 2;
+			break;
 		case SC_SPELL_ENCHANTING:
 			val2 = 4 * val1;// SMatk Increase
 			break;
@@ -14578,12 +14625,20 @@ int status_change_end_(struct block_list* bl, enum sc_type type, int tid, const 
 			break;
 		case SC_SPLASHER:
 		case SC_SPORE_EXPLOSION:
+		case SC_ROSEBLOSSOM:
 			{
 				struct block_list *src=map_id2bl(sce->val3);
 				if(src && tid != INVALID_TIMER)
 					skill_castend_damage_id(src, bl, sce->val2, sce->val1, gettick(), SD_LEVEL );
 			}
 			break;
+		case SC_SOUNDBLEND:
+		{
+			struct block_list *src = map_id2bl(sce->val2);
+			if (src && tid != INVALID_TIMER)
+				skill_castend_damage_id(src, bl, TR_SOUNDBLEND, sce->val1, gettick(), SD_LEVEL|SD_ANIMATION);
+		}
+		break;
 		case SC_CLOSECONFINE2:{
 			struct block_list *src = sce->val2?map_id2bl(sce->val2):NULL;
 			struct status_change *sc2 = src?status_get_sc(src):NULL;
