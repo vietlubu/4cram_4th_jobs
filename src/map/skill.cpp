@@ -5523,6 +5523,11 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case EM_ELEMENTAL_BUSTER_WIND:
 	case EM_ELEMENTAL_BUSTER_GROUND:
 	case EM_ELEMENTAL_BUSTER_POISON:
+	case EM_EL_FLAMEROCK:
+	case EM_EL_AGE_OF_ICE:
+	case EM_EL_STORM_WIND:
+	case EM_EL_AVALANCHE:
+	case EM_EL_DEADLY_POISON:
 		if( flag&1 ) {//Recursive invocation
 			int sflag = skill_area_temp[0] & 0xFFF;
 			int heal = 0;
@@ -5638,6 +5643,11 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 				case CD_FRAMEN:
 				case ABC_DEFT_STAB:
 				case ABC_CHAIN_REACTION_SHOT:
+				case EM_EL_FLAMEROCK:
+				case EM_EL_AGE_OF_ICE:
+				case EM_EL_STORM_WIND:
+				case EM_EL_AVALANCHE:
+				case EM_EL_DEADLY_POISON:
 					clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
 					break;
 				case IQ_THIRD_PUNISH:
@@ -8287,14 +8297,41 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 		break;
 
 	case EM_ELEMENTAL_BUSTER:
-	{// Temp coding for now until the super elementals are working.
-		short blasters[5] = { EM_ELEMENTAL_BUSTER_FIRE, EM_ELEMENTAL_BUSTER_WATER, EM_ELEMENTAL_BUSTER_WIND, EM_ELEMENTAL_BUSTER_GROUND, EM_ELEMENTAL_BUSTER_POISON };
-		short blaster_element = blasters[rnd()%5];
+	{
+		short buster_element;
+
+		if (!sd) break;
+
+		if (!sd->ed || !(sd->ed->elemental.class_ >= ELEMENTALID_DILUVIO && sd->ed->elemental.class_ <= ELEMENTALID_SERPENS))
+		{
+			clif_skill_fail(sd, skill_id, USESKILL_FAIL_LEVEL, 0);
+			map_freeblock_unlock();
+			return 0;
+		}
+
+		switch (sd->ed->elemental.class_)
+		{
+			case ELEMENTALID_ARDOR:
+				buster_element = EM_ELEMENTAL_BUSTER_FIRE;
+				break;
+			case ELEMENTALID_DILUVIO:
+				buster_element = EM_ELEMENTAL_BUSTER_WATER;
+				break;
+			case ELEMENTALID_PROCELLA:
+				buster_element = EM_ELEMENTAL_BUSTER_WIND;
+				break;
+			case ELEMENTALID_TERREMOTUS:
+				buster_element = EM_ELEMENTAL_BUSTER_GROUND;
+				break;
+			case ELEMENTALID_SERPENS:
+				buster_element = EM_ELEMENTAL_BUSTER_POISON;
+				break;
+		}
 
 		skill_area_temp[1] = 0;
-		clif_skill_nodamage(src, bl, blaster_element, skill_lv, 1);// Animation for the triggered blaster element.
+		clif_skill_nodamage(src, bl, buster_element, skill_lv, 1);// Animation for the triggered blaster element.
 		clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);// Triggered after blaster animation to make correct skill name scream appear.
-		map_foreachinrange(skill_area_sub, bl, 6, BL_CHAR|BL_SKILL, src, blaster_element, skill_lv, tick, flag|BCT_ENEMY|SD_SPLASH|1, skill_castend_damage_id);
+		map_foreachinrange(skill_area_sub, bl, 6, BL_CHAR|BL_SKILL, src, buster_element, skill_lv, tick, flag|BCT_ENEMY|SD_LEVEL|SD_SPLASH|1, skill_castend_damage_id);
 	}
 	break;
 
@@ -11741,6 +11778,58 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 		}
 		break;
 
+	case EM_SUMMON_ELEMENTAL_ARDOR:
+	case EM_SUMMON_ELEMENTAL_DILUVIO:
+	case EM_SUMMON_ELEMENTAL_PROCELLA:
+	case EM_SUMMON_ELEMENTAL_TERREMOTUS:
+	case EM_SUMMON_ELEMENTAL_SERPENS:
+	{
+		short em_elem[5] = { ELEMENTALID_ARDOR, ELEMENTALID_DILUVIO, ELEMENTALID_PROCELLA, ELEMENTALID_TERREMOTUS, ELEMENTALID_SERPENS };
+		short so_elem[5] = { ELEMENTALID_AGNI_L, ELEMENTALID_AQUA_L, ELEMENTALID_VENTUS_L, ELEMENTALID_TERA_L, 0 };
+		short elem_value = 4 - (EM_SUMMON_ELEMENTAL_SERPENS - skill_id);
+
+		clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
+
+		if (!sd) break;
+
+		if (sd->ed && ((skill_id >= EM_SUMMON_ELEMENTAL_ARDOR && skill_id <= EM_SUMMON_ELEMENTAL_TERREMOTUS && sd->ed->elemental.class_ == so_elem[elem_value]) ||
+			(skill_id == EM_SUMMON_ELEMENTAL_SERPENS && 
+			(sd->ed->elemental.class_ == ELEMENTALID_AGNI_L || sd->ed->elemental.class_ == ELEMENTALID_AQUA_L ||
+			sd->ed->elemental.class_ == ELEMENTALID_VENTUS_L || sd->ed->elemental.class_ == ELEMENTALID_TERA_L))))
+		{
+			// Remove the old elemental before summoning the super one.
+			elemental_delete(sd->ed);
+
+			if (!elemental_create(sd, em_elem[elem_value], skill_get_time(skill_id, skill_lv)))
+			{
+				clif_skill_fail(sd, skill_id, USESKILL_FAIL_LEVEL, 0);
+				break;
+			}
+			else// Elemental summoned. Buff the player with the bonus.
+				sc_start(src, bl, type, 100, skill_lv, skill_get_time(skill_id, skill_lv));
+		}
+		else
+		{
+			clif_skill_fail(sd, skill_id, USESKILL_FAIL_LEVEL, 0);
+			break;
+		}
+	}
+	break;
+
+	case EM_ELEMENTAL_VEIL:
+		clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
+
+		if (!sd) break;
+
+		if (sd->ed && sd->ed->elemental.class_ >= ELEMENTALID_DILUVIO && sd->ed->elemental.class_ <= ELEMENTALID_SERPENS)
+			sc_start(src, &sd->ed->bl, type, 100, skill_lv, skill_get_time(skill_id, skill_lv));
+		else
+		{
+			clif_skill_fail(sd, skill_id, USESKILL_FAIL_LEVEL, 0);
+			break;
+		}
+		break;
+
 	case SO_EL_CONTROL:
 		if( sd ) {
 			enum e_mode mode = EL_MODE_PASSIVE;	// Standard mode.
@@ -11930,7 +12019,18 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case EL_WIND_CURTAIN:
 	case EL_SOLID_SKIN:
 	case EL_STONE_SHIELD:
-	case EL_WIND_STEP: {
+	case EL_WIND_STEP:
+	case EM_EL_FLAMETECHNIC:
+	case EM_EL_FLAMEARMOR:
+	case EM_EL_COLD_FORCE:
+	case EM_EL_CRYSTAL_ARMOR:
+	case EM_EL_GRACE_BREEZE:
+	case EM_EL_EYES_OF_STORM:
+	case EM_EL_EARTH_CARE:
+	case EM_EL_STRONG_PROTECTION:
+	case EM_EL_DEEP_POISONING:
+	case EM_EL_POISON_SHIELD:
+	{
 			struct elemental_data *ele = BL_CAST(BL_ELEM, src);
 			if( ele ) {
 				sc_type type2 = (sc_type)(type-1);
@@ -11940,7 +12040,8 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 					elemental_clean_single_effect(ele, skill_id);
 				} else {
 					clif_skill_nodamage(src,src,skill_id,skill_lv,1);
-					clif_skill_damage(src, ( skill_id == EL_GUST || skill_id == EL_BLAST || skill_id == EL_WILD_STORM )?src:bl, tick, status_get_amotion(src), 0, -30000, 1, skill_id, skill_lv, DMG_SINGLE);
+					if (!(skill_id >= EM_EL_FLAMETECHNIC && skill_id <= EM_EL_DEADLY_POISON))
+						clif_skill_damage(src, ( skill_id == EL_GUST || skill_id == EL_BLAST || skill_id == EL_WILD_STORM )?src:bl, tick, status_get_amotion(src), 0, -30000, 1, skill_id, skill_lv, DMG_SINGLE);
 					if( skill_id == EL_WIND_STEP )	// There aren't teleport, just push the master away.
 						skill_blown(src,bl,(rnd()%skill_get_blewcount(skill_id,skill_lv))+1,rnd()%8,BLOWN_NONE);
 					sc_start(src,src,type2,100,skill_lv,skill_get_time(skill_id,skill_lv));

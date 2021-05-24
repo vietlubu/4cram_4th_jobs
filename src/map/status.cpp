@@ -1513,37 +1513,43 @@ void initChangeTables(void)
 	set_sc(          IG_SHIELD_SHOOTING   , SC_SHIELD_POWER , EFST_SHIELD_POWER , SCB_NONE );
 
 	// Elemental Master
-	set_sc(          EM_SPELL_ENCHANTING, SC_SPELL_ENCHANTING             , EFST_SPELL_ENCHANTING             , SCB_SMATK );
-	set_sc_with_vfx( EM_DIAMOND_STORM   , SC_HANDICAPSTATE_FROSTBITE      , EFST_HANDICAPSTATE_FROSTBITE      , SCB_NONE );
-	set_sc_with_vfx( EM_LIGHTNING_LAND  , SC_HANDICAPSTATE_LIGHTNINGSTRIKE, EFST_HANDICAPSTATE_LIGHTNINGSTRIKE, SCB_NONE );
-	set_sc_with_vfx( EM_VENOM_SWAMP     , SC_HANDICAPSTATE_DEADLYPOISON   , EFST_HANDICAPSTATE_DEADLYPOISON   , SCB_NONE );
-	set_sc_with_vfx( EM_CONFLAGRATION   , SC_HANDICAPSTATE_CONFLAGRATION  , EFST_HANDICAPSTATE_CONFLAGRATION  , SCB_NONE );
-	set_sc_with_vfx( EM_TERRA_DRIVE     , SC_HANDICAPSTATE_CRYSTALLIZATION, EFST_HANDICAPSTATE_CRYSTALLIZATION, SCB_NONE );
+	set_sc(          EM_SPELL_ENCHANTING           , SC_SPELL_ENCHANTING             , EFST_SPELL_ENCHANTING             , SCB_SMATK );
+	set_sc_with_vfx( EM_DIAMOND_STORM              , SC_HANDICAPSTATE_FROSTBITE      , EFST_HANDICAPSTATE_FROSTBITE      , SCB_NONE );
+	set_sc_with_vfx( EM_LIGHTNING_LAND             , SC_HANDICAPSTATE_LIGHTNINGSTRIKE, EFST_HANDICAPSTATE_LIGHTNINGSTRIKE, SCB_NONE );
+	set_sc_with_vfx( EM_VENOM_SWAMP                , SC_HANDICAPSTATE_DEADLYPOISON   , EFST_HANDICAPSTATE_DEADLYPOISON   , SCB_NONE );
+	set_sc_with_vfx( EM_CONFLAGRATION              , SC_HANDICAPSTATE_CONFLAGRATION  , EFST_HANDICAPSTATE_CONFLAGRATION  , SCB_NONE );
+	set_sc_with_vfx( EM_TERRA_DRIVE                , SC_HANDICAPSTATE_CRYSTALLIZATION, EFST_HANDICAPSTATE_CRYSTALLIZATION, SCB_NONE );
+	set_sc(          EM_SUMMON_ELEMENTAL_ARDOR     , SC_SUMMON_ELEMENTAL_ARDOR       , EFST_SUMMON_ELEMENTAL_ARDOR       , SCB_NONE );
+	set_sc(          EM_SUMMON_ELEMENTAL_DILUVIO   , SC_SUMMON_ELEMENTAL_DILUVIO     , EFST_SUMMON_ELEMENTAL_DILUVIO     , SCB_NONE );
+	set_sc(          EM_SUMMON_ELEMENTAL_PROCELLA  , SC_SUMMON_ELEMENTAL_PROCELLA    , EFST_SUMMON_ELEMENTAL_PROCELLA    , SCB_NONE );
+	set_sc(          EM_SUMMON_ELEMENTAL_TERREMOTUS, SC_SUMMON_ELEMENTAL_TERREMOTUS  , EFST_SUMMON_ELEMENTAL_TERREMOTUS  , SCB_NONE );
+	set_sc(          EM_SUMMON_ELEMENTAL_SERPENS   , SC_SUMMON_ELEMENTAL_SERPENS     , EFST_SUMMON_ELEMENTAL_SERPENS     , SCB_NONE );
+	set_sc_with_vfx( EM_ELEMENTAL_VEIL             , SC_ELEMENTAL_VEIL               , EFST_ELEMENTAL_VEIL               , SCB_NONE );
 
 	// Troubadour/Trouvere
-	set_sc_with_vfx( TR_MYSTIC_SYMPHONY  , SC_MYSTIC_SYMPHONY  , EFST_MYSTIC_SYMPHONY  , SCB_NONE);
-	set_sc(          TR_KVASIR_SONATA    , SC_KVASIR_SONATA    , EFST_KVASIR_SONATA    , SCB_NONE);
-	set_sc(          TR_ROSEBLOSSOM      , SC_ROSEBLOSSOM      , EFST_ROSEBLOSSOM      , SCB_NONE);
-	set_sc_with_vfx( TR_SOUNDBLEND       , SC_SOUNDBLEND       , EFST_SOUNDBLEND       , SCB_NONE);
-	set_sc(          TR_GEF_NOCTURN      , SC_GEF_NOCTURN      , EFST_GEF_NOCTURN      , SCB_MRES);
-	set_sc(          TR_AIN_RHAPSODY     , SC_AIN_RHAPSODY     , EFST_AIN_RHAPSODY     , SCB_RES);
-	set_sc(          TR_MUSICAL_INTERLUDE, SC_MUSICAL_INTERLUDE, EFST_MUSICAL_INTERLUDE, SCB_RES);
-	set_sc(          TR_JAWAII_SERENADE  , SC_JAWAII_SERENADE  , EFST_JAWAII_SERENADE  , SCB_SMATK);
-	set_sc(          TR_PRON_MARCH       , SC_PRON_MARCH       , EFST_PRON_MARCH       , SCB_PATK);
+	set_sc_with_vfx( TR_MYSTIC_SYMPHONY  , SC_MYSTIC_SYMPHONY  , EFST_MYSTIC_SYMPHONY  , SCB_NONE );
+	set_sc(          TR_KVASIR_SONATA    , SC_KVASIR_SONATA    , EFST_KVASIR_SONATA    , SCB_NONE );
+	set_sc(          TR_ROSEBLOSSOM      , SC_ROSEBLOSSOM      , EFST_ROSEBLOSSOM      , SCB_NONE );
+	set_sc_with_vfx( TR_SOUNDBLEND       , SC_SOUNDBLEND       , EFST_SOUNDBLEND       , SCB_NONE );
+	set_sc(          TR_GEF_NOCTURN      , SC_GEF_NOCTURN      , EFST_GEF_NOCTURN      , SCB_MRES );
+	set_sc(          TR_AIN_RHAPSODY     , SC_AIN_RHAPSODY     , EFST_AIN_RHAPSODY     , SCB_RES );
+	set_sc(          TR_MUSICAL_INTERLUDE, SC_MUSICAL_INTERLUDE, EFST_MUSICAL_INTERLUDE, SCB_RES );
+	set_sc(          TR_JAWAII_SERENADE  , SC_JAWAII_SERENADE  , EFST_JAWAII_SERENADE  , SCB_SMATK );
+	set_sc(          TR_PRON_MARCH       , SC_PRON_MARCH       , EFST_PRON_MARCH       , SCB_PATK );
 
 	// Inquisitor
-	set_sc(          IQ_POWERFUL_FAITH   , SC_POWERFUL_FAITH   , EFST_POWERFUL_FAITH   , SCB_WATK|SCB_PATK);
-	set_sc(          IQ_FIRM_FAITH       , SC_FIRM_FAITH       , EFST_FIRM_FAITH       , SCB_MAXHP|SCB_RES);
-	set_sc_with_vfx( IQ_OLEUM_SANCTUM    , SC_HOLY_OIL         , EFST_HOLY_OIL         , SCB_NONE);
-	set_sc(          IQ_SINCERE_FAITH    , SC_SINCERE_FAITH    , EFST_SINCERE_FAITH    , SCB_ALL);
-	set_sc(          IQ_MASSIVE_F_BLASTER, SC_MASSIVE_F_BLASTER, EFST_MASSIVE_F_BLASTER, SCB_NONE);
-	set_sc_with_vfx( IQ_FIRST_BRAND      , SC_FIRST_BRAND      , EFST_FIRST_BRAND      , SCB_NONE);
-	set_sc_with_vfx( IQ_FIRST_FAITH_POWER, SC_FIRST_FAITH_POWER, EFST_FIRST_FAITH_POWER, SCB_NONE);
-	set_sc_with_vfx( IQ_JUDGE            , SC_SECOND_JUDGE     , EFST_SECOND_JUDGE     , SCB_NONE);
-	set_sc_with_vfx( IQ_SECOND_FLAME     , SC_SECOND_BRAND     , EFST_SECOND_BRAND     , SCB_NONE);
-	set_sc_with_vfx( IQ_SECOND_FAITH     , SC_SECOND_BRAND     , EFST_SECOND_BRAND     , SCB_NONE);
-	set_sc_with_vfx( IQ_SECOND_JUDGEMENT , SC_SECOND_BRAND     , EFST_SECOND_BRAND     , SCB_NONE);
-	set_sc_with_vfx( IQ_THIRD_EXOR_FLAME , SC_THIRD_EXOR_FLAME , EFST_THIRD_EXOR_FLAME , SCB_NONE);
+	set_sc(          IQ_POWERFUL_FAITH   , SC_POWERFUL_FAITH   , EFST_POWERFUL_FAITH   , SCB_WATK|SCB_PATK );
+	set_sc(          IQ_FIRM_FAITH       , SC_FIRM_FAITH       , EFST_FIRM_FAITH       , SCB_MAXHP|SCB_RES );
+	set_sc_with_vfx( IQ_OLEUM_SANCTUM    , SC_HOLY_OIL         , EFST_HOLY_OIL         , SCB_NONE );
+	set_sc(          IQ_SINCERE_FAITH    , SC_SINCERE_FAITH    , EFST_SINCERE_FAITH    , SCB_ALL );
+	set_sc(          IQ_MASSIVE_F_BLASTER, SC_MASSIVE_F_BLASTER, EFST_MASSIVE_F_BLASTER, SCB_NONE );
+	set_sc_with_vfx( IQ_FIRST_BRAND      , SC_FIRST_BRAND      , EFST_FIRST_BRAND      , SCB_NONE );
+	set_sc_with_vfx( IQ_FIRST_FAITH_POWER, SC_FIRST_FAITH_POWER, EFST_FIRST_FAITH_POWER, SCB_NONE );
+	set_sc_with_vfx( IQ_JUDGE            , SC_SECOND_JUDGE     , EFST_SECOND_JUDGE     , SCB_NONE );
+	set_sc_with_vfx( IQ_SECOND_FLAME     , SC_SECOND_BRAND     , EFST_SECOND_BRAND     , SCB_NONE );
+	set_sc_with_vfx( IQ_SECOND_FAITH     , SC_SECOND_BRAND     , EFST_SECOND_BRAND     , SCB_NONE );
+	set_sc_with_vfx( IQ_SECOND_JUDGEMENT , SC_SECOND_BRAND     , EFST_SECOND_BRAND     , SCB_NONE );
+	set_sc_with_vfx( IQ_THIRD_EXOR_FLAME , SC_THIRD_EXOR_FLAME , EFST_THIRD_EXOR_FLAME , SCB_NONE );
 
 	// Biolo
 	set_sc(          BO_ADVANCE_PROTECTION, SC_PROTECTSHADOWEQUIP  , EFST_PROTECTSHADOWEQUIP, SCB_NONE );
@@ -1559,6 +1565,18 @@ void initChangeTables(void)
 	set_sc_with_vfx( ABC_UNLUCKY_RUSH  , SC_HANDICAPSTATE_MISFORTUNE, EFST_HANDICAPSTATE_MISFORTUNE, SCB_NONE );
 	set_sc(          ABC_FROM_THE_ABYSS, SC_ABYSSFORCEWEAPON        , EFST_ABYSSFORCEWEAPON        , SCB_NONE );
 	set_sc_with_vfx( ABC_ABYSS_SLAYER  , SC_ABYSS_SLAYER            , EFST_ABYSS_SLAYER            , SCB_HIT|SCB_PATK|SCB_SMATK );
+
+	// Super Elementals
+	set_sc(          EM_EL_FLAMETECHNIC     , SC_FLAMETECHNIC_OPTION     , EFST_FLAMETECHNIC_OPTION     , SCB_NONE );
+	set_sc(          EM_EL_FLAMEARMOR       , SC_FLAMEARMOR_OPTION       , EFST_FLAMEARMOR_OPTION       , SCB_ALL );
+	set_sc(          EM_EL_COLD_FORCE       , SC_COLD_FORCE_OPTION       , EFST_COLD_FORCE_OPTION       , SCB_NONE );
+	set_sc(          EM_EL_CRYSTAL_ARMOR    , SC_CRYSTAL_ARMOR_OPTION    , EFST_CRYSTAL_ARMOR_OPTION    , SCB_ALL );
+	set_sc(          EM_EL_GRACE_BREEZE     , SC_GRACE_BREEZE_OPTION     , EFST_GRACE_BREEZE_OPTION     , SCB_NONE );
+	set_sc(          EM_EL_EYES_OF_STORM    , SC_EYES_OF_STORM_OPTION    , EFST_EYES_OF_STORM_OPTION    , SCB_ALL );
+	set_sc(          EM_EL_EARTH_CARE       , SC_EARTH_CARE_OPTION       , EFST_EARTH_CARE_OPTION       , SCB_NONE );
+	set_sc(          EM_EL_STRONG_PROTECTION, SC_STRONG_PROTECTION_OPTION, EFST_STRONG_PROTECTION_OPTION, SCB_ALL );
+	set_sc(          EM_EL_DEEP_POISONING   , SC_DEEP_POISONING_OPTION   , EFST_DEEP_POISONING_OPTION   , SCB_NONE );
+	set_sc(          EM_EL_POISON_SHIELD    , SC_POISON_SHIELD_OPTION    , EFST_POISON_SHIELD_OPTION    , SCB_ALL );
 
 #ifdef RENEWAL
 	set_sc( NV_HELPANGEL			, SC_HELPANGEL		, EFST_HELPANGEL	, SCB_NONE );
@@ -1873,6 +1891,18 @@ void initChangeTables(void)
 	StatusIconChangeTable[SC_CRYSTAL_IMPACT] = EFST_CRYSTAL_IMPACT;
 	StatusIconChangeTable[SC_SHADOW_SCAR] = EFST_SHADOW_SCAR;
 
+	// Super Elementals
+	StatusIconChangeTable[SC_FLAMETECHNIC] = EFST_FLAMETECHNIC;
+	StatusIconChangeTable[SC_FLAMEARMOR] = EFST_FLAMEARMOR;
+	StatusIconChangeTable[SC_COLD_FORCE] = EFST_COLD_FORCE;
+	StatusIconChangeTable[SC_CRYSTAL_ARMOR] = EFST_CRYSTAL_ARMOR;
+	StatusIconChangeTable[SC_GRACE_BREEZE] = EFST_GRACE_BREEZE;
+	StatusIconChangeTable[SC_EYES_OF_STORM] = EFST_EYES_OF_STORM;
+	StatusIconChangeTable[SC_EARTH_CARE] = EFST_EARTH_CARE;
+	StatusIconChangeTable[SC_STRONG_PROTECTION] = EFST_STRONG_PROTECTION;
+	StatusIconChangeTable[SC_DEEP_POISONING] = EFST_DEEP_POISONING;
+	StatusIconChangeTable[SC_POISON_SHIELD] = EFST_POISON_SHIELD;
+
 	/* Other SC which are not necessarily associated to skills */
 	StatusChangeFlagTable[SC_ASPDPOTION0] |= SCB_ASPD;
 	StatusChangeFlagTable[SC_ASPDPOTION1] |= SCB_ASPD;
@@ -2162,6 +2192,7 @@ void initChangeTables(void)
 	StatusDisplayType[SC_E_SLASH_COUNT] = BL_PC;
 	StatusDisplayType[SC_HOLY_S] = BL_PC;
 	StatusDisplayType[SC_SPEAR_SCAR] = BL_PC;
+	StatusDisplayType[SC_ELEMENTAL_VEIL] = BL_PC;
 	StatusDisplayType[SC_MYSTIC_SYMPHONY] = BL_PC;
 	StatusDisplayType[SC_SOUNDBLEND] = BL_PC;
 	StatusDisplayType[SC_HOLY_OIL] = BL_PC;
@@ -3219,12 +3250,19 @@ bool status_check_skilluse(struct block_list *src, struct block_list *target, ui
 		case BL_HOM:
 		case BL_MER:
 		case BL_ELEM:
-			if( target->type == BL_HOM && skill_id && battle_config.hom_setting&HOMSET_NO_SUPPORT_SKILL && skill_get_inf(skill_id)&INF_SUPPORT_SKILL && battle_get_master(target) != src )
+		{
+			bool is_boss = (src && status_get_class_(src) == CLASS_BOSS);
+			bool is_detect = status_has_mode(status, MD_DETECTOR);
+
+			if (target->type == BL_HOM && skill_id && battle_config.hom_setting&HOMSET_NO_SUPPORT_SKILL && skill_get_inf(skill_id)&INF_SUPPORT_SKILL && battle_get_master(target) != src)
 				return false; // Can't use support skills on Homunculus (only Master/Self)
-			if( target->type == BL_MER && (skill_id == PR_ASPERSIO || (skill_id >= SA_FLAMELAUNCHER && skill_id <= SA_SEISMICWEAPON)) && battle_get_master(target) != src )
+			if (target->type == BL_MER && (skill_id == PR_ASPERSIO || (skill_id >= SA_FLAMELAUNCHER && skill_id <= SA_SEISMICWEAPON)) && battle_get_master(target) != src)
 				return false; // Can't use Weapon endow skills on Mercenary (only Master)
-			if( skill_id == AM_POTIONPITCHER && ( target->type == BL_MER || target->type == BL_ELEM) )
+			if (skill_id == AM_POTIONPITCHER && (target->type == BL_MER || target->type == BL_ELEM))
 				return false; // Can't use Potion Pitcher on Mercenaries
+			if (tsc && tsc->data[SC_ELEMENTAL_VEIL] && !is_boss && !is_detect)
+				return false;
+		}
 		default:
 			// Check for chase-walk/hiding/cloaking opponents.
 			if( tsc ) {
@@ -3279,6 +3317,10 @@ int status_check_visibility(struct block_list *src, struct block_list *target)
 					if (tsc->data[SC__FEINTBOMB] && !is_boss && !is_detector)
 						return 0;
 				}
+				break;
+			case BL_ELEM:
+				if (tsc->data[SC_ELEMENTAL_VEIL] && !is_boss && !is_detector)
+					return 0;
 				break;
 			default:
 				if (((tsc->option&(OPTION_HIDE|OPTION_CLOAK|OPTION_CHASEWALK)) || tsc->data[SC_CAMOUFLAGE] || tsc->data[SC_STEALTHFIELD] || tsc->data[SC_SUHIDE]) && !is_boss && !is_detector)
@@ -5738,12 +5780,17 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 			sd->right_weapon.addrace[RC_DEMIHUMAN] += 50;
 			sd->left_weapon.addrace[RC_ANGEL] += 50;
 		}
+		if (sc->data[SC_CLIMAX_DES_HU])
+			sd->indexed_bonus.magic_atk_ele[ELE_WIND] += 30;
 		if (sc->data[SC_CLIMAX_EARTH])
 			sd->indexed_bonus.subele[ELE_EARTH] -= 100;
 		if (sc->data[SC_CLIMAX_BLOOM])
 			sd->indexed_bonus.subele[ELE_FIRE] -= 100;
 		if (sc->data[SC_CLIMAX_CRYIMP])
+		{
 			sd->indexed_bonus.subele[ELE_WATER] += 30;
+			sd->indexed_bonus.magic_atk_ele[ELE_WATER] += 30;
+		}
 		if (sc->data[SC_SINCERE_FAITH])
 			sd->bonus.perfect_hit += sc->data[SC_SINCERE_FAITH]->val3;
 		if (sc->data[SC_HOLY_S])
@@ -5751,6 +5798,41 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 			sd->indexed_bonus.subele[ELE_DARK] += sc->data[SC_HOLY_S]->val2;
 			sd->indexed_bonus.subele[ELE_UNDEAD] += sc->data[SC_HOLY_S]->val2;
 			sd->indexed_bonus.magic_atk_ele[ELE_HOLY] += sc->data[SC_HOLY_S]->val2;
+		}
+		if (sc->data[SC_SUMMON_ELEMENTAL_ARDOR])
+			sd->indexed_bonus.magic_atk_ele[ELE_FIRE] += 10;
+		if (sc->data[SC_SUMMON_ELEMENTAL_DILUVIO])
+			sd->indexed_bonus.magic_atk_ele[ELE_WATER] += 10;
+		if (sc->data[SC_SUMMON_ELEMENTAL_PROCELLA])
+			sd->indexed_bonus.magic_atk_ele[ELE_WIND] += 10;
+		if (sc->data[SC_SUMMON_ELEMENTAL_TERREMOTUS])
+			sd->indexed_bonus.magic_atk_ele[ELE_EARTH] += 10;
+		if (sc->data[SC_SUMMON_ELEMENTAL_SERPENS])
+			sd->indexed_bonus.magic_atk_ele[ELE_POISON] += 10;
+		if (sc->data[SC_FLAMEARMOR_OPTION])
+		{
+			sd->indexed_bonus.subele[ELE_FIRE] += 100;
+			sd->indexed_bonus.subele[ELE_WATER] -= 30;
+		}
+		if (sc->data[SC_CRYSTAL_ARMOR_OPTION])
+		{
+			sd->indexed_bonus.subele[ELE_WATER] += 100;
+			sd->indexed_bonus.subele[ELE_WIND] -= 30;
+		}
+		if (sc->data[SC_EYES_OF_STORM_OPTION])
+		{
+			sd->indexed_bonus.subele[ELE_WIND] += 100;
+			sd->indexed_bonus.subele[ELE_EARTH] -= 30;
+		}
+		if (sc->data[SC_STRONG_PROTECTION_OPTION])
+		{
+			sd->indexed_bonus.subele[ELE_EARTH] += 100;
+			sd->indexed_bonus.subele[ELE_FIRE] -= 30;
+		}
+		if (sc->data[SC_POISON_SHIELD_OPTION])
+		{
+			sd->indexed_bonus.subele[ELE_POISON] += 100;
+			sd->indexed_bonus.subele[ELE_HOLY] -= 30;
 		}
 	}
 	status_cpy(&sd->battle_status, base_status);
@@ -6224,24 +6306,29 @@ void status_calc_regen_rate(struct block_list *bl, struct regen_data *regen, str
 		case ELEMENTALID_AGNI_S:
 		case ELEMENTALID_AGNI_M:
 		case ELEMENTALID_AGNI_L:
+		case ELEMENTALID_ARDOR:
 			if (sc->data[SC_FIRE_INSIGNIA] && sc->data[SC_FIRE_INSIGNIA]->val1 == 1)
 				regen->rate.hp += 100;
 			break;
 		case ELEMENTALID_AQUA_S:
 		case ELEMENTALID_AQUA_M:
 		case ELEMENTALID_AQUA_L:
+		case ELEMENTALID_DILUVIO:
 			if (sc->data[SC_WATER_INSIGNIA] && sc->data[SC_WATER_INSIGNIA]->val1 == 1)
 				regen->rate.hp += 100;
 			break;
 		case ELEMENTALID_VENTUS_S:
 		case ELEMENTALID_VENTUS_M:
 		case ELEMENTALID_VENTUS_L:
+		case ELEMENTALID_PROCELLA:
 			if (sc->data[SC_WIND_INSIGNIA] && sc->data[SC_WIND_INSIGNIA]->val1 == 1)
 				regen->rate.hp += 100;
 			break;
 		case ELEMENTALID_TERA_S:
 		case ELEMENTALID_TERA_M:
 		case ELEMENTALID_TERA_L:
+		case ELEMENTALID_TERREMOTUS:
+		case ELEMENTALID_SERPENS:
 			if (sc->data[SC_EARTH_INSIGNIA] && sc->data[SC_EARTH_INSIGNIA]->val1 == 1)
 				regen->rate.hp += 100;
 			break;
@@ -9369,10 +9456,16 @@ static unsigned char status_calc_element(struct block_list *bl, struct status_ch
 	if(!sc || !sc->count)
 		return cap_value(element, 0, UCHAR_MAX);
 
-	if(sc->data[SC_FREEZE])
+	if(sc->data[SC_FREEZE] || sc->data[SC_CRYSTAL_ARMOR_OPTION])
 		return ELE_WATER;
-	if(sc->data[SC_STONE] && sc->opt1 == OPT1_STONE)
+	if((sc->data[SC_STONE] && sc->opt1 == OPT1_STONE) || sc->data[SC_STRONG_PROTECTION_OPTION])
 		return ELE_EARTH;
+	if(sc->data[SC_FLAMEARMOR_OPTION])
+		return ELE_FIRE;
+	if(sc->data[SC_EYES_OF_STORM_OPTION])
+		return ELE_WIND;
+	if(sc->data[SC_POISON_SHIELD_OPTION])
+		return ELE_POISON;
 	if(sc->data[SC_BENEDICTIO])
 		return ELE_HOLY;
 	if(sc->data[SC_CHANGEUNDEAD])
@@ -13860,6 +13953,20 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 		case SC_SPELL_ENCHANTING:
 			val2 = 4 * val1;// SMatk Increase
 			break;
+		case SC_FLAMETECHNIC:
+		case SC_FLAMEARMOR:
+		case SC_COLD_FORCE:
+		case SC_CRYSTAL_ARMOR:
+		case SC_GRACE_BREEZE:
+		case SC_EYES_OF_STORM:
+		case SC_EARTH_CARE:
+		case SC_STRONG_PROTECTION:
+		case SC_DEEP_POISONING:
+		case SC_POISON_SHIELD:
+			val2 += 10;
+			val3 += 10000;
+			tick_time = val3;
+			break;
 
 		default:
 			if( calc_flag == SCB_NONE && StatusSkillChangeTable[type] == -1 && StatusIconChangeTable[type] == EFST_BLANK ) {
@@ -16294,6 +16401,16 @@ TIMER_FUNC(status_change_timer){
 	case SC_WIND_STEP:
 	case SC_STONE_SHIELD:
 	case SC_SOLID_SKIN:
+	case SC_FLAMETECHNIC:
+	case SC_FLAMEARMOR:
+	case SC_COLD_FORCE:
+	case SC_CRYSTAL_ARMOR:
+	case SC_GRACE_BREEZE:
+	case SC_EYES_OF_STORM:
+	case SC_EARTH_CARE:
+	case SC_STRONG_PROTECTION:
+	case SC_DEEP_POISONING:
+	case SC_POISON_SHIELD:
 		if( !status_charge(bl,0,sce->val2,0) ) {
 			struct block_list *s_bl = battle_get_master(bl);
 			if (bl->type == BL_ELEM)

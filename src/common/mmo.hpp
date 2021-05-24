@@ -170,9 +170,9 @@ const t_itemid WEDDING_RING_F = 2635;
 #define MAX_ELEMENTALSKILL 57
 #define EL_SKILLBASE 8401
 #define MAX_ELESKILLTREE 3
-#define MAX_ELEMENTAL_CLASS 12
-#define EL_CLASS_BASE 2114
-#define EL_CLASS_MAX (EL_CLASS_BASE+MAX_ELEMENTAL_CLASS-1)
+#define MAX_ELEMENTAL_CLASS 17
+#define EL_CLASS_BASE 2114// Only used for EL_CLASS_MAX.
+#define EL_CLASS_MAX (EL_CLASS_BASE+MAX_ELEMENTAL_CLASS-1)// Not used by anything, making it and EL_CLASS_BASE useless.
 
 //Automated Battle Robot System
 #define ABR_SKILLBASE 8601

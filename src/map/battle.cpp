@@ -2324,24 +2324,29 @@ static int64 battle_calc_base_damage(struct block_list *src, struct status_data 
 			case ELEMENTALID_AGNI_S:
 			case ELEMENTALID_AGNI_M:
 			case ELEMENTALID_AGNI_L:
+			case ELEMENTALID_ARDOR:
 				if (ele_sc->data[SC_FIRE_INSIGNIA] && ele_sc->data[SC_FIRE_INSIGNIA]->val1 == 1)
 					damage += damage * 20 / 100;
 				break;
 			case ELEMENTALID_AQUA_S:
 			case ELEMENTALID_AQUA_M:
 			case ELEMENTALID_AQUA_L:
+			case ELEMENTALID_DILUVIO:
 				if (ele_sc->data[SC_WATER_INSIGNIA] && ele_sc->data[SC_WATER_INSIGNIA]->val1 == 1)
 					damage += damage * 20 / 100;
 				break;
 			case ELEMENTALID_VENTUS_S:
 			case ELEMENTALID_VENTUS_M:
 			case ELEMENTALID_VENTUS_L:
+			case ELEMENTALID_PROCELLA:
 				if (ele_sc->data[SC_WIND_INSIGNIA] && ele_sc->data[SC_WIND_INSIGNIA]->val1 == 1)
 					damage += damage * 20 / 100;
 				break;
 			case ELEMENTALID_TERA_S:
 			case ELEMENTALID_TERA_M:
 			case ELEMENTALID_TERA_L:
+			case ELEMENTALID_TERREMOTUS:
+			case ELEMENTALID_SERPENS:
 				if (ele_sc->data[SC_EARTH_INSIGNIA] && ele_sc->data[SC_EARTH_INSIGNIA]->val1 == 1)
 					damage += damage * 20 / 100;
 				break;
@@ -6622,6 +6627,7 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 
 	TBL_PC *sd;
 	TBL_PC *tsd;
+	TBL_ELEM *ed;
 	struct status_change *sc, *tsc;
 	struct Damage ad;
 	struct status_data *sstatus = status_get_status_data(src);
@@ -6657,6 +6663,7 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 
 	sd = BL_CAST(BL_PC, src);
 	tsd = BL_CAST(BL_PC, target);
+	ed = BL_CAST(BL_ELEM, src);
 	sc = status_get_sc(src);
 	tsc = status_get_sc(target);
 
@@ -6689,15 +6696,18 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 		case SO_PSYCHIC_WAVE:
 			if (sd && (sd->weapontype1 == W_STAFF || sd->weapontype1 == W_2HSTAFF || sd->weapontype1 == W_BOOK))
 				ad.div_ = 2;
-			if( sc && sc->count ) {
-				if( sc->data[SC_HEATER_OPTION] )
-					s_ele = sc->data[SC_HEATER_OPTION]->val3;
-				else if( sc->data[SC_COOLER_OPTION] )
-					s_ele = sc->data[SC_COOLER_OPTION]->val3;
-				else if( sc->data[SC_BLAST_OPTION] )
-					s_ele = sc->data[SC_BLAST_OPTION]->val3;
-				else if( sc->data[SC_CURSED_SOIL_OPTION] )
-					s_ele = sc->data[SC_CURSED_SOIL_OPTION]->val3;
+			if (sc)
+			{
+				if (sc->data[SC_HEATER_OPTION] || sc->data[SC_FLAMETECHNIC_OPTION])
+					s_ele = ELE_FIRE;
+				else if (sc->data[SC_COOLER_OPTION] || sc->data[SC_COLD_FORCE_OPTION])
+					s_ele = ELE_WATER;
+				else if (sc->data[SC_BLAST_OPTION] || sc->data[SC_GRACE_BREEZE_OPTION])
+					s_ele = ELE_WIND;
+				else if (sc->data[SC_CURSED_SOIL_OPTION] || sc->data[SC_EARTH_CARE_OPTION])
+					s_ele = ELE_EARTH;
+				else if (sc->data[SC_DEEP_POISONING_OPTION])
+					s_ele = ELE_POISON;
 			}
 			break;
 		case KO_KAIHOU:
@@ -6870,11 +6880,20 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 					case MG_FIREBOLT:
 					case MG_COLDBOLT:
 					case MG_LIGHTNINGBOLT:
-						if (sc && sc->data[SC_SPELLFIST] && mflag&BF_SHORT)  {
-							skillratio += (sc->data[SC_SPELLFIST]->val3 * 100) + (sc->data[SC_SPELLFIST]->val1 * 50 - 50) - 100; // val3 = used bolt level, val1 = used spellfist level. [Rytech]
-							ad.div_ = 1; // ad mods, to make it work similar to regular hits [Xazax]
-							ad.flag = BF_WEAPON|BF_SHORT;
-							ad.type = DMG_NORMAL;
+						if (sc)
+						{
+							if ((skill_id == MG_FIREBOLT && sc->data[SC_FLAMETECHNIC_OPTION]) ||
+								(skill_id == MG_COLDBOLT && sc->data[SC_COLD_FORCE_OPTION]) ||
+								(skill_id == MG_LIGHTNINGBOLT && sc->data[SC_GRACE_BREEZE_OPTION]))
+								skillratio *= 2;
+
+							if (sc->data[SC_SPELLFIST] && mflag&BF_SHORT)
+							{
+								skillratio += (sc->data[SC_SPELLFIST]->val3 * 100) + (sc->data[SC_SPELLFIST]->val1 * 50 - 50) - 100; // val3 = used bolt level, val1 = used spellfist level. [Rytech]
+								ad.div_ = 1; // ad mods, to make it work similar to regular hits [Xazax]
+								ad.flag = BF_WEAPON | BF_SHORT;
+								ad.type = DMG_NORMAL;
+							}
 						}
 						break;
 					case MG_THUNDERSTORM:
@@ -6919,6 +6938,8 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 #ifdef RENEWAL
 					case WZ_EARTHSPIKE:
 						skillratio += 100;
+						if (sc && sc->data[SC_EARTH_CARE_OPTION])
+							skillratio += skillratio * 80 / 100;
 						break;
 #endif
 					case HW_NAPALMVULCAN:
@@ -7172,8 +7193,14 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 					case SO_CLOUD_KILL:
 						skillratio += -100 + 40 * skill_lv;
 						RE_LVL_DMOD(100);
-						if (sc && sc->data[SC_CURSED_SOIL_OPTION])
-							skillratio += (sd ? sd->status.job_level : 0);
+						if (sc)
+						{
+							if (sc->data[SC_CURSED_SOIL_OPTION])
+								skillratio += (sd ? sd->status.job_level : 0);
+
+							if (sc->data[SC_DEEP_POISONING_OPTION])
+								skillratio += skillratio * 50 / 100;
+						}
 						break;
 					case NPC_CLOUD_KILL:
 						skillratio += -100 + 50 * skill_lv;
@@ -7442,22 +7469,32 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 					case EM_DIAMOND_STORM:
 						skillratio += -100 + 700 * skill_lv + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
+						if (sc && sc->data[SC_SUMMON_ELEMENTAL_DILUVIO])
+							skillratio += skillratio * 30 / 100;
 						break;
 					case EM_LIGHTNING_LAND:
 						skillratio += -100 + 150 * skill_lv + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
+						if (sc && sc->data[SC_SUMMON_ELEMENTAL_PROCELLA])
+							skillratio += skillratio * 30 / 100;
 						break;
 					case EM_VENOM_SWAMP:
 						skillratio += -100 + 150 * skill_lv + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
+						if (sc && sc->data[SC_SUMMON_ELEMENTAL_SERPENS])
+							skillratio += skillratio * 30 / 100;
 						break;
 					case EM_CONFLAGRATION:
 						skillratio += -100 + 150 * skill_lv + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
+						if (sc && sc->data[SC_SUMMON_ELEMENTAL_ARDOR])
+							skillratio += skillratio * 30 / 100;
 						break;
 					case EM_TERRA_DRIVE:
 						skillratio += -100 + 700 * skill_lv + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
+						if (sc && sc->data[SC_SUMMON_ELEMENTAL_TERREMOTUS])
+							skillratio += skillratio * 30 / 100;
 						break;
 					case ABC_FROM_THE_ABYSS_ATK:
 						skillratio += 50 + 70 * skill_lv + 5 * sstatus->spl;
@@ -7473,6 +7510,31 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 							skillratio += 620 * skill_lv;
 						RE_LVL_DMOD(100);
 						break;
+					case EM_EL_FLAMEROCK:
+						skillratio += -100 + 2400;
+						if (ed)
+							skillratio += skillratio * status_get_lv(&ed->master->bl) / 100;
+						break;
+					case EM_EL_AGE_OF_ICE:
+						skillratio += -100 + 3700;
+						if (ed)
+							skillratio += skillratio * status_get_lv(&ed->master->bl) / 100;
+						break;
+					case EM_EL_STORM_WIND:
+						skillratio += -100 + 2600;
+						if (ed)
+							skillratio += skillratio * status_get_lv(&ed->master->bl) / 100;
+						break;
+					case EM_EL_AVALANCHE:
+						skillratio += -100 + 450;
+						if (ed)
+							skillratio += skillratio * status_get_lv(&ed->master->bl) / 100;
+						break;
+					case EM_EL_DEADLY_POISON:
+						skillratio += -100 + 700;
+						if (ed)
+							skillratio += skillratio * status_get_lv(&ed->master->bl) / 100;
+						break;
 				}
 
 				if (sc) {// Insignia's increases the damage of offensive magic by a fixed percentage depending on the element.
@@ -7481,12 +7543,6 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 						(sc->data[SC_WIND_INSIGNIA] && sc->data[SC_WIND_INSIGNIA]->val1 == 3 && s_ele == ELE_WIND) ||
 						(sc->data[SC_EARTH_INSIGNIA] && sc->data[SC_EARTH_INSIGNIA]->val1 == 3 && s_ele == ELE_EARTH))
 						skillratio += 25;
-
-					if (sc->data[SC_CLIMAX_DES_HU] && s_ele == ELE_WIND)
-						skillratio += skillratio * 30 / 100;
-
-					if (sc->data[SC_CLIMAX_CRYIMP] && s_ele == ELE_WATER)
-						skillratio += skillratio * 30 / 100;
 				}
 
 				MATK_RATE(skillratio);
@@ -8359,6 +8415,48 @@ int battle_damage_area(struct block_list *bl, va_list ap) {
 
 	return 0;
 }
+// Triggers aftercast delay for autocasted skills.
+void battle_autocast_aftercast(struct block_list* src, uint16 skill_id, uint16 skill_lv, t_tick tick)
+{
+	struct map_session_data *sd = NULL;
+	struct unit_data *ud;
+
+	sd = BL_CAST(BL_PC, src);
+	ud = unit_bl2ud(src);
+
+	if (ud)
+	{
+		int autocast_tick = skill_delayfix(src, skill_id, skill_lv);
+
+		if (DIFF_TICK(ud->canact_tick, tick + autocast_tick) < 0)
+		{
+			ud->canact_tick = i64max(tick + autocast_tick, ud->canact_tick);
+			if (battle_config.display_status_timers && sd)
+				clif_status_change(src, EFST_POSTDELAY, 1, autocast_tick, 0, 0, 0);
+		}
+	}
+}
+// Triggers autocasted skills from super elemental supportive buffs.
+void battle_autocast_elembuff_skill(struct block_list* src, struct block_list* target, uint16 skill_id, t_tick tick, int flag)
+{
+	struct map_session_data *sd = NULL;
+	uint16 skill_lv;
+
+	sd = BL_CAST(BL_PC, src);
+
+	skill_lv = pc_checkskill(sd, skill_id);
+
+	if (skill_lv < 1)
+		skill_lv = 1;
+
+	sd->state.autocast = 1;
+	if (status_charge(src, 0, skill_get_sp(skill_id, skill_lv), 0))
+	{
+		skill_castend_damage_id(src, target, skill_id, skill_lv, tick, flag);
+		battle_autocast_aftercast(src, skill_id, skill_lv, tick);
+	}
+	sd->state.autocast = 0;
+}
 /*==========================================
  * Do a basic physical attack (call through unit_attack_timer)
  *------------------------------------------*/
@@ -8801,47 +8899,23 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 		{
 			uint16 skill_id = DK_SERVANTWEAPON_ATK;
 			uint16 skill_lv = sc->data[SC_SERVANTWEAPON]->val1;
-			struct unit_data *ud = unit_bl2ud(src);
 
 			sd->state.autocast = 1;
 			pc_delservantball(sd, 1, 0);
 			skill_castend_damage_id(src, target, skill_id, skill_lv, tick, flag);
+			battle_autocast_aftercast(src, skill_id, skill_lv, tick);
 			sd->state.autocast = 0;
-
-			if (ud)
-			{
-				int autospell_tick = skill_delayfix(src, skill_id, skill_lv);
-
-				if (DIFF_TICK(ud->canact_tick, tick + autospell_tick) < 0)
-				{
-					ud->canact_tick = i64max(tick + autospell_tick, ud->canact_tick);
-					if (battle_config.display_status_timers && sd)
-						clif_status_change(src, EFST_POSTDELAY, 1, autospell_tick, 0, 0, 0);
-				}
-			}
 		}
 		// Whats the official success chance? Is SP consumed for every autocast? [Rytech]
 		if (sc && sc->data[SC_DUPLELIGHT] && pc_checkskill(sd, CD_PETITIO) > 0 && rnd() % 100 < 20)
 		{
 			uint16 skill_id = CD_PETITIO;
 			uint16 skill_lv = pc_checkskill(sd, CD_PETITIO);
-			struct unit_data *ud = unit_bl2ud(src);
 
 			sd->state.autocast = 1;
 			skill_castend_damage_id(src, target, skill_id, skill_lv, tick, flag);
+			battle_autocast_aftercast(src, skill_id, skill_lv, tick);
 			sd->state.autocast = 0;
-
-			if (ud)
-			{
-				int autospell_tick = skill_delayfix(src, skill_id, skill_lv);
-
-				if (DIFF_TICK(ud->canact_tick, tick + autospell_tick) < 0)
-				{
-					ud->canact_tick = i64max(tick + autospell_tick, ud->canact_tick);
-					if (battle_config.display_status_timers && sd)
-						clif_status_change(src, EFST_POSTDELAY, 1, autospell_tick, 0, 0, 0);
-				}
-			}
 		}
 		// It has a success chance of triggering even tho the description says nothing about it.
 		// Need to find out what the official success chance is. [Rytech]
@@ -8849,24 +8923,12 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 		{
 			uint16 skill_id = ABC_FROM_THE_ABYSS_ATK;
 			uint16 skill_lv = sc->data[SC_ABYSSFORCEWEAPON]->val1;
-			struct unit_data *ud = unit_bl2ud(src);
 
 			sd->state.autocast = 1;
 			pc_delabyssball(sd, 1, 0);
 			skill_castend_damage_id(src, target, skill_id, skill_lv, tick, flag);
+			battle_autocast_aftercast(src, skill_id, skill_lv, tick);
 			sd->state.autocast = 0;
-
-			if (ud)
-			{
-				int autospell_tick = skill_delayfix(src, skill_id, skill_lv);
-
-				if (DIFF_TICK(ud->canact_tick, tick + autospell_tick) < 0)
-				{
-					ud->canact_tick = i64max(tick + autospell_tick, ud->canact_tick);
-					if (battle_config.display_status_timers && sd)
-						clif_status_change(src, EFST_POSTDELAY, 1, autospell_tick, 0, 0, 0);
-				}
-			}
 		}
 		// It has a success chance of triggering even tho the description says nothing about it.
 		// Need to find out what the official success chance is. [Rytech]
@@ -8874,23 +8936,24 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 		{
 			uint16 skill_id = ABC_ABYSS_SQUARE;
 			uint16 skill_lv = pc_checkskill(sd, ABC_ABYSS_SQUARE);
-			struct unit_data *ud = unit_bl2ud(src);
 
 			sd->state.autocast = 1;
 			skill_castend_pos2(src, target->x, target->y, skill_id, skill_lv, tick, flag);
+			battle_autocast_aftercast(src, skill_id, skill_lv, tick);
 			sd->state.autocast = 0;
-
-			if (ud)
-			{
-				int autospell_tick = skill_delayfix(src, skill_id, skill_lv);
-
-				if (DIFF_TICK(ud->canact_tick, tick + autospell_tick) < 0)
-				{
-					ud->canact_tick = i64max(tick + autospell_tick, ud->canact_tick);
-					if (battle_config.display_status_timers && sd)
-						clif_status_change(src, EFST_POSTDELAY, 1, autospell_tick, 0, 0, 0);
-				}
-			}
+		}
+		if (sc)
+		{// Autocasted skills from super elemental supportive buffs.
+			if (sc->data[SC_FLAMETECHNIC_OPTION] && rnd() % 100 < 7)
+				battle_autocast_elembuff_skill(src, target, MG_FIREBOLT, tick, flag);
+			if (sc->data[SC_COLD_FORCE_OPTION] && rnd() % 100 < 7)
+				battle_autocast_elembuff_skill(src, target, MG_COLDBOLT, tick, flag);
+			if (sc->data[SC_GRACE_BREEZE_OPTION] && rnd() % 100 < 7)
+				battle_autocast_elembuff_skill(src, target, MG_LIGHTNINGBOLT, tick, flag);
+			if (sc->data[SC_EARTH_CARE_OPTION] && rnd() % 100 < 7)
+				battle_autocast_elembuff_skill(src, target, WZ_EARTHSPIKE, tick, flag);
+			if (sc->data[SC_DEEP_POISONING_OPTION] && rnd() % 100 < 7)
+				battle_autocast_elembuff_skill(src, target, SO_POISON_BUSTER, tick, flag);
 		}
 		if (wd.flag & BF_WEAPON && src != target && damage > 0) {
 			if (battle_config.left_cardfix_to_right)
