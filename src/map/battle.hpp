@@ -697,11 +697,12 @@ struct Battle_Config
 	int use_traitpoint_table;
 	int max_trait_parameter;
 	int max_res_mres_reduction;
+	int max_ap;
 	int ap_rate;
 	int restart_ap_rate;
-	int max_ap;
-	int keep_ap_on_logout;
 	int loose_ap_on_death;
+	int keep_ap_on_logout;
+	int a_machine_level_difference;
 
 #include "../custom/battle_config_struct.inc"
 };

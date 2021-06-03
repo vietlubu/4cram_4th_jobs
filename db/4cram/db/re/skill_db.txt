@@ -187,21 +187,21 @@
 5293,0,6,4,0,0x1,0,5,1,yes,0,0,0,none,0,0,0,	SHC_ENCHANTING_SHADOW,Enchanting Shadow// How does the damage increase work?
 5294,9,6,1,-1,0x2,3,10,1,yes,0,0,0,weapon,0,0,0,	SHC_FATAL_SHADOW_CROW,Fatal Shadow Crow// Whats official splash size?
 
-// Meister - Make all skills work in mado.
-5295,0,8,4,-1,0x2,1:1:2:2:3,5,1,yes,0,0,0,weapon,0,0,2,	MT_AXE_STOMP,Axe Stomp
-5296,9,6,1,-1,0x2,1:1:1:1:2:2:2:2:3:3,10,1,yes,0,0,0,weapon,0,0,0,	MT_RUSH_QUAKE,Rush Quake
-5297,0,6,4,0,0x1,0,5,1,yes,0,0,0,none,0,0,0,	MT_M_MACHINE,Manufacture Machine
-5298,1,6,16,-1,0x2,1:1:2:2:3,5,1,yes,0,0x400,0,weapon,0,0,0,	MT_A_MACHINE,Attack Machine
-5299,1,6,16,0,0x1,0,5,1,yes,0,0x400,0,none,0,0,0,	MT_D_MACHINE,Defense Machine// Needs update for level gap limit.
+// Meister
+5295,0,8,4,-1,0x2,1:1:2:2:3,5,1,yes,0,0,0,weapon,0,0x4000,2,	MT_AXE_STOMP,Axe Stomp
+5296,9,6,1,-1,0x2,1:1:1:1:2:2:2:2:3:3,10,1,yes,0,0,0,weapon,0,0x4000,0,	MT_RUSH_QUAKE,Rush Quake
+5297,0,6,4,0,0x1,0,5,1,yes,0,0,0,none,0,0x4000,0,	MT_M_MACHINE,Manufacture Machine
+5298,1,6,16,-1,0x2,1:1:2:2:3,5,1,yes,0,0x400,0,weapon,0,0x4000,0,	MT_A_MACHINE,Attack Machine
+5299,1,6,16,0,0x1,0,5,1,yes,0,0x400,0,none,0,0x4000,0,	MT_D_MACHINE,Defense Machine
 5300,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	MT_TWOAXEDEF,Two Hand Axe Def
 5301,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	MT_ABR_M,ABR Mastery
-5302,0,6,4,0,0x1,0,4,1,yes,0,0,1,none,0,0,20,	MT_SUMMON_ABR_BATTLE_WARIOR,ABR Battle Warior
-5303,0,6,4,0,0x1,0,4,1,yes,0,0,1,none,0,0,20,	MT_SUMMON_ABR_DUAL_CANNON,ABR Dual Cannon
-5304,0,6,4,0,0x1,0,4,1,yes,0,0,1,none,0,0,20,	MT_SUMMON_ABR_MOTHER_NET,ABR Mother Net
-5305,0,6,4,0,0x1,0,4,1,yes,0,0,1,none,0,0,0,	MT_SUMMON_ABR_INFINITY,ABR Infinity
+5302,0,6,4,0,0x1,0,4,1,yes,0,0,1,none,0,0x4000,20,	MT_SUMMON_ABR_BATTLE_WARIOR,ABR Battle Warior
+5303,0,6,4,0,0x1,0,4,1,yes,0,0,1,none,0,0x4000,20,	MT_SUMMON_ABR_DUAL_CANNON,ABR Dual Cannon
+5304,0,6,4,0,0x1,0,4,1,yes,0,0,1,none,0,0x4000,20,	MT_SUMMON_ABR_MOTHER_NET,ABR Mother Net
+5305,0,6,4,0,0x1,0,4,1,yes,0,0,1,none,0,0x4000,0,	MT_SUMMON_ABR_INFINITY,ABR Infinity
 
 // Extra 4th Job Skills 1
-5306,0,6,1,4,0,0,5,1,no,0,0,0,magic,0,0,0,	AG_DESTRUCTIVE_HURRICANE_CLIMAX,Destructive Hurricane Climax
+5306,0,6,1,4,0,0,5,1,no,0,0,0,magic,0,0,0,	AG_DESTRUCTIVE_HURRICANE_CLIMAX,Destructive Hurricane Climax// Attack or buff?
 5307,0,6,1,1,0x40,0,5,1,no,0,0,0,weapon,0,0,0,	BO_ACIDIFIED_ZONE_WATER_ATK,Actified Zone Water Attack
 5308,0,6,1,2,0x40,0,5,1,no,0,0,0,weapon,0,0,0,	BO_ACIDIFIED_ZONE_GROUND_ATK,Actified Zone Ground Attack
 5309,0,6,1,4,0x40,0,5,1,no,0,0,0,weapon,0,0,0,	BO_ACIDIFIED_ZONE_WIND_ATK,Actified Zone Wind Attack
@@ -233,7 +233,7 @@
 5331,1,6,2,7,0x40,0,5,1,yes,0,0,0,weapon,0,0,3,	WH_DEEPBLINDTRAP,Deep Blind Trap
 5332,1,6,2,2,0x40,0,5,1,yes,0,0,0,weapon,0,0,3,	WH_SOLIDTRAP,Solid Trap
 5333,1,6,2,4,0x40,0,5,1,yes,0,0,0,weapon,0,0,3,	WH_SWIFTTRAP,Swift Trap
-5334,9,6,1,-1,0x100,0,10,1,yes,0,0,0,weapon,0,0,0,	WH_CRESCIVE_BOLT,Crescive Bolt
+5334,9,6,1,-1,0x100,0,10,1,yes,0,0,0,weapon,0,0,1,	WH_CRESCIVE_BOLT,Crescive Bolt
 5335,1,6,2,3,0x40,0,5,1,yes,0,0,0,weapon,0,0,3,	WH_FLAMETRAP,Flame Trap
 
 // Biolo

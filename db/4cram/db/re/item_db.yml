@@ -17,6 +17,20 @@ Body:
       All_Baby: true
     Script: |
       sc_end SC_CURSE;
+  - Id: 678
+    AegisName: Poison_Bottle
+    Name: Poison Bottle
+    Type: Usable
+    Buy: 5000
+    Weight: 100
+    Classes:
+      All_Third: true
+      Normal: true
+      Upper: true
+      Baby: true
+      All_Baby: true
+    Script: |
+      if(Class == Job_Assassin_Cross || Class == Job_Guillotine_Cross || Class == Job_Guillotine_Cross_T || Class == Job_Shadow_Cross) { sc_start SC_DPOISON,60000,0; sc_start SC_ASPDPOTION3,60000,9; } else percentheal -100,-100;
   - Id: 7940
     AegisName: Special_Alloy_Trap
     Name: Special Alloy Trap
@@ -37,15 +51,6 @@ Body:
       All_Baby: true
     Script: |
       itemheal rand(5,25),0;
-  - Id: 100371
-    AegisName: Homunculus_Supplement
-    Name: Homunculus Supplement
-    Type: Usable
-    Buy: 20
-    Weight: 10
-    Classes:
-      All: false
-    Gender: Female
   - Id: 1000275
     AegisName: Beaker
     Name: Beaker

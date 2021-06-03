@@ -7,13 +7,17 @@
 //=============================================================
 523,Holy_Water,Holy Water,0,20,,30,,,,,0xFFFFFFFF,63,2,,,,,,{ sc_end SC_CURSE; },{},{}
 
+678,Poison_Bottle,Poison Bottle,2,5000,,100,,,,,0xFFFFFFFF,63,2,,,,,,{ if(Class == Job_Assassin_Cross || Class == Job_Guillotine_Cross || Class == Job_Guillotine_Cross_T || Class == Job_Shadow_Cross) { sc_start SC_DPOISON,60000,0; sc_start SC_ASPDPOTION3,60000,9; } else percentheal -100,-100; },{},{}
+
 7940,Special_Alloy_Trap,Special Alloy Trap,3,300,,2,,,,,,,,,,,,,{},{},{}
 
 11513,Protect_Neck_Candy,Protect Neck Candy,0,200,,1,,,,,0xFFFFFFFF,63,2,,,,,,{ itemheal rand(5,25),0; },{},{}
 
-// Homunculus Supplement - Increases homunculus intimacy
-100371,Homunculus_Supplement,Homunculus Supplement,2,20,,10,,,,,,,,,,,,,{},{},{}
+// Homunculus Supplement - Increases homunculus intimacy - Disabled as rAthena added support for it.
+//100371,Homunculus_Supplement,Homunculus Supplement,2,20,,10,,,,,,,,,,,,,{},{},{}
 
+// 4th Job Related Items
+//=============================================================
 // Biolo Items
 1000275,Beaker,Beaker,3,1000,,1,,,,,,,,,,,,,{},{},{}
 1000276,Flame_Acid_Bottle,Flame Acid Bottle,3,20,,1,,,,,,,,,,,,,{},{},{}
