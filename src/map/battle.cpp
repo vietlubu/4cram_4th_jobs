@@ -953,6 +953,7 @@ int battle_calc_cardfix(int attack_type, struct block_list *src, struct block_li
 				int32 race_fix = 0;
 
 				cardfix = cardfix * (100 - tsd->indexed_bonus.subsize[sstatus->size] - tsd->indexed_bonus.subsize[SZ_ALL]) / 100;
+				cardfix = cardfix * (100 - tsd->indexed_bonus.weapon_subsize[sstatus->size] - tsd->indexed_bonus.weapon_subsize[SZ_ALL]) / 100;
 				for (const auto &raceit : s_race2)
 					race_fix += tsd->indexed_bonus.subrace2[raceit];
 				cardfix = cardfix * (100 - race_fix) / 100;
@@ -6734,6 +6735,9 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 			ad.div_ += mflag;
 			if (ad.div_ > 5)// Number of hits doesn't go above 5.
 				ad.div_ = 5;
+		case TR_SOUNDBLEND:
+			if (sd)
+				s_ele = sd->bonus.arrow_ele;
 			break;
 	}
 

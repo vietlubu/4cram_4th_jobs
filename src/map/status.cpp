@@ -4552,7 +4552,7 @@ static unsigned int status_calc_maxap_pc(struct map_session_data* sd) {
 
 	nullpo_ret(sd);
 
-	dmax = (sd->class_&JOBL_FORTH) ? 200 : 0;
+	dmax = (sd->class_&JOBL_FOURTH) ? 200 : 0;
 	dmax += status_get_apbonus(&sd->bl, STATUS_BONUS_FIX);
 	equip_bonus = (dmax * status_get_apbonus_equip(sd) / 100);
 	item_bonus = (dmax * status_get_apbonus_item(&sd->bl) / 100);
@@ -5561,9 +5561,9 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 		short medium_def[10] = { 2, 3, 5, 6, 8, 9, 11, 12, 14, 15 };
 		short large_def[10] = { 3, 5, 7, 9, 10, 12, 13, 15, 16, 18 };
 
-		sd->indexed_bonus.subsize[SZ_SMALL] += small_def[skill-1];
-		sd->indexed_bonus.subsize[SZ_MEDIUM] += medium_def[skill-1];
-		sd->indexed_bonus.subsize[SZ_BIG] += large_def[skill-1];
+		sd->indexed_bonus.weapon_subsize[SZ_SMALL] += small_def[skill-1];
+		sd->indexed_bonus.weapon_subsize[SZ_MEDIUM] += medium_def[skill-1];
+		sd->indexed_bonus.weapon_subsize[SZ_BIG] += large_def[skill-1];
 	}
 	if ((skill = pc_checkskill(sd, IQ_WILL_OF_FAITH)) > 0 && sd->status.weapon == W_KNUCKLE)
 	{
@@ -5602,9 +5602,9 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 		short medium_def[10] = { 2, 3, 5, 6, 8, 9, 11, 12, 14, 15 };
 		short large_def[10] = { 3, 5, 7, 9, 10, 12, 13, 15, 16, 18 };
 
-		sd->indexed_bonus.subsize[SZ_SMALL] += small_def[skill-1];
-		sd->indexed_bonus.subsize[SZ_MEDIUM] += medium_def[skill-1];
-		sd->indexed_bonus.subsize[SZ_BIG] += large_def[skill-1];
+		sd->indexed_bonus.weapon_subsize[SZ_SMALL] += small_def[skill-1];
+		sd->indexed_bonus.weapon_subsize[SZ_MEDIUM] += medium_def[skill-1];
+		sd->indexed_bonus.weapon_subsize[SZ_BIG] += large_def[skill-1];
 	}
 	if ((skill = pc_checkskill(sd, ABC_DAGGER_AND_BOW_M)) > 0 && (sd->status.weapon == W_DAGGER || sd->status.weapon == W_BOW || 
 		sd->status.weapon == W_DOUBLE_DD || sd->status.weapon == W_DOUBLE_DS || sd->status.weapon == W_DOUBLE_DA))

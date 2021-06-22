@@ -2608,9 +2608,9 @@ static bool itemdb_read_db(const char* file) {
 			} else {
 				body << YAML::Key << "Classes";
 				body << YAML::BeginMap;
-				if (ITEMJ_FORTH & temp_class) {
-					temp_class &= ~ITEMJ_ALL_FORTH;
-					body << YAML::Key << "All_Forth" << YAML::Value << "true";
+				if (ITEMJ_FOURTH & temp_class) {
+					temp_class &= ~ITEMJ_ALL_FOURTH;
+					body << YAML::Key << "All_Fourth" << YAML::Value << "true";
 				}
 				if ((ITEMJ_THIRD & temp_class) && (ITEMJ_THIRD_UPPER & temp_class) && (ITEMJ_THIRD_BABY & temp_class)) {
 					temp_class &= ~ITEMJ_ALL_THIRD;
@@ -2624,7 +2624,7 @@ static bool itemdb_read_db(const char* file) {
 					temp_class &= ~ITEMJ_ALL_BABY;
 					body << YAML::Key << "All_Baby" << YAML::Value << "true";
 				}
-				for (int32 i = ITEMJ_NONE; i <= ITEMJ_FORTH; i++) {
+				for (int32 i = ITEMJ_NONE; i <= ITEMJ_FOURTH; i++) {
 					if (i & temp_class) {
 						const char* class_ = constant_lookup(i, "ITEMJ_");
 

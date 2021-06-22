@@ -148,7 +148,7 @@
 5258,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	IG_SHIELD_MASTERY,Shield Mastery
 5259,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	IG_SPEAR_SWORD_M,Spear And Sword Mastery
 5260,0,6,4,0,0x1,0,5,1,yes,0,0,0,none,0,0,0,	IG_ATTACK_STANCE,Attack Stance
-5261,0,6,4,0,0x1,1:1:2:2:3,5,1,yes,0,0,0,none,0,0,0,	IG_ULTIMATE_SACRIFICE,Ultimate Sacrifice// Recheck animation.
+5261,0,6,4,0,0x1,1:1:2:2:3,5,1,yes,0,0,0,none,0,0,0,	IG_ULTIMATE_SACRIFICE,Ultimate Sacrifice
 5262,0,6,4,0,0x1,0,5,1,yes,0,0,0,none,0,0,0,	IG_HOLY_SHIELD,Holy Shield
 5263,9,6,1,-1,0x2,3,10,1,yes,0,0,0,weapon,0,0,0,	IG_GRAND_JUDGEMENT,Grand Judgement
 5264,9,8,1,6,0,0,10,-10,yes,0,0,0,magic,0,0,0,	IG_JUDGEMENT_CROSS,Judgement Cross
@@ -226,7 +226,7 @@
 5324,9,6,1,0,0x1,0,5,1,yes,0,0,0,none,0,0,0,	WH_WIND_SIGN,Wind Sign
 5325,0,0,0,0,0,0,5,0,no,0,0,0,none,0,0,0,	WH_NATUREFRIENDLY,Nature Friendly
 5326,9,8,1,0,0x100,0,5,-2,yes,0,0,0,weapon,0,0,0,	WH_HAWKRUSH,Hawk Rush
-5327,0,6,4,0,0x1,0,1,1,yes,0,0,0,none,0,0,0,	WH_HAWK_M,Hawk Mastery// Need to add flute requirement.
+5327,0,6,4,0,0x1,0,1,1,yes,0,0,0,none,0,0,0,	WH_HAWK_M,Hawk Mastery
 5328,0,6,4,0,0x1,0,1,1,yes,0,0,0,none,0,0,0,	WH_CALAMITYGALE,Calamity Gale
 5329,9,6,1,0,0x100,0,5,1,yes,0,0,0,weapon,0,0,0,	WH_HAWKBOOMERANG,Hawk Boomerang
 5330,9,8,1,-1,0x102,2:2:2:2:3:3:3:4:4:5,10,-5,yes,0,0,0,weapon,0,0,0,	WH_GALESTORM,Gale Storm
@@ -240,7 +240,7 @@
 5336,0,6,4,0,0x1,0,5,1,yes,0,0,0,none,0,0,0,	BO_BIONIC_PHARMACY,Bionic Pharmacy// Added cure items later.
 5337,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	BO_BIONICS_M,Bionics Mastery
 5338,0,6,4,0,0x3,7:7:7:15:15,5,1,yes,0,0,0,none,0,0,20,	BO_THE_WHOLE_PROTECTION,The Whole Protection
-5339,1,6,16,0,0x1,0,4,1,yes,0,0,0,none,0,0,2:2:3:3,	BO_ADVANCE_PROTECTION,Advance Protection// Will code when Shadow Gear Strip skill is coded in.
+5339,1,6,16,0,0x1,0,4,1,yes,0,0,0,none,0,0,2:2:3:3,	BO_ADVANCE_PROTECTION,Advance Protection
 5340,7,8,1,1,0x2,1:1:2:2:3,5,-3,yes,0,0,0,weapon,0,0,4:4:4:5:5,	BO_ACIDIFIED_ZONE_WATER,Acidified Zone Water
 5341,7,8,1,2,0x2,1:1:2:2:3,5,-3,yes,0,0,0,weapon,0,0,4:4:4:5:5,	BO_ACIDIFIED_ZONE_GROUND,Acidified Zone Ground
 5342,7,8,1,4,0x2,1:1:2:2:3,5,-3,yes,0,0,0,weapon,0,0,4:4:4:5:5,	BO_ACIDIFIED_ZONE_WIND,Acidified Zone Wind
@@ -259,8 +259,8 @@
 5353,9,8,1,-1,0,0,5,-2,yes,0,0,0,weapon,0,0,5,	TR_ROSEBLOSSOM,Rose Blossom
 5354,9,6,1,-1,0x2,1:1:2:2:3,5,1,no,0,0,0,weapon,0,0,0,	TR_ROSEBLOSSOM_ATK,Rose Blossom Attack
 5355,9,8,1,-1,0,0,5,3,yes,0,0,0,weapon,0,0,1:1:1:2:2,	TR_RHYTHMSHOOTING,Rhythm Shooting
-5356,9,8,1,-1,0x2,2:2:2:3:3,5,1,yes,0,0,0,magic,0,0,4:4:4:5:5,	TR_METALIC_FURY,Metalic Fury// Sound Blend status ends after hit? Arrow element?
-5357,9,6,1,-1,0x1,0,5,1,yes,0,0,0,magic,0,0,2:2:2:3:3,	TR_SOUNDBLEND,Sound Blend// Need video on updated behavior and cooldown. Arrow element?
+5356,9,8,1,-1,0x2,2:2:2:3:3,5,1,yes,0,0,0,magic,0,0,4:4:4:5:5,	TR_METALIC_FURY,Metalic Fury// Sound Blend status ends after hit?
+5357,9,6,1,-1,0x1,0,5,1,yes,0,0,0,magic,0,0,2:2:2:3:3,	TR_SOUNDBLEND,Sound Blend// Need video on updated behavior and cooldown.
 5358,0,6,4,0,0x3,7:8:9:10:11,5,1,yes,0,0,0,none,0,0,20,	TR_GEF_NOCTURN,Geffenia Nocturn
 5359,0,6,4,0,0x3,7:8:9:10:11,5,1,yes,0,0,0,none,0,0,20,	TR_ROKI_CAPRICCIO,Roki Capriccio
 5360,0,6,4,0,0x3,7:8:9:10:11,5,1,yes,0,0,0,none,0,0,20,	TR_AIN_RHAPSODY,Ain Rhapsody
@@ -279,7 +279,7 @@
 5371,9,6,2,5,0,0,5,1,yes,0,0,0,magic,0,0,4,	EM_VENOM_SWAMP,Venom Swamp
 5372,9,6,2,3,0,0,5,1,yes,0,0,0,magic,0,0,4,	EM_CONFLAGRATION,Conflagration
 5373,9,8,2,2,0,0,5,-5,yes,0,0,0,magic,0,0,4,	EM_TERRA_DRIVE,Terra Drive
-5374,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	EM_ELEMENTAL_SPIRIT_M,Elemental Spirit Mastery// Code in the super elemental skills later.
+5374,0,0,0,0,0,0,10,0,no,0,0,0,none,0,0,0,	EM_ELEMENTAL_SPIRIT_M,Elemental Spirit Mastery
 5375,0,6,4,0,0x1,0,1,1,yes,0,0,0,none,0,0,0,	EM_SUMMON_ELEMENTAL_ARDOR,Summon Elemental Ardor
 5376,0,6,4,0,0x1,0,1,1,yes,0,0,0,none,0,0,0,	EM_SUMMON_ELEMENTAL_DILUVIO,Summon Elemental Diluvio
 5377,0,6,4,0,0x1,0,1,1,yes,0,0,0,none,0,0,0,	EM_SUMMON_ELEMENTAL_PROCELLA,Summon Elemental Procella

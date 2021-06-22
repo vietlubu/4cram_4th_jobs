@@ -1541,7 +1541,7 @@ static bool pc_isItemClass (struct map_session_data *sd, struct item_data* item)
 			break;
 #endif
 		// 4th Jobs - For equips exclusive to any 4th job classes only.
-		if (item->class_upper&ITEMJ_FORTH && sd->class_&JOBL_FORTH)
+		if (item->class_upper&ITEMJ_FOURTH && sd->class_&JOBL_FOURTH)
 			break;
 		return false;
 	}
@@ -2490,7 +2490,7 @@ int pc_calc_skilltree_normalize_job(struct map_session_data *sd)
 	}
 
 	// 3rd Class Job LV Check
-	if (sd->class_&JOBL_FORTH && !sd->change_level_4th)
+	if (sd->class_&JOBL_FOURTH && !sd->change_level_4th)
 	{
 		sd->change_level_4th = job_info[pc_class2idx(pc_mapid2jobid(sd->class_&MAPID_THIRDMASK, sd->status.sex))].max_level[1];
 		pc_setglobalreg(sd, add_str(JOBCHANGE4TH_VAR), sd->change_level_4th);
@@ -4280,6 +4280,11 @@ void pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 		PC_BONUS_CHK_SIZE(type2,SP_SUBSIZE);
 		if(sd->state.lr_flag != 2)
 			sd->indexed_bonus.subsize[type2]+=val;
+		break;
+	case SP_WEAPON_SUBSIZE: // bonus2 bWeaponSubSize,s,x;
+		PC_BONUS_CHK_SIZE(type2, SP_WEAPON_SUBSIZE);
+		if (sd->state.lr_flag != 2)
+			sd->indexed_bonus.weapon_subsize[type2] += val;
 		break;
 	case SP_MAGIC_SUBSIZE: // bonus2 bMagicSubSize,s,x;
 		PC_BONUS_CHK_SIZE(type2,SP_MAGIC_SUBSIZE);
@@ -8499,7 +8504,7 @@ int pc_resetstate(struct map_session_data* sd)
 		sd->status.trait_point += add;
 	}
 
-	if ((sd->class_&JOBL_FORTH) != 0) {
+	if ((sd->class_&JOBL_FOURTH) != 0) {
 		sd->status.trait_point += battle_config.trait_points_job_change;
 	}
 
@@ -10015,7 +10020,7 @@ bool pc_jobchange(struct map_session_data *sd,int job, char upper)
 		pc_setglobalreg(sd, add_str(JOBCHANGE3RD_VAR), sd->change_level_3rd);
 	}
 	// changing from 3rd to 4th job
-	else if ((b_class&JOBL_FORTH) && !(sd->class_&JOBL_FORTH)) {
+	else if ((b_class&JOBL_FOURTH) && !(sd->class_&JOBL_FOURTH)) {
 		sd->change_level_4th = sd->status.job_level;
 		pc_setglobalreg(sd, add_str(JOBCHANGE4TH_VAR), sd->change_level_4th);
 	}
@@ -10059,11 +10064,11 @@ bool pc_jobchange(struct map_session_data *sd,int job, char upper)
 	}
 
 	// Give or reduce trait status points
-	if ((b_class&JOBL_FORTH) && !(sd->class_&JOBL_FORTH)) {// Change to a 4th job.
+	if ((b_class&JOBL_FOURTH) && !(sd->class_&JOBL_FOURTH)) {// Change to a 4th job.
 		sd->status.trait_point += battle_config.trait_points_job_change;
 		clif_updatestatus(sd, SP_TRAITPOINT);
 	}
-	else if (!(b_class&JOBL_FORTH) && (sd->class_&JOBL_FORTH)) {// Change to a non 4th job.
+	else if (!(b_class&JOBL_FOURTH) && (sd->class_&JOBL_FOURTH)) {// Change to a non 4th job.
 		if (sd->status.trait_point < battle_config.trait_points_job_change) {
 			// Player may have already used the trait statu points. Force a reset.
 			pc_resetstate(sd);

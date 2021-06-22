@@ -994,7 +994,6 @@ bool skill_isNotOk(uint16 skill_id, struct map_session_data *sd)
 		case WM_LULLABY_DEEPSLEEP:
 		case WM_GLOOMYDAY:
 		case WM_SATURDAY_NIGHT_FEVER:
-		case EM_ACTIVITY_BURN:
 			if( !mapdata_flag_vs(mapdata) ) {
 				clif_skill_teleportmessage(sd,2); // This skill uses this msg instead of skill fails.
 				return true;
@@ -8475,18 +8474,13 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case WM_FRIGG_SONG:
 	case NV_HELPANGEL:
 	case IG_GUARDIAN_SHIELD:
+	case IG_ULTIMATE_SACRIFICE:// Is the animation on this skill correct? Check if its on caster only or all affected. [Rytech]
 		if( sd == NULL || sd->status.party_id == 0 || (flag & 1) )
 			clif_skill_nodamage(bl, bl, skill_id, skill_lv, sc_start(src,bl,type,100,skill_lv,skill_get_time(skill_id,skill_lv)));
-		else if( sd )
-			party_foreachsamemap(skill_area_sub, sd, skill_get_splash(skill_id, skill_lv), src, skill_id, skill_lv, tick, flag|BCT_PARTY|1, skill_castend_nodamage_id);
-		break;
-
-	case IG_ULTIMATE_SACRIFICE:// Fix my animation???
-		if (sd == NULL || sd->status.party_id == 0 || (flag & 1))
-			clif_skill_nodamage(bl, bl, skill_id, skill_lv, sc_start(src, bl, type, 100, skill_lv, skill_get_time(skill_id, skill_lv)));
 		else if (sd)
 		{
-			status_set_hp(src, 1, 0);
+			if (skill_id == IG_ULTIMATE_SACRIFICE)
+				status_set_hp(src, 1, 0);
 			party_foreachsamemap(skill_area_sub, sd, skill_get_splash(skill_id, skill_lv), src, skill_id, skill_lv, tick, flag|BCT_PARTY|1, skill_castend_nodamage_id);
 		}
 		break;
@@ -16502,7 +16496,7 @@ int skill_check_condition_char_sub (struct block_list *bl, va_list ap)
 			case TR_JAWAII_SERENADE:
 			case TR_NIPELHEIM_REQUIEM:
 			case TR_PRON_MARCH:// Does the partner's learned skill level affects anything? [Rytech]
-				if (sd->status.sex != tsd->status.sex && (tsd->class_&MAPID_FORTHMASK) == MAPID_TROUBADOURTROUVERE &&
+				if (sd->status.sex != tsd->status.sex && (tsd->class_&MAPID_FOURTHMASK) == MAPID_TROUBADOURTROUVERE &&
 					sd->status.party_id && tsd->status.party_id && sd->status.party_id == tsd->status.party_id)
 					p_sd[(*c)++] = tsd->bl.id;
 				return 1;

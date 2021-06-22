@@ -29,11 +29,11 @@ Xready:
 	// kRO has some special method for allowing regular 3rd jobs to change to 4th but im not sure what it is.
 	// Maybe its a convert from regular 3rd to trans 3rd. Has to be since all 4th jobs get access to trans skills.
 	if (Class >= Job_Rune_Knight_T && Class <= Job_Guillotine_Cross_T || Class >= Job_Royal_Guard_T && Class <= Job_Shadow_Chaser_T)
-		goto Xforth;
+		goto Xfourth;
 	else
 		goto Xcantchange;
 
-Xforth:
+Xfourth:
 	if (BaseLevel >= @reqbaselv && JobLevel >= @reqjoblv)
 	{
 		if (Class == Job_Rune_Knight_T)

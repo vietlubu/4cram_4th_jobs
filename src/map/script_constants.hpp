@@ -255,12 +255,12 @@
 	export_constant2("EAJL_UPPER",JOBL_UPPER);
 	export_constant2("EAJL_BABY",JOBL_BABY);
 	export_constant2("EAJL_THIRD",JOBL_THIRD);
-	export_constant2("EAJL_FORTH",JOBL_FORTH);
+	export_constant2("EAJL_FOURTH",JOBL_FOURTH);
 
 	export_constant2("EAJ_BASEMASK",MAPID_BASEMASK);
 	export_constant2("EAJ_UPPERMASK",MAPID_UPPERMASK);
 	export_constant2("EAJ_THIRDMASK",MAPID_THIRDMASK);
-	export_constant2("EAJ_FORTHMASK",MAPID_FORTHMASK);
+	export_constant2("EAJ_FOURTHMASK",MAPID_FOURTHMASK);
 
 	export_constant2("EAJ_NOVICE",MAPID_NOVICE);
 	export_constant2("EAJ_SWORDMAN",MAPID_SWORDMAN);
@@ -8301,11 +8301,11 @@
 	export_constant(ITEMJ_THIRD);
 	export_constant(ITEMJ_THIRD_UPPER);
 	export_constant(ITEMJ_THIRD_BABY);
-	export_constant(ITEMJ_FORTH);
+	export_constant(ITEMJ_FOURTH);
 	export_constant(ITEMJ_ALL_UPPER);
 	export_constant(ITEMJ_ALL_BABY);
 	export_constant(ITEMJ_ALL_THIRD);
-	export_constant(ITEMJ_ALL_FORTH);
+	export_constant(ITEMJ_ALL_FOURTH);
 
 	/* item drop effects */
 	export_constant(DROPEFFECT_NONE);
