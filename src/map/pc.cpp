@@ -8211,7 +8211,7 @@ int pc_traitstatusup2(struct map_session_data* sd, int type, int val)
 	need = pc_need_trait_point(sd, type, 1);
 	max = pc_maxtraitparameter(sd, (enum e_params)(type - SP_POW)); // set new value
 
-	val = pc_setstat(sd, type, cap_value(pc_getstat(sd, type) + val, 1, max));
+	val = pc_setstat(sd, type, cap_value(pc_getstat(sd, type) + val, 0, max));
 
 	status_calc_pc(sd, SCO_NONE);
 

@@ -51,6 +51,475 @@ Body:
       All_Baby: true
     Script: |
       itemheal rand(5,25),0;
+  - Id: 100452
+    AegisName: Minus_POW
+    Name: POW Reduction Potion
+    Type: Delayconsume
+    Buy: 10
+    Classes:
+      All_Third: true
+      Normal: true
+      Upper: true
+      Baby: true
+      All_Baby: true
+    Script: |
+      callfunc "F_CashReduceTraitStat",bPow,-1,100452;
+  - Id: 100453
+    AegisName: Minus_SPL
+    Name: SPL Reduction Potion
+    Type: Delayconsume
+    Buy: 10
+    Classes:
+      All_Third: true
+      Normal: true
+      Upper: true
+      Baby: true
+      All_Baby: true
+    Script: |
+      callfunc "F_CashReduceTraitStat",bSpl,-1,100453;
+  - Id: 100454
+    AegisName: Minus_STA
+    Name: STA Reduction Potion
+    Type: Delayconsume
+    Buy: 10
+    Classes:
+      All_Third: true
+      Normal: true
+      Upper: true
+      Baby: true
+      All_Baby: true
+    Script: |
+      callfunc "F_CashReduceTraitStat",bSta,-1,100454;
+  - Id: 100455
+    AegisName: Minus_WIS
+    Name: WIS Reduction Potion
+    Type: Delayconsume
+    Buy: 10
+    Classes:
+      All_Third: true
+      Normal: true
+      Upper: true
+      Baby: true
+      All_Baby: true
+    Script: |
+      callfunc "F_CashReduceTraitStat",bWis,-1,100455;
+  - Id: 100456
+    AegisName: Minus_CON
+    Name: CON Reduction Potion
+    Type: Delayconsume
+    Buy: 10
+    Classes:
+      All_Third: true
+      Normal: true
+      Upper: true
+      Baby: true
+      All_Baby: true
+    Script: |
+      callfunc "F_CashReduceTraitStat",bCon,-1,100456;
+  - Id: 100457
+    AegisName: Minus_CRT
+    Name: CRT Reduction Potion
+    Type: Delayconsume
+    Buy: 10
+    Classes:
+      All_Third: true
+      Normal: true
+      Upper: true
+      Baby: true
+      All_Baby: true
+    Script: |
+      callfunc "F_CashReduceTraitStat",bCrt,-1,100457;
+  - Id: 100516
+    AegisName: Eye_Cleaner
+    Name: Eye Cleaner
+    Type: Healing
+    Buy: 20
+    Weight: 50
+    Classes:
+      All_Third: true
+      Normal: true
+      Upper: true
+      Baby: true
+      All_Baby: true
+    Script: |
+      sc_end SC_HANDICAPSTATE_DEEPBLIND;
+  - Id: 100517
+    AegisName: Ear_Cleaner
+    Name: Ear Cleaner
+    Type: Healing
+    Buy: 20
+    Weight: 50
+    Classes:
+      All_Third: true
+      Normal: true
+      Upper: true
+      Baby: true
+      All_Baby: true
+    Script: |
+      sc_end SC_HANDICAPSTATE_DEEPSILENCE;
+  - Id: 100518
+    AegisName: Tonics
+    Name: Tonics
+    Type: Healing
+    Buy: 20
+    Weight: 50
+    Classes:
+      All_Third: true
+      Normal: true
+      Upper: true
+      Baby: true
+      All_Baby: true
+    Script: |
+      sc_end SC_HANDICAPSTATE_LASSITUDE;
+  - Id: 100519
+    AegisName: Mini_Extinguisher
+    Name: Mini Extinguisher
+    Type: Healing
+    Buy: 20
+    Weight: 50
+    Classes:
+      All_Third: true
+      Normal: true
+      Upper: true
+      Baby: true
+      All_Baby: true
+    Script: |
+      sc_end SC_HANDICAPSTATE_CONFLAGRATION;
+  - Id: 100520
+    AegisName: Water_Of_Lucky
+    Name: Water Of Lucky
+    Type: Healing
+    Buy: 20
+    Weight: 50
+    Classes:
+      All_Third: true
+      Normal: true
+      Upper: true
+      Baby: true
+      All_Baby: true
+    Script: |
+      sc_end SC_HANDICAPSTATE_MISFORTUNE;
+  - Id: 100521
+    AegisName: Strong_Antidote
+    Name: Strong Antidote
+    Type: Healing
+    Buy: 20
+    Weight: 50
+    Classes:
+      All_Third: true
+      Normal: true
+      Upper: true
+      Baby: true
+      All_Baby: true
+    Script: |
+      sc_end SC_HANDICAPSTATE_DEADLYPOISON;
+  - Id: 100522
+    AegisName: High_Energy_Chocolate
+    Name: High Energy Chocolate
+    Type: Healing
+    Buy: 20
+    Weight: 50
+    Classes:
+      All_Third: true
+      Normal: true
+      Upper: true
+      Baby: true
+      All_Baby: true
+    Script: |
+      sc_end SC_HANDICAPSTATE_DEPRESSION;
+  - Id: 100523
+    AegisName: Refined_Holy_Water
+    Name: Refined Holy Water
+    Type: Healing
+    Buy: 20
+    Weight: 50
+    Classes:
+      All_Third: true
+      Normal: true
+      Upper: true
+      Baby: true
+      All_Baby: true
+    Script: |
+      sc_end SC_HANDICAPSTATE_HOLYFLAME;
+  - Id: 500018
+    AegisName: Fourth_1h_Sword
+    Name: Relapse Sword
+    Type: Weapon
+    SubType: 1hSword
+    Buy: 20
+    Weight: 1850
+    Attack: 200
+    Range: 1
+    Slots: 2
+    Jobs:
+      Alchemist: true
+    Classes:
+      All_Fourth: true
+    Locations:
+      Right_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 200
+    Refineable: true
+    Script: |
+      .@r = getrefine(); bonus2 bSkillAtk,"BO_ACIDIFIED_ZONE_FIRE",5*(.@r/2); bonus2 bSkillAtk,"BO_ACIDIFIED_ZONE_WIND",5*(.@r/2); bonus bWeaponAtkRate,3*(.@r/4);
+  - Id: 510026
+    AegisName: Fourth_1h_Dagger
+    Name: Relapse Dagger
+    Type: Weapon
+    SubType: Dagger
+    Buy: 20
+    Weight: 1400
+    Attack: 180
+    MagicAttack: 215
+    Range: 1
+    Slots: 2
+    Jobs:
+      Rogue: true
+    Classes:
+      All_Fourth: true
+    Locations:
+      Right_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 200
+    Refineable: true
+    Script: |
+      .@r = getrefine(); bonus2 bMagicAtkEle,Ele_All,2*(.@r/4); bonus2 bSkillAtk,"ABC_ABYSS_SQUARE",5*(.@r/2);
+  - Id: 530009
+    AegisName: Fourth_1h_Spear
+    Name: Fortify Spear
+    Type: Weapon
+    SubType: 1hSpear
+    Buy: 20
+    Weight: 1400
+    Attack: 200
+    Range: 3
+    Slots: 2
+    Jobs:
+      Crusader: true
+    Classes:
+      All_Fourth: true
+    Locations:
+      Right_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 200
+    Refineable: true
+    Script: |
+      .@r = getrefine(); bonus bLongAtkRate,2*(.@r/4); bonus2 bSkillAtk,"IG_SHIELD_SHOOTING",5*(.@r/2);
+  - Id: 540013
+    AegisName: Fourth_1h_Book
+    Name: Fortify Book
+    Type: Weapon
+    SubType: Book
+    Buy: 20
+    Weight: 800
+    Attack: 190
+    MagicAttack: 210
+    Range: 1
+    Slots: 2
+    Jobs:
+      Sage: true
+    Classes:
+      All_Fourth: true
+    Locations:
+      Right_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 200
+    Refineable: true
+    Script: |
+      .@r = getrefine(); bonus2 bMagicAtkEle,Ele_All,2*(.@r/4); bonus2 bSkillAtk,"EM_CONFLAGRATION",5*(.@r/2);
+  - Id: 560011
+    AegisName: Fourth_1h_Knuckle
+    Name: Scrap Knuckle
+    Type: Weapon
+    SubType: Knuckle
+    Buy: 20
+    Weight: 1300
+    Attack: 210
+    Range: 1
+    Slots: 2
+    Jobs:
+      Monk: true
+    Classes:
+      All_Fourth: true
+    Locations:
+      Right_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 200
+    Refineable: true
+    Script: |
+      .@r = getrefine(); bonus bShortAtkRate,2*(.@r/4); bonus2 bSkillAtk,"IQ_SECOND_FAITH",5*(.@r/2); bonus2 bSkillAtk,"IQ_SECOND_JUDGEMENT",5*(.@r/2);
+  - Id: 570012
+    AegisName: Fourth_Bh_Lute
+    Name: Scrap Lute
+    Type: Weapon
+    SubType: Musical
+    Buy: 20
+    Weight: 1250
+    Attack: 205
+    Range: 1
+    Slots: 2
+    Jobs:
+      BardDancer: true
+    Classes:
+      All_Fourth: true
+    Gender: Male
+    Locations:
+      Right_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 200
+    Refineable: true
+    Script: |
+      .@r = getrefine(); bonus bLongAtkRate,2*(.@r/4); bonus2 bSkillAtk,"TR_ROSEBLOSSOM",5*(.@r/2);
+  - Id: 580012
+    AegisName: Fourth_1h_Whip
+    Name: Scrap Whip
+    Type: Weapon
+    SubType: Whip
+    Buy: 20
+    Weight: 1250
+    Attack: 205
+    Range: 2
+    Slots: 2
+    Jobs:
+      BardDancer: true
+    Classes:
+      All_Fourth: true
+    Gender: Female
+    Locations:
+      Right_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 200
+    Refineable: true
+    Script: |
+      .@r = getrefine(); bonus bLongAtkRate,2*(.@r/4); bonus2 bSkillAtk,"TR_ROSEBLOSSOM",5*(.@r/2);
+  - Id: 590015
+    AegisName: Fourth_1h_Mace
+    Name: Relapse Mace
+    Type: Weapon
+    SubType: Mace
+    Buy: 20
+    Weight: 1300
+    Attack: 190
+    MagicAttack: 210
+    Range: 1
+    Slots: 2
+    Jobs:
+      Priest: true
+    Classes:
+      All_Fourth: true
+    Locations:
+      Right_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 200
+    Refineable: true
+    Script: |
+      .@r = getrefine(); bonus2 bMagicAtkEle,Ele_All,2*(.@r/4); bonus2 bSkillAtk,"CD_FRAMEN",5*(.@r/2);
+  - Id: 600013
+    AegisName: Fourth_Bh_Sword
+    Name: Fortify Sword
+    Type: Weapon
+    SubType: 2hSword
+    Buy: 20
+    Weight: 2300
+    Attack: 250
+    Range: 1
+    Slots: 2
+    Jobs:
+      Knight: true
+    Classes:
+      All_Fourth: true
+    Locations:
+      Both_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 200
+    Refineable: true
+    Script: |
+      .@r = getrefine(); bonus bShortAtkRate,2*(.@r/4); bonus2 bSkillAtk,"DK_STORMSLASH",5*(.@r/2);
+  - Id: 610015
+    AegisName: Fourth_Bh_Katar
+    Name: Relapse Katar
+    Type: Weapon
+    SubType: Katar
+    Buy: 20
+    Weight: 1800
+    Attack: 260
+    Range: 1
+    Slots: 2
+    Jobs:
+      Assassin: true
+    Classes:
+      All_Fourth: true
+    Locations:
+      Both_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 200
+    Refineable: true
+    Script: |
+      .@r = getrefine(); bonus bShortAtkRate,2*(.@r/4); bonus2 bSkillAtk,"SHC_IMPACT_CRATER",5*(.@r/2);
+  - Id: 620005
+    AegisName: Fourth_Bh_Axe
+    Name: Relapse Axe
+    Type: Weapon
+    SubType: 2hAxe
+    Buy: 20
+    Weight: 3000
+    Attack: 280
+    Range: 1
+    Slots: 2
+    Jobs:
+      Blacksmith: true
+    Classes:
+      All_Fourth: true
+    Locations:
+      Both_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 200
+    Refineable: true
+    Script: |
+      .@r = getrefine(); bonus bShortAtkRate,2*(.@r/4); bonus2 bSkillAtk,"MT_AXE_STOMP",5*(.@r/2);
+  - Id: 640013
+    AegisName: Fourth_Bh_Staff
+    Name: Fortify Staff
+    Type: Weapon
+    SubType: 2hStaff
+    Buy: 20
+    Weight: 2100
+    Attack: 140
+    MagicAttack: 240
+    Range: 1
+    Slots: 2
+    Jobs:
+      Wizard: true
+    Classes:
+      All_Fourth: true
+    Locations:
+      Both_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 200
+    Refineable: true
+    Script: |
+      .@r = getrefine(); bonus2 bMagicAtkEle,Ele_All,2*(.@r/4); bonus2 bSkillAtk,"AG_FROZEN_SLASH",5*(.@r/2);
+  - Id: 700021
+    AegisName: Fourth_Bh_Bow
+    Name: Scrap Bow
+    Type: Weapon
+    SubType: Bow
+    Buy: 20
+    Weight: 1700
+    Attack: 210
+    Range: 5
+    Slots: 2
+    Jobs:
+      Hunter: true
+    Classes:
+      All_Fourth: true
+    Locations:
+      Both_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 200
+    Refineable: true
+    Script: |
+      .@r = getrefine(); bonus bLongAtkRate,2*(.@r/4); bonus2 bSkillAtk,"WH_GALESTORM",5*(.@r/2);
   - Id: 1000275
     AegisName: Beaker
     Name: Beaker
