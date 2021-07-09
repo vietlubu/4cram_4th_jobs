@@ -1458,7 +1458,7 @@ void initChangeTables(void)
 	set_sc_with_vfx( DK_VIGOR            , SC_VIGOR                  , EFST_VIGOR                  , SCB_ALL );
 
 	// Arch Mage
-	set_sc_with_vfx( AG_DEADLY_PROJECTION    , SC_DEADLY_DEFEASANCE, EFST_DEADLY_DEFEASANCE, SCB_NONE );
+	set_sc_with_vfx( AG_DEADLY_PROJECTION    , SC_DEADLY_DEFEASANCE, EFST_DEADLY_DEFEASANCE, SCB_ALL );
 	set_sc(          AG_DESTRUCTIVE_HURRICANE, SC_CLIMAX_DES_HU    , EFST_CLIMAX_DES_HU    , SCB_MATK );
 	set_sc(          AG_VIOLENT_QUAKE        , SC_CLIMAX_EARTH     , EFST_CLIMAX_EARTH     , SCB_ALL );
 	set_sc(          AG_ALL_BLOOM            , SC_CLIMAX_BLOOM     , EFST_CLIMAX_BLOOM     , SCB_ALL );
@@ -5285,7 +5285,6 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 	if (sd->special_state.restart_full_recover) {
 		base_status->hp = base_status->max_hp;
 		base_status->sp = base_status->max_sp;
-		base_status->ap = base_status->max_ap;
 	} else {
 		if((sd->class_&MAPID_BASEMASK) == MAPID_NOVICE && !(sd->class_&JOBL_2)
 			&& battle_config.restart_hp_rate < 50)
@@ -5807,6 +5806,8 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 			sd->right_weapon.addrace[RC_DEMIHUMAN] += 50;
 			sd->left_weapon.addrace[RC_ANGEL] += 50;
 		}
+		if (sc->data[SC_DEADLY_DEFEASANCE])
+			sd->special_state.no_magic_damage = 0;
 		if (sc->data[SC_CLIMAX_DES_HU])
 			sd->indexed_bonus.magic_atk_ele[ELE_WIND] += 30;
 		if (sc->data[SC_CLIMAX_EARTH])
@@ -10259,7 +10260,7 @@ t_tick status_get_sc_def(struct block_list *src, struct block_list *bl, enum sc_
 	if (status_isimmune(bl)) {
 		std::shared_ptr<s_skill_db> skill = skill_db.find(battle_getcurrentskill(src));
 
-		if (skill != nullptr && skill->skill_type == BF_MAGIC)
+		if (skill != nullptr && skill->nameid != AG_DEADLY_PROJECTION && skill->skill_type == BF_MAGIC)
 			return 0;
 	}
 

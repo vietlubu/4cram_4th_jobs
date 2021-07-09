@@ -7349,16 +7349,16 @@ const char* job_name(int class_)
 	case JOB_TROUVERE:
 		return msg_txt(NULL, 2001 - JOB_DRAGON_KNIGHT + class_);
 
-	case JOB_WOLF_WINDHAWK:
+	case JOB_WINDHAWK2:
 		return msg_txt(NULL, 2006);
 
-	case JOB_MEISTER_MADOGEAR:
+	case JOB_MEISTER2:
 		return msg_txt(NULL, 2002);
 
-	case JOB_DRAGON_KNIGHT_CHICKEN:
+	case JOB_DRAGON_KNIGHT2:
 		return msg_txt(NULL, 2001);
 
-	case JOB_IMPERIAL_GUARD_CHICKEN:
+	case JOB_IMPERIAL_GUARD2:
 		return msg_txt(NULL, 2007);
 
 	default:

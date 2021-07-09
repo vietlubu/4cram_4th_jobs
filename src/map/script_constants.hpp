@@ -243,10 +243,10 @@
 	export_constant(JOB_TROUBADOUR);
 	export_constant(JOB_TROUVERE);
 
-	export_constant(JOB_WOLF_WINDHAWK);
-	export_constant(JOB_MEISTER_MADOGEAR);
-	export_constant(JOB_DRAGON_KNIGHT_CHICKEN);
-	export_constant(JOB_IMPERIAL_GUARD_CHICKEN);
+	export_constant(JOB_WINDHAWK2);
+	export_constant(JOB_MEISTER2);
+	export_constant(JOB_DRAGON_KNIGHT2);
+	export_constant(JOB_IMPERIAL_GUARD2);
 
 	/* EA jobs */
 	export_constant2("EAJL_2_1",JOBL_2_1);

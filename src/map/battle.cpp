@@ -6461,14 +6461,14 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src, struct bl
 	if (is_attack_critical(&wd, src, target, skill_id, skill_lv, false)) {
 		if (sd) { //Check for player so we don't crash out, monsters don't have bonus crit rates [helvetica]
 			if (skill_id > 0)
-				wd.damage = (int64)floor((float)((wd.damage * 140 + sstatus->crate) / 100 * (100 + (sd->bonus.crit_atk_rate / 2))) / 100);
+				wd.damage = (int64)floor((float)((wd.damage * (140 + sstatus->crate)) / 100 * (100 + (sd->bonus.crit_atk_rate / 2))) / 100);
 			else
-				wd.damage = (int64)floor((float)((wd.damage * 140 + sstatus->crate) / 100 * (100 + sd->bonus.crit_atk_rate)) / 100);
+				wd.damage = (int64)floor((float)((wd.damage * (140 + sstatus->crate)) / 100 * (100 + sd->bonus.crit_atk_rate)) / 100);
 			if (is_attack_left_handed(src, skill_id)) {
 				if (skill_id > 0)
-					wd.damage2 = (int64)floor((float)((wd.damage2 * 140 + sstatus->crate) / 100 * (100 + (sd->bonus.crit_atk_rate / 2))) / 100);
+					wd.damage2 = (int64)floor((float)((wd.damage2 * (140 + sstatus->crate)) / 100 * (100 + (sd->bonus.crit_atk_rate / 2))) / 100);
 				else
-					wd.damage2 = (int64)floor((float)((wd.damage2 * 140 + sstatus->crate) / 100 * (100 + sd->bonus.crit_atk_rate)) / 100);
+					wd.damage2 = (int64)floor((float)((wd.damage2 * (140 + sstatus->crate)) / 100 * (100 + sd->bonus.crit_atk_rate)) / 100);
 			}
 		}
 		else
