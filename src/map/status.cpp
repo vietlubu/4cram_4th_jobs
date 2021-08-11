@@ -1452,7 +1452,7 @@ void initChangeTables(void)
 	// Dragon Knight
 	set_sc(          DK_SERVANTWEAPON    , SC_SERVANTWEAPON          , EFST_SERVANTWEAPON          , SCB_NONE );
 	set_sc_with_vfx( DK_SERVANT_W_SIGN   , SC_SERVANT_SIGN           , EFST_SERVANT_SIGN           , SCB_NONE );
-	set_sc_with_vfx( DK_SERVANT_W_PHANTOM, SC_HANDICAPSTATE_DEEPBLIND, EFST_HANDICAPSTATE_DEEPBLIND, SCB_NONE );
+	set_sc_with_vfx( DK_SERVANT_W_PHANTOM, SC_HANDICAPSTATE_DEEPBLIND, EFST_HANDICAPSTATE_DEEPBLIND, SCB_FLEE|SCB_FLEE2 );
 	set_sc(          DK_CHARGINGPIERCE   , SC_CHARGINGPIERCE         , EFST_CHARGINGPIERCE         , SCB_NONE );
 	set_sc_with_vfx( DK_DRAGONIC_AURA    , SC_DRAGONIC_AURA          , EFST_DRAGONIC_AURA          , SCB_NONE );
 	set_sc_with_vfx( DK_VIGOR            , SC_VIGOR                  , EFST_VIGOR                  , SCB_ALL );
@@ -1469,16 +1469,16 @@ void initChangeTables(void)
 	set_sc_with_vfx( WH_WIND_SIGN    , SC_WINDSIGN                     , EFST_WINDSIGN                     , SCB_NONE );
 	set_sc_with_vfx( WH_CALAMITYGALE , SC_CALAMITYGALE                 , EFST_CALAMITYGALE                 , SCB_NONE );
 	set_sc (         WH_CRESCIVE_BOLT, SC_CRESCIVEBOLT                 , EFST_CRESCIVEBOLT                 , SCB_NONE );
-	set_sc_with_vfx( WH_DEEPBLINDTRAP, SC_HANDICAPSTATE_DEEPBLIND      , EFST_HANDICAPSTATE_DEEPBLIND      , SCB_NONE );
-	set_sc_with_vfx( WH_SOLIDTRAP    , SC_HANDICAPSTATE_CRYSTALLIZATION, EFST_HANDICAPSTATE_CRYSTALLIZATION, SCB_NONE );
-	set_sc_with_vfx( WH_SWIFTTRAP    , SC_HANDICAPSTATE_LIGHTNINGSTRIKE, EFST_HANDICAPSTATE_LIGHTNINGSTRIKE, SCB_NONE );
+	set_sc_with_vfx( WH_DEEPBLINDTRAP, SC_HANDICAPSTATE_DEEPBLIND      , EFST_HANDICAPSTATE_DEEPBLIND      , SCB_FLEE|SCB_FLEE2 );
+	set_sc_with_vfx( WH_SOLIDTRAP    , SC_HANDICAPSTATE_CRYSTALLIZATION, EFST_HANDICAPSTATE_CRYSTALLIZATION, SCB_MDEF|SCB_DEF_ELE);
+	set_sc_with_vfx( WH_SWIFTTRAP    , SC_HANDICAPSTATE_LIGHTNINGSTRIKE, EFST_HANDICAPSTATE_LIGHTNINGSTRIKE, SCB_DEF_ELE);
 	set_sc_with_vfx( WH_FLAMETRAP    , SC_HANDICAPSTATE_CONFLAGRATION  , EFST_HANDICAPSTATE_CONFLAGRATION  , SCB_NONE );
 
 	// Cardinal
 	set_sc_with_vfx( CD_MEDIALE_VOTUM, SC_MEDIALE                  , EFST_MEDIALE                  , SCB_NONE );
 	set_sc(          CD_ARGUTUS_VITA , SC_A_VITA                   , EFST_A_VITA                   , SCB_NONE );
 	set_sc(          CD_ARGUTUS_TELUM, SC_A_TELUM                  , EFST_A_TELUM                  , SCB_NONE );
-	set_sc_with_vfx( CD_ARBITRIUM    , SC_HANDICAPSTATE_DEEPSILENCE, EFST_HANDICAPSTATE_DEEPSILENCE, SCB_NONE );
+	set_sc_with_vfx( CD_ARBITRIUM    , SC_HANDICAPSTATE_DEEPSILENCE, EFST_HANDICAPSTATE_DEEPSILENCE, SCB_ASPD);
 	set_sc_with_vfx( CD_PRESENS_ACIES, SC_PRE_ACIES                , EFST_PRE_ACIES                , SCB_CRATE );
 	set_sc_with_vfx( CD_COMPETENTIA  , SC_COMPETENTIA              , EFST_COMPETENTIA              , SCB_PATK|SCB_SMATK );
 	set_sc_with_vfx( CD_RELIGIO      , SC_RELIGIO                  , EFST_RELIGIO                  , SCB_STA|SCB_WIS|SCB_SPL );
@@ -1514,11 +1514,11 @@ void initChangeTables(void)
 
 	// Elemental Master
 	set_sc(          EM_SPELL_ENCHANTING           , SC_SPELL_ENCHANTING             , EFST_SPELL_ENCHANTING             , SCB_SMATK );
-	set_sc_with_vfx( EM_DIAMOND_STORM              , SC_HANDICAPSTATE_FROSTBITE      , EFST_HANDICAPSTATE_FROSTBITE      , SCB_NONE );
-	set_sc_with_vfx( EM_LIGHTNING_LAND             , SC_HANDICAPSTATE_LIGHTNINGSTRIKE, EFST_HANDICAPSTATE_LIGHTNINGSTRIKE, SCB_NONE );
-	set_sc_with_vfx( EM_VENOM_SWAMP                , SC_HANDICAPSTATE_DEADLYPOISON   , EFST_HANDICAPSTATE_DEADLYPOISON   , SCB_NONE );
+	set_sc_with_vfx( EM_DIAMOND_STORM              , SC_HANDICAPSTATE_FROSTBITE      , EFST_HANDICAPSTATE_FROSTBITE      , SCB_DEF|SCB_MDEF|SCB_DEF_ELE);
+	set_sc_with_vfx( EM_LIGHTNING_LAND             , SC_HANDICAPSTATE_LIGHTNINGSTRIKE, EFST_HANDICAPSTATE_LIGHTNINGSTRIKE, SCB_DEF_ELE);
+	set_sc_with_vfx( EM_VENOM_SWAMP                , SC_HANDICAPSTATE_DEADLYPOISON   , EFST_HANDICAPSTATE_DEADLYPOISON   , SCB_DEF);
 	set_sc_with_vfx( EM_CONFLAGRATION              , SC_HANDICAPSTATE_CONFLAGRATION  , EFST_HANDICAPSTATE_CONFLAGRATION  , SCB_NONE );
-	set_sc_with_vfx( EM_TERRA_DRIVE                , SC_HANDICAPSTATE_CRYSTALLIZATION, EFST_HANDICAPSTATE_CRYSTALLIZATION, SCB_NONE );
+	set_sc_with_vfx( EM_TERRA_DRIVE                , SC_HANDICAPSTATE_CRYSTALLIZATION, EFST_HANDICAPSTATE_CRYSTALLIZATION, SCB_MDEF|SCB_DEF_ELE);
 	set_sc(          EM_SUMMON_ELEMENTAL_ARDOR     , SC_SUMMON_ELEMENTAL_ARDOR       , EFST_SUMMON_ELEMENTAL_ARDOR       , SCB_NONE );
 	set_sc(          EM_SUMMON_ELEMENTAL_DILUVIO   , SC_SUMMON_ELEMENTAL_DILUVIO     , EFST_SUMMON_ELEMENTAL_DILUVIO     , SCB_NONE );
 	set_sc(          EM_SUMMON_ELEMENTAL_PROCELLA  , SC_SUMMON_ELEMENTAL_PROCELLA    , EFST_SUMMON_ELEMENTAL_PROCELLA    , SCB_NONE );
@@ -1562,7 +1562,7 @@ void initChangeTables(void)
 	// Abyss Chaser
 	set_sc(          ABC_STRIP_SHADOW  , SC_SHADOW_STRIP            , EFST_SHADOW_STRIP            , SCB_RES|SCB_MRES );
 	set_sc(          ABC_ABYSS_DAGGER  , SC_ABYSS_DAGGER            , EFST_ABYSS_DAGGER            , SCB_NONE );
-	set_sc_with_vfx( ABC_UNLUCKY_RUSH  , SC_HANDICAPSTATE_MISFORTUNE, EFST_HANDICAPSTATE_MISFORTUNE, SCB_NONE );
+	set_sc_with_vfx( ABC_UNLUCKY_RUSH  , SC_HANDICAPSTATE_MISFORTUNE, EFST_HANDICAPSTATE_MISFORTUNE, SCB_HIT);
 	set_sc(          ABC_FROM_THE_ABYSS, SC_ABYSSFORCEWEAPON        , EFST_ABYSSFORCEWEAPON        , SCB_NONE );
 	set_sc_with_vfx( ABC_ABYSS_SLAYER  , SC_ABYSS_SLAYER            , EFST_ABYSS_SLAYER            , SCB_HIT|SCB_PATK|SCB_SMATK );
 
@@ -1902,6 +1902,7 @@ void initChangeTables(void)
 	StatusIconChangeTable[SC_CHARGINGPIERCE_COUNT] = EFST_CHARGINGPIERCE_COUNT;
 	StatusIconChangeTable[SC_CRYSTAL_IMPACT] = EFST_CRYSTAL_IMPACT;
 	StatusIconChangeTable[SC_SHADOW_SCAR] = EFST_SHADOW_SCAR;
+	StatusIconChangeTable[SC_BO_HELL_DUSTY] = EFST_BO_HELL_DUSTY;
 
 	// Super Elementals
 	StatusIconChangeTable[SC_FLAMETECHNIC] = EFST_FLAMETECHNIC;
@@ -2095,10 +2096,25 @@ void initChangeTables(void)
 	StatusChangeFlagTable[SC_EP16_2_BUFF_SC] |= SCB_CRI;
 	StatusChangeFlagTable[SC_EP16_2_BUFF_AC] |= SCB_NONE;
 
+	// 4th Job Common Status
+	StatusChangeFlagTable[SC_HANDICAPSTATE_DEEPBLIND] |= SCB_FLEE|SCB_FLEE2;
+	StatusChangeFlagTable[SC_HANDICAPSTATE_DEEPSILENCE] |= SCB_ASPD;
+	StatusChangeFlagTable[SC_HANDICAPSTATE_LASSITUDE] |= SCB_SPEED|SCB_CRI;
+	StatusChangeFlagTable[SC_HANDICAPSTATE_FROSTBITE] |= SCB_DEF|SCB_MDEF|SCB_DEF_ELE;
+	StatusChangeFlagTable[SC_HANDICAPSTATE_SWOONING] |= SCB_NONE;
+	StatusChangeFlagTable[SC_HANDICAPSTATE_LIGHTNINGSTRIKE] |= SCB_NONE|SCB_DEF_ELE;
+	StatusChangeFlagTable[SC_HANDICAPSTATE_CRYSTALLIZATION] |= SCB_MDEF|SCB_DEF_ELE;
+	StatusChangeFlagTable[SC_HANDICAPSTATE_CONFLAGRATION] |= SCB_NONE;
+	StatusChangeFlagTable[SC_HANDICAPSTATE_MISFORTUNE] |= SCB_HIT;
+	StatusChangeFlagTable[SC_HANDICAPSTATE_DEADLYPOISON] |= SCB_DEF;
+	StatusChangeFlagTable[SC_HANDICAPSTATE_DEPRESSION] |= SCB_NONE;
+	StatusChangeFlagTable[SC_HANDICAPSTATE_HOLYFLAME] |= SCB_NONE;
+
 	// 4th Jobs
 	StatusChangeFlagTable[SC_CHARGINGPIERCE_COUNT] |= SCB_NONE;
 	StatusChangeFlagTable[SC_CRYSTAL_IMPACT] |= SCB_NONE;
 	StatusChangeFlagTable[SC_SHADOW_SCAR] |= SCB_NONE;
+	StatusChangeFlagTable[SC_BO_HELL_DUSTY] |= SCB_NONE;
 
 #ifdef RENEWAL
 	// renewal EDP increases your weapon atk
@@ -2263,6 +2279,10 @@ void initChangeTables(void)
 	StatusChangeStateTable[SC_SUHIDE]				|= SCS_NOMOVE;
 	StatusChangeStateTable[SC_SV_ROOTTWIST]			|= SCS_NOMOVE;
 	StatusChangeStateTable[SC_GRAVITYCONTROL]		|= SCS_NOMOVE;
+	//StatusChangeStateTable[SC_HANDICAPSTATE_FROSTBITE] |= SCS_NOMOVE;
+	//StatusChangeStateTable[SC_HANDICAPSTATE_SWOONING] |= SCS_NOMOVE;
+	//StatusChangeStateTable[SC_HANDICAPSTATE_LIGHTNINGSTRIKE] |= SCS_NOMOVE;
+	//StatusChangeStateTable[SC_HANDICAPSTATE_CRYSTALLIZATION] |= SCS_NOMOVE;
 
 	/* StatusChangeState (SCS_) NOPICKUPITEMS */
 	StatusChangeStateTable[SC_HIDING]				|= SCS_NOPICKITEM;
@@ -2303,6 +2323,11 @@ void initChangeTables(void)
 	StatusChangeStateTable[SC_CURSEDCIRCLE_TARGET]	|= SCS_NOCAST;
 	StatusChangeStateTable[SC_KINGS_GRACE]			|= SCS_NOCAST;
 	StatusChangeStateTable[SC_GRAVITYCONTROL]		|= SCS_NOCAST;
+	//StatusChangeStateTable[SC_HANDICAPSTATE_DEEPSILENCE] |= SCS_NOCAST;
+	//StatusChangeStateTable[SC_HANDICAPSTATE_FROSTBITE] |= SCS_NOCAST;
+	//StatusChangeStateTable[SC_HANDICAPSTATE_SWOONING] |= SCS_NOCAST;
+	//StatusChangeStateTable[SC_HANDICAPSTATE_LIGHTNINGSTRIKE] |= SCS_NOCAST;
+	//StatusChangeStateTable[SC_HANDICAPSTATE_CRYSTALLIZATION] |= SCS_NOCAST;
 
 	/* StatusChangeState (SCS_) NOCHAT (skills) */
 	StatusChangeStateTable[SC_BERSERK]				|= SCS_NOCHAT;
@@ -2625,6 +2650,10 @@ int status_damage(struct block_list *src,struct block_list *target,int64 dhp, in
 			status_change_end(target, SC_DEEPSLEEP, INVALID_TIMER);
 			status_change_end(target, SC_SUHIDE, INVALID_TIMER);
 			status_change_end(target, SC_NEWMOON, INVALID_TIMER);
+			status_change_end(target, SC_HANDICAPSTATE_FROSTBITE, INVALID_TIMER);
+			status_change_end(target, SC_HANDICAPSTATE_SWOONING, INVALID_TIMER);
+			status_change_end(target, SC_HANDICAPSTATE_LIGHTNINGSTRIKE, INVALID_TIMER);
+			status_change_end(target, SC_HANDICAPSTATE_CRYSTALLIZATION, INVALID_TIMER);
 			if ((sce=sc->data[SC_ENDURE]) && !sce->val4) {
 				/** [Skotlex]
 				* Endure count is only reduced by non-players on non-gvg maps.
@@ -9547,6 +9576,9 @@ static unsigned char status_calc_element_lv(struct block_list *bl, struct status
 	if(sc->data[SC_SHAPESHIFT])
 		return 1;
 	if(sc->data[SC__INVISIBILITY])
+		return 1;
+	if (sc->data[SC_FLAMEARMOR_OPTION] || sc->data[SC_CRYSTAL_ARMOR_OPTION] || sc->data[SC_EYES_OF_STORM_OPTION] || 
+		sc->data[SC_STRONG_PROTECTION_OPTION] || sc->data[SC_POISON_SHIELD_OPTION])
 		return 1;
 
 	return (unsigned char)cap_value(lv,1,4);

@@ -5733,7 +5733,11 @@ bool pc_isUseitem(struct map_session_data *sd,int n)
 		sd->sc.data[SC_KAGEHUMI] ||
 		(sd->sc.data[SC_NOCHAT] && sd->sc.data[SC_NOCHAT]->val1&MANNER_NOITEM) ||
 		sd->sc.data[SC_KINGS_GRACE] ||
-		sd->sc.data[SC_SUHIDE]))
+		sd->sc.data[SC_SUHIDE] ||
+		sd->sc.data[SC_HANDICAPSTATE_FROSTBITE] ||
+		sd->sc.data[SC_HANDICAPSTATE_SWOONING] ||
+		sd->sc.data[SC_HANDICAPSTATE_LIGHTNINGSTRIKE] ||
+		sd->sc.data[SC_HANDICAPSTATE_CRYSTALLIZATION]))
 		return false;
 	
 	if (!pc_isItemClass(sd,item))
@@ -6190,7 +6194,9 @@ int pc_steal_coin(struct map_session_data *sd,struct block_list *target)
 	md = (TBL_MOB*)target;
 	target_lv = status_get_lv(target);
 
-	if (md->state.steal_coin_flag || md->sc.data[SC_STONE] || md->sc.data[SC_FREEZE] || status_bl_has_mode(target,MD_STATUSIMMUNE) || util::vector_exists(status_get_race2(&md->bl), RC2_TREASURE))
+	if (md->state.steal_coin_flag || md->sc.data[SC_STONE] || md->sc.data[SC_FREEZE] || md->sc.data[SC_HANDICAPSTATE_FROSTBITE] || 
+		md->sc.data[SC_HANDICAPSTATE_SWOONING] || md->sc.data[SC_HANDICAPSTATE_LIGHTNINGSTRIKE] || md->sc.data[SC_HANDICAPSTATE_CRYSTALLIZATION] || 
+		status_bl_has_mode(target,MD_STATUSIMMUNE) || util::vector_exists(status_get_race2(&md->bl), RC2_TREASURE))
 		return 0;
 
 	rate = sd->battle_status.dex / 2 + 2 * (sd->status.base_level - target_lv) + (10 * pc_checkskill(sd, RG_STEALCOIN)) + sd->battle_status.luk / 2;
