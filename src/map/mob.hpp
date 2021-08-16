@@ -214,6 +214,22 @@ public:
 	uint64 parseBodyNode(const YAML::Node &node);
 };
 
+struct s_mob_item_drop_ratio {
+	t_itemid nameid;
+	uint16 drop_ratio;
+	std::vector<uint16> mob_ids;
+};
+
+class MobItemRatioDatabase : public TypesafeYamlDatabase<t_itemid, s_mob_item_drop_ratio> {
+public:
+	MobItemRatioDatabase() : TypesafeYamlDatabase("MOB_ITEM_RATIO_DB", 1) {
+
+	}
+
+	const std::string getDefaultLocation();
+	uint64 parseBodyNode(const YAML::Node &node);
+};
+
 struct spawn_info {
 	unsigned short mapindex;
 	unsigned short qty;
@@ -234,6 +250,7 @@ struct s_mob_drop {
 };
 
 struct s_mob_db {
+	uint32 id;
 	std::string sprite, name, jname;
 	t_exp base_exp;
 	t_exp job_exp;

@@ -32334,9 +32334,8 @@ Body:
       sc_start SC_LIFEINSURANCE,3600000,0;
   - Id: 14505
     AegisName: Dun_1HR_Voucher
-    Name: Dungeon 1 Hour Ticket
+    Name: Sky Fortress Ticket
     Type: Usable
-    Buy: 20
     Trade:
       Override: 100
       NoDrop: true
@@ -32351,9 +32350,8 @@ Body:
       warp "dali02",117,69;
   - Id: 14506
     AegisName: Dun_Voucher
-    Name: Dungeon 1 Hour Ticket
+    Name: Sky Fortress Ticket
     Type: Usable
-    Buy: 20
     Trade:
       Override: 100
       NoDrop: true
@@ -41312,6 +41310,8 @@ Body:
       NoGuildStorage: true
       NoMail: true
       NoAuction: true
+    Script: |
+      rentitem 12622,259200;
   - Id: 17181
     AegisName: Jan_Groove_Box
     Name: Jan Groove Box
@@ -44030,7 +44030,24 @@ Body:
       NoMail: true
       NoAuction: true
     Script: |
-      getitem 14505,1;
+      rentitem 14506,3600;
+  - Id: 17570
+    AegisName: Dun_Voucher_Box2
+    Name: Sky Fortress Ticket 3 Hours Box
+    Type: Usable
+    Buy: 20
+    Weight: 10
+    Trade:
+      Override: 100
+      NoDrop: true
+      NoTrade: true
+      NoSell: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      rentitem 14506,10800;
   - Id: 17572
     AegisName: Erzulie_Lucky_Scroll
     Name: Erzulie Lucky Egg
@@ -44979,6 +44996,10 @@ Body:
     Type: Delayconsume
     Buy: 10
     Weight: 10
+    Flags:
+      Container: true
+    Script: |
+      getgroupitem(IG_EASTER_EGG);
   - Id: 22592
     AegisName: Happy_Call_Box
     Name: Happy Call Box
@@ -45735,6 +45756,8 @@ Body:
     Type: Usable
     Buy: 10
     Weight: 100
+    Flags:
+      Container: true
     Trade:
       Override: 100
       NoDrop: true
@@ -45745,7 +45768,7 @@ Body:
       NoMail: true
       NoAuction: true
     Script: |
-      /*No clue the random item yet*/
+      getgroupitem(IG_PITAPAT_BOX);
   - Id: 22721
     AegisName: ?_Box
     Name: "? Box"
@@ -46749,6 +46772,23 @@ Body:
       NoAuction: true
     Script: |
       RouletteBronze++;
+  - Id: 22870
+    AegisName: Xmas_Package_14
+    Name: Christmas Package
+    Type: Usable
+    Weight: 10
+    Flags:
+      Container: true
+    Trade:
+      Override: 100
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      getgroupitem(IG_XMAS_PACKAGE_14);
   - Id: 22873
     AegisName: Sealed_Beelzebub_Scroll_II
     Name: Sealed Beelzebub Scroll II
