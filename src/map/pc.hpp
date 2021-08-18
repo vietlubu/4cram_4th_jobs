@@ -1161,6 +1161,28 @@ public:
 
 extern PlayerStatPointDatabase statpoint_db;
 
+class PlayerTraitPointDatabase : public YamlDatabase {
+private:
+	std::unordered_map<uint16, uint32> traitpoint_table;
+
+public:
+	PlayerTraitPointDatabase() : YamlDatabase("TRAITPOINT_DB", 1) {
+
+	}
+
+	void clear() {
+		traitpoint_table.clear();
+	}
+	const std::string getDefaultLocation();
+	uint64 parseBodyNode(const YAML::Node& node);
+	void loadingFinished();
+
+	uint32 pc_gets_trait_point(uint16 level);
+	uint32 get_table_point(uint16 level);
+};
+
+extern PlayerTraitPointDatabase traitpoint_db;
+
 /// Enum of Summoner Power of 
 enum e_summoner_power_type {
 	SUMMONER_POWER_LAND = 0,
@@ -1310,7 +1332,6 @@ int pc_need_status_point(struct map_session_data *,int,int);
 int pc_maxparameterincrease(struct map_session_data*,int);
 bool pc_statusup(struct map_session_data*,int,int);
 int pc_statusup2(struct map_session_data*,int,int);
-int pc_gets_trait_point(int);
 int pc_need_trait_point(struct map_session_data *, int, int);
 int pc_maxtraitparameterincrease(struct map_session_data*, int);
 bool pc_traitstatusup(struct map_session_data*, int, int);

@@ -67,7 +67,7 @@ static inline bool pc_attendance_rewarded_today( struct map_session_data* sd );
 #define PVP_CALCRANK_INTERVAL 1000	// PVP calculation interval
 
 PlayerStatPointDatabase statpoint_db;
-static unsigned int traitp[MAX_LEVEL+1];
+PlayerTraitPointDatabase traitpoint_db;
 
 // h-files are for declarations, not for implementations... [Shinomori]
 struct skill_tree_entry skill_tree[CLASS_COUNT][MAX_SKILL_TREE];
@@ -7461,7 +7461,7 @@ int pc_checkbaselevelup(struct map_session_data *sd) {
 			sd->status.base_exp = next-1;
 
 		sd->status.status_point += statpoint_db.pc_gets_status_point(sd->status.base_level);
-		sd->status.trait_point += pc_gets_trait_point(sd->status.base_level);
+		sd->status.trait_point += traitpoint_db.pc_gets_trait_point(sd->status.base_level);
 		sd->status.base_level++;
 
 		if( pc_is_maxbaselv(sd) ){
@@ -7910,13 +7910,25 @@ uint32 PlayerStatPointDatabase::pc_gets_status_point(uint16 level) {
 	return 0;
 }
 
-// Calculates the number of trait points PC gets when leveling up (from level to level+1)
-int pc_gets_trait_point(int level)
-{
-	if (battle_config.use_traitpoint_table) //Use values from "db/traitpoint.txt"
-		return (traitp[level + 1] - traitp[level]);
-	else //Default increase
-		return ((level - 200) * 3 + (level - 200) / 5 * 4);
+/**
+* Gets the total number of trait points at the provided level.
+* @param level: Player base level.
+* @return Total number of trait points at specific base level.
+*/
+uint32 PlayerTraitPointDatabase::get_table_point(uint16 level) {
+	return this->traitpoint_table[level];
+}
+
+/**
+* Calculates the number of trait points PC gets when leveling up (from level to level+1)
+* @param level: Player base level.
+* @param table: Use table value or formula.
+* @return Trait points at specific base level.
+*/
+uint32 PlayerTraitPointDatabase::pc_gets_trait_point(uint16 level) {
+	if (this->traitpoint_table[level + 1] > this->traitpoint_table[level])
+		return (this->traitpoint_table[level + 1] - this->traitpoint_table[level]);
+	return 0;
 }
 
 #ifdef RENEWAL_STAT
@@ -8471,26 +8483,10 @@ int pc_resetstate(struct map_session_data* sd)
 	}
 
 	sd->status.status_point = statpoint_db.get_table_point(sd->status.base_level);
+	sd->status.trait_point = traitpoint_db.get_table_point(sd->status.base_level);
 
 	if ((sd->class_&JOBL_UPPER) != 0) {
 		sd->status.status_point += battle_config.transcendent_status_points;
-	}
-
-	if (battle_config.use_traitpoint_table)
-	{	// New traitpoint table used here
-		if (sd->status.base_level > MAX_LEVEL)
-		{	//traitp[] goes out of bounds, can't reset!
-			ShowError("pc_resetstate: Can't reset trait stats of %d:%d, the base level (%d) is greater than the max level supported (%d)\n",
-				sd->status.account_id, sd->status.char_id, sd->status.base_level, MAX_LEVEL);
-			return 0;
-		}
-
-		sd->status.trait_point = traitp[sd->status.base_level];
-	}
-	else
-	{
-		for (int i = 1; i < sd->status.base_level; i++)
-			sd->status.trait_point += pc_gets_trait_point(i);
 	}
 
 	if ((sd->class_&JOBL_FOURTH) != 0) {
@@ -9533,7 +9529,7 @@ bool pc_setparam(struct map_session_data *sd,int64 type,int64 val_tmp)
 			for (i = 0; i < (int)(val - sd->status.base_level); i++)
 			{
 				stat += statpoint_db.pc_gets_status_point(sd->status.base_level + i);
-				trait += pc_gets_trait_point(sd->status.base_level + i);
+				trait += traitpoint_db.pc_gets_trait_point(sd->status.base_level + i);
 			}
 			sd->status.status_point += stat;
 			sd->status.trait_point += trait;
@@ -13054,37 +13050,51 @@ void PlayerStatPointDatabase::loadingFinished() {
 	}
 }
 
-static int pc_read_traitdb(const char *basedir, int last_s, bool silent) {
-	int i = 1;
-	char line[24000]; //FIXME this seem too big
-	FILE *fp;
+const std::string PlayerTraitPointDatabase::getDefaultLocation() {
+	return std::string(db_path) + "/traitpoint.yml";
+}
 
-	sprintf(line, "%s/traitpoint.txt", basedir);
-	fp = fopen(line, "r");
-	if (fp == NULL) {
-		if (silent == 0) ShowWarning("Can't read '" CL_WHITE "%s" CL_RESET "'... Generating DB.\n", line);
-		return max(last_s, i);
+uint64 PlayerTraitPointDatabase::parseBodyNode(const YAML::Node &node) {
+	if (!this->nodesExist(node, { "Level", "Points" })) {
+		return 0;
 	}
-	else {
-		int entries = 0;
-		while (fgets(line, sizeof(line), fp))
-		{
-			int stat;
-			trim(line);
-			if (line[0] == '\0' || (line[0] == '/' && line[1] == '/'))
-				continue;
-			if ((stat = strtoul(line, NULL, 10))<0)
-				stat = 0;
-			if (i > MAX_LEVEL)
-				break;
-			traitp[i] = stat;
-			i++;
-			entries++;
+
+	uint16 level;
+
+	if (!this->asUInt16(node, "Level", level))
+		return 0;
+
+	uint32 point;
+
+	if (!this->asUInt32(node, "Points", point))
+		return 0;
+
+	if (level == 0) {
+		this->invalidWarning(node["Level"], "The minimum level is 1.\n");
+		return 0;
+	}
+
+	if (level > MAX_LEVEL) {
+		this->invalidWarning(node["Level"], "Level %d exceeds maximum BaseLevel %d, skipping.\n", level, MAX_LEVEL);
+		return 0;
+	}
+
+	this->traitpoint_table[level] = point;
+
+	return 1;
+}
+
+/**
+* Generate the remaining parts of the db if necessary.
+*/
+void PlayerTraitPointDatabase::loadingFinished() {
+	for (uint16 level = 1; level <= MAX_LEVEL; level++) {
+		if (!battle_config.use_traitpoint_table || util::umap_find(this->traitpoint_table, level) == nullptr) {
+			if (battle_config.use_traitpoint_table)
+				ShowError("Missing trait points for Level %d\n", level);
+			this->traitpoint_table[level] = this->traitpoint_table[level - 1] + level * 3 + level / 5 * 4;
 		}
-		fclose(fp);
-		ShowStatus("Done reading '" CL_WHITE "%d" CL_RESET "' entries in '" CL_WHITE "%s/%s" CL_RESET "'.\n", entries, basedir, "traitpoint.txt");
 	}
-	return max(last_s, i);
 }
 
 /*==========================================
@@ -13098,7 +13108,7 @@ static int pc_read_traitdb(const char *basedir, int last_s, bool silent) {
  * job_maxhpsp_db.txt	- strtlvl,maxlvl,job,type,values/lvl (values=hp|sp)
  *------------------------------------------*/
 void pc_readdb(void) {
-	int i, k, s = 1, t = 1;
+	int i, s = 1;
 	const char* dbsubpath[] = {
 		"",
 		"/" DBIMPORT,
@@ -13113,8 +13123,8 @@ void pc_readdb(void) {
 #endif
 
 	statpoint_db.clear();
+	traitpoint_db.clear();
 
-	memset(traitp,0,sizeof(traitp));
 	for(i=0; i<ARRAYLENGTH(dbsubpath); i++){
 		uint8 n1 = (uint8)(strlen(db_path)+strlen(dbsubpath[i])+1);
 		uint8 n2 = (uint8)(strlen(db_path)+strlen(DBPATH)+strlen(dbsubpath[i])+1);
@@ -13130,7 +13140,6 @@ void pc_readdb(void) {
 			safesnprintf(dbsubpath2,n1,"%s%s",db_path,dbsubpath[i]);
 		}
 
-		t = pc_read_traitdb(dbsubpath2,s,i > 0);
 		if (i == 0)
 #ifdef RENEWAL_ASPD // Paths are hardcoded here to specifically pick the correct database
 			sv_readdb(dbsubpath1, "re/job_db1.txt",',',6+MAX_WEAPON_TYPE,6+MAX_WEAPON_TYPE,CLASS_COUNT,&pc_readdb_job1, false);
@@ -13157,15 +13166,8 @@ void pc_readdb(void) {
 	sv_readdb(db_path, DBIMPORT"/skill_tree.txt", ',', 3 + MAX_PC_SKILL_REQUIRE * 2, 5 + MAX_PC_SKILL_REQUIRE * 2, -1, &pc_readdb_skilltree, 1);
 
 	statpoint_db.load();
+	traitpoint_db.load();
 
-	// Same for the trait point table.
-	k = battle_config.use_traitpoint_table; //save setting
-	battle_config.use_traitpoint_table = 0; //temporarily disable to force pc_gets_trait_point use default values
-	traitp[0] = 3; // seed value
-	for (; t <= MAX_LEVEL; t++)
-		traitp[t] = traitp[t - 1] + pc_gets_trait_point(t - 1);
-	battle_config.use_traitpoint_table = k; //restore setting
-	
 	//Checking if all class have their data
 	for (i = 0; i < JOB_MAX; i++) {
 		int idx;

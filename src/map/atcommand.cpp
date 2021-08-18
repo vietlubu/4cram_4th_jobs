@@ -1613,7 +1613,7 @@ ACMD_FUNC(baselevelup)
 		for (i = 0; i < level; i++)
 		{
 			status_point += statpoint_db.pc_gets_status_point(sd->status.base_level + i);
-			trait_point += pc_gets_trait_point(sd->status.base_level + i);
+			trait_point += traitpoint_db.pc_gets_trait_point(sd->status.base_level + i);
 		}
 		sd->status.status_point += status_point;
 		sd->status.trait_point += trait_point;
@@ -1637,7 +1637,7 @@ ACMD_FUNC(baselevelup)
 		for (i = 0; i > -level; i--)
 		{
 			status_point += statpoint_db.pc_gets_status_point(sd->status.base_level + i - 1);
-			trait_point += pc_gets_trait_point(sd->status.base_level + i - 1);
+			trait_point += traitpoint_db.pc_gets_trait_point(sd->status.base_level + i - 1);
 		}
 		if (sd->status.status_point < status_point || sd->status.trait_point < trait_point)
 			pc_resetstate(sd);
