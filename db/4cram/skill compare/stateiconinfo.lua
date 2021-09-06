@@ -329,6 +329,15 @@ StateIconList[EFST_IDs.EFST_NOEQUIPWEAPON] = {
 		{ "무기 장착 불가" }
 	}
 }
+StateIconList[EFST_IDs.EFST_SHIELDSPELL_MDEF] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "쉴드 스펠 - 魔", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "방패 마법 방어도에 따른 마법 발동" }
+	}
+}
 StateIconList[EFST_IDs.EFST_AUTOGUARD] = {
 	haveTimeLimit = 1,
 	posTimeLimitStr = 2,
@@ -1573,6 +1582,7 @@ StateIconList[EFST_IDs.EFST_DANCE_WITH_WUG] = {
 	descript = {
 		{ "워그와 함께 춤을", COLOR_TITLE_BUFF },
 		{ "%s", COLOR_TIME },
+		{ "공격속도 증가" },
 		{ "고정 캐스팅 시간 감소." },
 		{ "원거리 데미지 증가." }
 	}
@@ -4941,9 +4951,9 @@ StateIconList[EFST_IDs.EFST_FLOWER_LEAF2] = {
 	haveTimeLimit = 1,
 	posTimeLimitStr = 2,
 	descript = {
-		{ "뜨거운 잔치국수", COLOR_TITLE_BUFF },
+		{ "이벤트 버프", COLOR_TITLE_BUFF },
 		{ "%s", COLOR_TIME },
-		{ "화속성 몬스터 내성" },
+		{ "회피율 및 완전회피 증가" },
 		{ "공격 속도 증가" },
 		{ "변동 캐스팅 감소" }
 	}
@@ -5503,6 +5513,16 @@ StateIconList[EFST_IDs.EFST_SHADOW_SCAR] = {
 		{ "받는 근접 물리 데미지 증가" }
 	}
 }
+StateIconList[EFST_IDs.EFST_SHADOW_WEAPON] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "인챈팅 쉐도우", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "일정 확률로 대상에게" },
+		{ "받는 근접 물리 데미지 증가 효과 부여" }
+	}
+}
 StateIconList[EFST_IDs.EFST_MEDIALE] = {
 	haveTimeLimit = 1,
 	posTimeLimitStr = 2,
@@ -5546,7 +5566,6 @@ StateIconList[EFST_IDs.EFST_COMPETENTIA] = {
 	descript = {
 		{ "콤페텐티아", COLOR_TITLE_BUFF },
 		{ "%s", COLOR_TIME },
-		{ "자신 및 주변 HP, SP 회복" },
 		{ "P.ATK, S.MATK 증가" }
 	}
 }
@@ -5585,8 +5604,8 @@ StateIconList[EFST_IDs.EFST_CALAMITYGALE] = {
 		{ "%s", COLOR_TIME },
 		{ "언리밋 효과 적용" },
 		{ "일부 스킬 데미지 증가" },
-		{ "게일 스톰 크리티컬 적용" },
-		{ "크레시브 볼트, 게일 스톰으로 동물, 어패형에게 주는 데미지 증가" }
+		{ "가일 스톰 크리티컬 적용" },
+		{ "크레시브 볼트, 가일 스톰으로 동물, 어패형에게 주는 데미지 증가" }
 	}
 }
 StateIconList[EFST_IDs.EFST_MYSTIC_SYMPHONY] = {
@@ -5886,6 +5905,15 @@ StateIconList[EFST_IDs.EFST_RESEARCHREPORT] = {
 		{ "무형, 식물형에게 주는 데미지 증가" }
 	}
 }
+StateIconList[EFST_IDs.EFST_BO_HELL_DUSTY] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "지옥 나무의 가루", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "무형, 식물형에게 주는 데미지 증가" }
+	}
+}
 StateIconList[EFST_IDs.EFST_RAISINGDRAGON] = {
 	haveTimeLimit = 1,
 	posTimeLimitStr = 2,
@@ -6079,5 +6107,111 @@ StateIconList[EFST_IDs.EFST_PYROCLASTIC] = {
 		{ "파이로클래스틱", COLOR_TITLE_BUFF },
 		{ "%s", COLOR_TIME },
 		{ "무기 공격력 상승" }
+	}
+}
+StateIconList[EFST_IDs.EFST_NOEQUIPWEAPON2] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "스트립 쉐도우", COLOR_TITLE_DEBUFF },
+		{ "%s", COLOR_TIME },
+		{ "웨폰 쉐도우 장비를 착용할 수 없는 상태" }
+	}
+}
+StateIconList[EFST_IDs.EFST_NOEQUIPARMOR2] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "스트립 쉐도우", COLOR_TITLE_DEBUFF },
+		{ "%s", COLOR_TIME },
+		{ "아머 쉐도우 장비를 착용할 수 없는 상태" }
+	}
+}
+StateIconList[EFST_IDs.EFST_NOEQUIPSHIELD2] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "스트립 쉐도우", COLOR_TITLE_DEBUFF },
+		{ "%s", COLOR_TIME },
+		{ "쉴드 웨폰 쉐도우 장비를 착용할 수 없는 상태" }
+	}
+}
+StateIconList[EFST_IDs.EFST_NOEQUIPSHOES2] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "스트립 쉐도우", COLOR_TITLE_DEBUFF },
+		{ "%s", COLOR_TIME },
+		{ "신발 쉐도우 장비를 착용할 수 없는 상태" }
+	}
+}
+StateIconList[EFST_IDs.EFST_NOEQUIPPENDANT2] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "스트립 쉐도우", COLOR_TITLE_DEBUFF },
+		{ "%s", COLOR_TIME },
+		{ "악세서리 쉐도우 장비를 착용할 수 없는 상태" }
+	}
+}
+StateIconList[EFST_IDs.EFST_NOEQUIPEARING2] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "스트립 쉐도우", COLOR_TITLE_DEBUFF },
+		{ "%s", COLOR_TIME },
+		{ "악세서리 쉐도우 장비를 착용할 수 없는 상태" }
+	}
+}
+StateIconList[EFST_IDs.EFST_NOEQUIPFULL2] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "스트립 쉐도우", COLOR_TITLE_DEBUFF },
+		{ "%s", COLOR_TIME },
+		{ "모든 쉐도우 장비를 착용할 수 없는 상태" }
+	}
+}
+StateIconList[EFST_IDs.EFST_CURSE_R_CUBE] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "커스 오브 레드 큐브", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME }
+	}
+}
+StateIconList[EFST_IDs.EFST_CURSE_B_CUBE] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "커스 오브 블루 큐브", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME }
+	}
+}
+StateIconList[EFST_IDs.EFST_TOXIN_OF_MANDARA] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "만다라", COLOR_TITLE_DEBUFF },
+		{ "%s", COLOR_TIME },
+		{ "물리 저항력 감소" }
+	}
+}
+StateIconList[EFST_IDs.EFST_GOLDENE_TONE] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "골든에 튜느", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "물리 및 마법 저항력 증가" }
+	}
+}
+StateIconList[EFST_IDs.EFST_TEMPERING] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "템퍼링", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "P.ATK 증가" }
 	}
 }
