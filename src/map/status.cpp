@@ -2666,7 +2666,8 @@ int status_damage(struct block_list *src,struct block_list *target,int64 dhp, in
 			}
 #ifndef RENEWAL
 			if ((sce=sc->data[SC_GRAVITATION]) && sce->val3 == BCT_SELF) {
-				struct skill_unit_group* sg = skill_id2group(sce->val4);
+				std::shared_ptr<s_skill_unit_group> sg = skill_id2group(sce->val4);
+
 				if (sg) {
 					skill_delunitgroup(sg);
 					sce->val4 = 0;
@@ -4923,7 +4924,7 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 			}
 #ifdef RENEWAL
 			if (sd->bonus.weapon_atk_rate)
-				wa->atk = wa->atk * sd->bonus.weapon_atk_rate / 100;
+				wa->atk += wa->atk * sd->bonus.weapon_atk_rate / 100;
 			wa->matk += sd->inventory_data[index]->matk;
 			wa->wlv = wlv;
 			// Renewal magic attack refine bonus
@@ -10164,10 +10165,12 @@ void status_set_viewdata(struct block_list *bl, int class_)
 				nd->vd.class_ = class_;
 				nd->vd.hair_style = cap_value(nd->vd.hair_style, MIN_HAIR_STYLE, MAX_HAIR_STYLE);
 			} else {
+				ShowError("status_set_viewdata (NPC): Invalid view data %d\n", class_);
 				if (bl->m >= 0)
 					ShowDebug("Source (NPC): %s at %s (%d,%d)\n", nd->name, map_mapid2mapname(bl->m), bl->x, bl->y);
 				else
 					ShowDebug("Source (NPC): %s (invisible/not on a map)\n", nd->name);
+				ShowDebug( "Source (NPC): %s is located in: %s\n", nd->name, nd->path );
 			}
 			break;
 		}
@@ -14927,7 +14930,7 @@ int status_change_end_(struct block_list* bl, enum sc_type type, int tid, const 
 			return 0;
 		if (type == SC_SPIDERWEB) {
 			//Delete the unit group first to expire found in the status change
-			struct skill_unit_group *group = NULL, *group2 = NULL;
+			std::shared_ptr<s_skill_unit_group> group, group2;
 			t_tick tick = gettick();
 			int pos = 1;
 			if (sce->val2)
@@ -15134,16 +15137,11 @@ int status_change_end_(struct block_list* bl, enum sc_type type, int tid, const 
 				}
 
 				if(sce->val2) { // Erase associated land skill
-					struct skill_unit_group *group;
-					group = skill_id2group(sce->val2);
-					if( group == NULL ) {
-						ShowDebug("status_change_end: SC_DANCING is missing skill unit group (val1=%d, val2=%d, val3=%d, val4=%d, timer=%d, tid=%d, char_id=%d, map=%s, x=%d, y=%d). Please report this!\n",
-							sce->val1, sce->val2, sce->val3, sce->val4, sce->timer, tid,
-							sd ? sd->status.char_id : 0,
-							mapindex_id2name(map_id2index(bl->m)), bl->x, bl->y);
-					}
+					std::shared_ptr<s_skill_unit_group> group = skill_id2group(sce->val2);
+
 					sce->val2 = 0;
-					skill_delunitgroup(group);
+					if (group)
+						skill_delunitgroup(group);
 				}
 
 				if((sce->val1&0xFFFF) == CG_MOONLIT)
@@ -15234,7 +15232,8 @@ int status_change_end_(struct block_list* bl, enum sc_type type, int tid, const 
 			break;
 		case SC_GOSPEL:
 			if (sce->val3) { // Clear the group.
-				struct skill_unit_group* group = skill_id2group(sce->val3);
+				std::shared_ptr<s_skill_unit_group> group = skill_id2group(sce->val3);
+
 				sce->val3 = 0;
 				if (group)
 					skill_delunitgroup(group);
@@ -15247,7 +15246,8 @@ int status_change_end_(struct block_list* bl, enum sc_type type, int tid, const 
 			break;
 		case SC_BASILICA: // Clear the skill area. [Skotlex]
 				if (sce->val3 && sce->val4 == bl->id) {
-					struct skill_unit_group* group = skill_id2group(sce->val3);
+					std::shared_ptr<s_skill_unit_group> group = skill_id2group(sce->val3);
+
 					sce->val3 = 0;
 					if (group)
 						skill_delunitgroup(group);
@@ -15261,7 +15261,8 @@ int status_change_end_(struct block_list* bl, enum sc_type type, int tid, const 
 		case SC__MANHOLE:
 		case SC_BANDING:
 			if (sce->val4) { // Clear the group.
-				struct skill_unit_group* group = skill_id2group(sce->val4);
+				std::shared_ptr<s_skill_unit_group> group = skill_id2group(sce->val4);
+
 				sce->val4 = 0;
 				if( group ) // Might have been cleared before status ended, e.g. land protector
 					skill_delunitgroup(group);
@@ -15347,7 +15348,8 @@ int status_change_end_(struct block_list* bl, enum sc_type type, int tid, const 
 		case SC_NEUTRALBARRIER_MASTER:
 		case SC_STEALTHFIELD_MASTER:
 			if( sce->val2 ) {
-				struct skill_unit_group* group = skill_id2group(sce->val2);
+				std::shared_ptr<s_skill_unit_group> group = skill_id2group(sce->val2);
+
 				sce->val2 = 0;
 				if( group ) // Might have been cleared before status ended, e.g. land protector
 					skill_delunitgroup(group);
@@ -17595,7 +17597,7 @@ AttributeDatabase elemental_attribute_db;
  * @param level Element level 1 ~ MAX_ELE_LEVEL
  */
 int16 AttributeDatabase::getAttribute(uint16 level, uint16 atk_ele, uint16 def_ele) {
-	if (!CHK_ELEMENT(atk_ele) || !CHK_ELEMENT(def_ele) || !CHK_ELEMENT_LEVEL(level))
+	if (!CHK_ELEMENT(atk_ele) || !CHK_ELEMENT(def_ele) || !CHK_ELEMENT_LEVEL(level+1))
 		return 100;
 
 	return this->attr_fix_table[level][atk_ele][def_ele];

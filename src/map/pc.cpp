@@ -7510,7 +7510,7 @@ int pc_checkbaselevelup(struct map_session_data *sd) {
 void pc_baselevelchanged(struct map_session_data *sd) {
 	uint8 i;
 	for( i = 0; i < EQI_MAX; i++ ) {
-		if( sd->equip_index[i] >= 0 ) {
+		if( sd->equip_index[i] >= 0 && sd->inventory_data[sd->equip_index[i]] ) {
 			if( sd->inventory_data[ sd->equip_index[i] ]->elvmax && sd->status.base_level > (unsigned int)sd->inventory_data[ sd->equip_index[i] ]->elvmax )
 				pc_unequipitem(sd, sd->equip_index[i], 3);
 		}
@@ -11606,8 +11606,8 @@ bool pc_unequipitem(struct map_session_data *sd, int n, int flag) {
 				break;
 			}
 		}
-		if (!sd->sc.data[SC_SEVENWIND] || sd->sc.data[SC_ASPERSIO]) //Check for seven wind (but not level seven!)
-			skill_enchant_elemental_end(&sd->bl, SC_NONE);
+
+		skill_enchant_elemental_end(&sd->bl, SC_NONE);
 		status_change_end(&sd->bl, SC_FEARBREEZE, INVALID_TIMER);
 		status_change_end(&sd->bl, SC_EXEEDBREAK, INVALID_TIMER);
 	}
