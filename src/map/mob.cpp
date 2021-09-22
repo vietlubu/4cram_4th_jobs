@@ -4469,6 +4469,32 @@ uint64 MobDatabase::parseBodyNode(const YAML::Node &node) {
 			mob->status.mdef = 0;
 	}
 	
+	if (this->nodeExists(node, "Resistance")) {
+		uint16 res;
+
+		if (!this->asUInt16(node, "Resistance", res))
+			return 0;
+
+		mob->status.res = res;
+	}
+	else {
+		if (!exists)
+			mob->status.res = 0;
+	}
+
+	if (this->nodeExists(node, "MagicResistance")) {
+		uint16 mres;
+
+		if (!this->asUInt16(node, "MagicResistance", mres))
+			return 0;
+
+		mob->status.mres = mres;
+	}
+	else {
+		if (!exists)
+			mob->status.mres = 0;
+	}
+
 	if (this->nodeExists(node, "Str")) {
 		uint16 stat;
 

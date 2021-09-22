@@ -7690,11 +7690,12 @@ ACMD_FUNC(mobinfo)
 		clif_displaymessage(fd, atcmd_output);
 		sprintf(atcmd_output, msg_txt(sd,1242), mob->lv, mob->status.max_hp, base_exp, job_exp, MOB_HIT(mob), MOB_FLEE(mob)); //  Lv:%d  HP:%d  Base EXP:%llu  Job EXP:%llu  HIT:%d  FLEE:%d
 		clif_displaymessage(fd, atcmd_output);
-		sprintf(atcmd_output, msg_txt(sd,1243), //  DEF:%d  MDEF:%d  STR:%d  AGI:%d  VIT:%d  INT:%d  DEX:%d  LUK:%d
-			mob->status.def, mob->status.mdef,mob->status.str, mob->status.agi,
-			mob->status.vit, mob->status.int_, mob->status.dex, mob->status.luk);
+		sprintf(atcmd_output, msg_txt(sd,1243), //  DEF:%d  MDEF:%d  RES:%d  MRES:%d
+			mob->status.def, mob->status.mdef, mob->status.res, mob->status.mres);
 		clif_displaymessage(fd, atcmd_output);
-
+		sprintf(atcmd_output, msg_txt(sd, 2021), //  STR:%d  AGI:%d  VIT:%d  INT:%d  DEX:%d  LUK:%d
+			mob->status.str, mob->status.agi, mob->status.vit, mob->status.int_, mob->status.dex, mob->status.luk);
+		clif_displaymessage(fd, atcmd_output);
 		sprintf(atcmd_output, msg_txt(sd,1244), //  ATK:%d~%d  Range:%d~%d~%d  Size:%s  Race: %s  Element: %s (Lv:%d)
 			mob->status.batk + mob->status.rhw.atk, mob->status.batk + mob->status.rhw.atk2, mob->status.rhw.range,
 			mob->range2 , mob->range3, msize[mob->status.size],

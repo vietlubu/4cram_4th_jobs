@@ -6409,7 +6409,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src, struct bl
 		// Res reduces physical damage by a percentage and
 		// is calculated before DEF and other reductions.
 		// Official formula not known. Using temp one for now. [Rytech]
-		if (tsd && tstatus->res > 0)
+		if (tstatus->res > 0)
 		{
 			short res = tstatus->res;
 			short ignore_res = 0;// Value used as a percentage.
@@ -7577,7 +7577,7 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 		// MRes reduces magical damage by a percentage and
 		// is calculated before MDEF and other reductions.
 		// Official formula not known. Using temp one for now. [Rytech]
-		if (tsd && tstatus->mres > 0)
+		if (tstatus->mres > 0)
 		{
 			short mres = tstatus->mres;
 			short ignore_mres = 0;// Value used as percentage.

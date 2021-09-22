@@ -1,4 +1,4 @@
-//===== rAthena Documentation================================
+﻿//===== rAthena Documentation================================
 //= rAthena Script Commands
 //===== By:==================================================
 //= rAthena Dev Team
@@ -3556,6 +3556,8 @@ Valid types are:
 	MOB_ATK2 - monster's atk2
 	MOB_DEF - monster's def
 	MOB_MDEF - monster's mdef
+	MOB_RES - monster's res
+	MOB_MRES - monster's mres
 	MOB_STR - monster's str
 	MOB_AGI - monster's agi
 	MOB_VIT - monster's vit
@@ -8209,6 +8211,8 @@ Parameters (indexes) for monsters are:
 	UMOB_ROBE
 	UMOB_BODY2
 	UMOB_GROUP_ID
+	UMOB_RES
+	UMOB_MRES
 
 -----
 

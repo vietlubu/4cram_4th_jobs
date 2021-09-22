@@ -3646,8 +3646,11 @@ void status_calc_misc(struct block_list *bl, struct status_data *status, int lev
 		status->def2 = status->mdef2 =
 		status->cri = status->flee2 =
 		status->patk = status->smatk =
-		status->res = status->mres =
 		status->hplus = status->crate = 0;
+
+	// Only players and monsters have RES/MRES
+	if (bl->type != BL_PC && bl->type != BL_MOB)
+		status->res = status->mres = 0;
 
 #ifdef RENEWAL // Renewal formulas
 	if (bl->type == BL_HOM) {

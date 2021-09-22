@@ -4380,6 +4380,8 @@
 	export_constant(MOB_ATK2);
 	export_constant(MOB_DEF);
 	export_constant(MOB_MDEF);
+	export_constant(MOB_RES);
+	export_constant(MOB_MRES);
 	export_constant(MOB_STR);
 	export_constant(MOB_AGI);
 	export_constant(MOB_VIT);
@@ -4591,6 +4593,8 @@
 	export_constant(UMOB_ROBE);
 	export_constant(UMOB_BODY2);
 	export_constant(UMOB_GROUP_ID);
+	export_constant(UMOB_RES);
+	export_constant(UMOB_MRES);
 
 	/* unit control - homunculus */
 	export_constant(UHOM_SIZE);

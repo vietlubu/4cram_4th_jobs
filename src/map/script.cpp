@@ -17667,6 +17667,8 @@ BUILDIN_FUNC(getmonsterinfo)
 		case MOB_ATK2:		script_pushint(st,mob->status.rhw.atk2); break;
 		case MOB_DEF:		script_pushint(st,mob->status.def); break;
 		case MOB_MDEF:		script_pushint(st,mob->status.mdef); break;
+		case MOB_RES:		script_pushint(st, mob->status.res); break;
+		case MOB_MRES:		script_pushint(st, mob->status.mres); break;
 		case MOB_STR:		script_pushint(st,mob->status.str); break;
 		case MOB_AGI:		script_pushint(st,mob->status.agi); break;
 		case MOB_VIT:		script_pushint(st,mob->status.vit); break;
@@ -18091,6 +18093,8 @@ BUILDIN_FUNC(getunitdata)
 			getunitdata_sub(UMOB_ROBE, md->vd->robe);
 			getunitdata_sub(UMOB_BODY2, md->vd->body_style);
 			getunitdata_sub(UMOB_GROUP_ID, md->ud.group_id);
+			getunitdata_sub(UMOB_RES, md->status.res);
+			getunitdata_sub(UMOB_MRES, md->status.mres);
 			break;
 
 		case BL_HOM:
@@ -18495,6 +18499,8 @@ BUILDIN_FUNC(setunitdata)
 			case UMOB_ROBE: clif_changelook(bl, LOOK_ROBE, (unsigned short)value); break;
 			case UMOB_BODY2: clif_changelook(bl, LOOK_BODY2, (unsigned short)value); break;
 			case UMOB_GROUP_ID: md->ud.group_id = value; unit_refresh(bl); break;
+			case UMOB_RES: md->base_status->res = (short)value; calc_status = true; break;
+			case UMOB_MRES: md->base_status->mres = (short)value; calc_status = true; break;
 			default:
 				ShowError("buildin_setunitdata: Unknown data identifier %d for BL_MOB.\n", type);
 				return SCRIPT_CMD_FAILURE;
