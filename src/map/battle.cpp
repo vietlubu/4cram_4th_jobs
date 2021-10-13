@@ -1498,14 +1498,16 @@ int64 battle_calc_damage(struct block_list *src,struct block_list *bl,struct Dam
 			damage <<= 1;
 		if (sc->data[SC_DARKCROW] && (flag&(BF_SHORT|BF_MAGIC)) == BF_SHORT) {
 			int bonus = sc->data[SC_DARKCROW]->val2;
-		if (sc->data[SC_HOLY_OIL] && (flag&(BF_LONG|BF_WEAPON)) == (BF_LONG|BF_WEAPON))
-			damage += damage * 50 / 100;// Need official adjustment. [Rytech]
 
 			if (status_get_class_(bl) == CLASS_BOSS)
 				bonus /= 2;
 
 			damage += damage * bonus / 100;
 		}
+		if (sc->data[SC_HOLY_OIL] && (flag&(BF_LONG|BF_WEAPON)) == (BF_LONG|BF_WEAPON))
+			damage += damage * 50 / 100;// Need official adjustment. [Rytech]
+		if (sc->data[SC_SHADOW_SCAR])// Need official adjustment for this too.
+			damage += damage * (10 * sc->data[SC_SHADOW_SCAR]->val1) / 100;
 
 		// Damage reductions
 		// Assumptio increases DEF on RE mode, otherwise gives a reduction on the final damage. [Igniz]
@@ -10032,6 +10034,7 @@ static const struct _battle_data {
 	{ "ap_rate",                            &battle_config.ap_rate,                         100,    1,      INT_MAX, },
 	{ "restart_ap_rate",                    &battle_config.restart_ap_rate,                 0,      0,      100, },
 	{ "loose_ap_on_death",                  &battle_config.loose_ap_on_death,               1,      0,      1, },
+	{ "loose_ap_on_map",                    &battle_config.loose_ap_on_map,                 1,      0,      1, },
 	{ "keep_ap_on_logout",                  &battle_config.keep_ap_on_logout,               1,      0,      1, },
 	{ "a_machine_level_difference",         &battle_config.a_machine_level_difference,      15,     0,      INT_MAX, },
 

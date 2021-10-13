@@ -699,6 +699,7 @@ struct Battle_Config
 	int ap_rate;
 	int restart_ap_rate;
 	int loose_ap_on_death;
+	int loose_ap_on_map;
 	int keep_ap_on_logout;
 	int a_machine_level_difference;
 

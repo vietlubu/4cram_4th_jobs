@@ -1415,10 +1415,22 @@ int skill_additional_effect(struct block_list* src, struct block_list *bl, uint1
 					if((sce=sc->data[SC_EDP]))
 						sc_start4(src,bl,SC_DPOISON,sce->val2, sce->val1,src->id,0,0,
 							skill_get_time2(ASC_EDP,sce->val1));
-					if ((sce = sc->data[SC_SHADOW_WEAPON]))
-						sc_start4(src, bl, SC_SHADOW_SCAR, sce->val2, sce->val1, src->id, 0, 0,
-							skill_get_time2(SHC_ENCHANTING_SHADOW, sce->val1));
+					// Enchanting Shadow gives a chance to inflict shadow wounds to the enemy.
+					if ((sce = sc->data[SC_SHADOW_WEAPON]) && rnd()%100 < sce->val2)
+					{
+						if (tsc && tsc->data[SC_SHADOW_SCAR])
+						{
+							short count = 1 + tsc->data[SC_SHADOW_SCAR]->val1;
 
+							// Need official stack limit. [Rytech]
+							if (count > 5)
+								count = 5;
+
+							sc_start(src, bl, SC_SHADOW_SCAR, 100, count, skill_get_time2(SHC_ENCHANTING_SHADOW, sce->val1));
+						}
+						else
+							sc_start(src, bl, SC_SHADOW_SCAR, 100, 1, skill_get_time2(SHC_ENCHANTING_SHADOW, sce->val1));
+					}
 					if ((sce = sc->data[SC_LUXANIMA]) && rnd() % 100 < sce->val2)
 						skill_castend_nodamage_id(src, bl, RK_STORMBLAST, 1, tick, 0);
 				}
