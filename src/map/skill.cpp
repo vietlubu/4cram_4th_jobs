@@ -2434,13 +2434,13 @@ int skill_additional_effect(struct block_list* src, struct block_list *bl, uint1
 	if( sd && !sd->autobonus.empty() )
 	{
 		for(auto &it : sd->autobonus) {
-			if (rnd()%1000 >= it.rate)
+			if (rnd()%1000 >= it->rate)
 				continue;
-			if (!(((it.atk_type)&attack_type)&BF_WEAPONMASK &&
-				  ((it.atk_type)&attack_type)&BF_RANGEMASK &&
-				  ((it.atk_type)&attack_type)&BF_SKILLMASK))
+			if (!(((it->atk_type)&attack_type)&BF_WEAPONMASK &&
+				  ((it->atk_type)&attack_type)&BF_RANGEMASK &&
+				  ((it->atk_type)&attack_type)&BF_SKILLMASK))
 				continue; // one or more trigger conditions were not fulfilled
-			pc_exeautobonus(sd, &sd->autobonus, &it);
+			pc_exeautobonus(*sd, &sd->autobonus, it);
 		}
 	}
 
@@ -2518,11 +2518,11 @@ int skill_onskillusage(struct map_session_data *sd, struct block_list *bl, uint1
 
 	if( sd && !sd->autobonus3.empty() ) {
 		for (auto &it : sd->autobonus3) {
-			if (rnd()%1000 >= it.rate)
+			if (rnd()%1000 >= it->rate)
 				continue;
-			if (it.atk_type != skill_id)
+			if (it->atk_type != skill_id)
 				continue;
-			pc_exeautobonus(sd, &sd->autobonus3, &it);
+			pc_exeautobonus(*sd, &sd->autobonus3, it);
 		}
 	}
 
@@ -2740,13 +2740,13 @@ int skill_counter_additional_effect (struct block_list* src, struct block_list *
 	//Autobonus when attacked
 	if( dstsd && !status_isdead(bl) && !dstsd->autobonus2.empty() && !(skill_id && skill_get_nk(skill_id, NK_NODAMAGE)) ) {
 		for (auto &it : dstsd->autobonus2) {
-			if (rnd()%1000 >= it.rate)
+			if (rnd()%1000 >= it->rate)
 				continue;
-			if (!(((it.atk_type)&attack_type)&BF_WEAPONMASK &&
-				  ((it.atk_type)&attack_type)&BF_RANGEMASK &&
-				  ((it.atk_type)&attack_type)&BF_SKILLMASK))
+			if (!(((it->atk_type)&attack_type)&BF_WEAPONMASK &&
+				  ((it->atk_type)&attack_type)&BF_RANGEMASK &&
+				  ((it->atk_type)&attack_type)&BF_SKILLMASK))
 				continue; // one or more trigger conditions were not fulfilled
-			pc_exeautobonus(dstsd, &dstsd->autobonus2, &it);
+			pc_exeautobonus(*dstsd, &dstsd->autobonus2, it);
 		}
 	}
 
@@ -7825,7 +7825,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 				short index = dstsd->equip_index[EQI_HAND_R];
 
 				if (index >= 0 && dstsd->inventory_data[index] && dstsd->inventory_data[index]->type == IT_WEAPON)
-					bonus = (20 * skill_lv) * dstsd->inventory_data[index]->wlv;
+					bonus = (20 * skill_lv) * dstsd->inventory_data[index]->weapon_level;
 			}
 
 			clif_skill_nodamage(src, bl, skill_id, skill_lv, sc_start2(src,bl, type, 100, skill_lv, bonus, skill_get_time(skill_id, skill_lv)));
@@ -9212,8 +9212,11 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 					}
 				}
 
-				if ((bonus = pc_get_itemgroup_bonus_group(sd, IG_POTION))) {
+				if ((bonus = pc_get_itemgroup_bonus_group(sd, IG_POTION, sd->itemgrouphealrate))) {
 					hp += hp * bonus / 100;
+				}
+
+				if( ( bonus = pc_get_itemgroup_bonus_group( sd, IG_POTION, sd->itemgroupsphealrate ) ) ){
 					sp += sp * bonus / 100;
 				}
 
@@ -18829,7 +18832,7 @@ int skill_delayfix(struct block_list *bl, uint16 skill_id, uint16 skill_lv)
 		return battle_config.min_skill_delay_limit;
 
 	int delaynodex = skill_get_delaynodex(skill_id);
-	int time = skill_get_delay(skill_id, skill_lv);
+	double time = skill_get_delay(skill_id, skill_lv);
 
 	if (time < 0)
 		time = -time + status_get_amotion(bl);	// If set to <0, add to attack motion.
@@ -18891,22 +18894,24 @@ int skill_delayfix(struct block_list *bl, uint16 skill_id, uint16 skill_lv)
 		}
 	}
 
+	int delay = 0;
+
 	if (!(delaynodex&2)) {
 		if (sc && sc->count) {
 			if (sc->data[SC_POEMBRAGI])
-				time -= time * sc->data[SC_POEMBRAGI]->val3 / 100;
+				delay += sc->data[SC_POEMBRAGI]->val3;
 			if (sc->data[SC_WIND_INSIGNIA] && sc->data[SC_WIND_INSIGNIA]->val1 == 3 && skill_get_type(skill_id) == BF_MAGIC && skill_get_ele(skill_id, skill_lv) == ELE_WIND)
-				time /= 2; // After Delay of Wind element spells reduced by 50%.
+				delay += 50; // After Delay of Wind element spells reduced by 50%.
 			if (sc->data[SC_MAGICMUSHROOM] && sc->data[SC_MAGICMUSHROOM]->val3 == 0)
-				time -= time * sc->data[SC_MAGICMUSHROOM]->val2 / 100;
+				delay += sc->data[SC_MAGICMUSHROOM]->val2;
 		}
 	}
 
 	if (!(delaynodex&4) && bl->type == BL_PC) {
 		map_session_data* sd = (map_session_data*)bl;
 
-		if (sd->delayrate != 100) // bonus bDelayRate
-			time += time * sd->delayrate / 100;
+		if (sd->bonus.delayrate != 0) // bonus bDelayRate
+			delay += sd->bonus.delayrate;
 
 		for (auto &it : sd->skilldelay) { // bonus2 bSkillDelay
 			if (it.id == skill_id) {
@@ -18916,12 +18921,15 @@ int skill_delayfix(struct block_list *bl, uint16 skill_id, uint16 skill_lv)
 		}
 	}
 
+	if (delay != 0)
+		time = time * (1 - (float)min(delay, 100) / 100);
+
 	if (battle_config.delay_rate != 100)
 		time = time * battle_config.delay_rate / 100;
 
-	//ShowInfo("Delay delayfix = %d\n",time);
+	//ShowInfo("Delay delayfix = %f\n",time);
 
-	return max(time,0);
+	return max((int)time,0);
 }
 
 
@@ -18929,7 +18937,22 @@ int skill_delayfix(struct block_list *bl, uint16 skill_id, uint16 skill_lv)
  * Weapon Repair [Celest/DracoRPG]
  *------------------------------------------*/
 void skill_repairweapon(struct map_session_data *sd, int idx) {
-	t_itemid material, materials[4] = { ITEMID_IRON_ORE, ITEMID_IRON, ITEMID_STEEL, ITEMID_ORIDECON_STONE };
+	static const t_itemid weapon_materials[MAX_WEAPON_LEVEL] = {
+		ITEMID_IRON_ORE,
+		ITEMID_IRON,
+		ITEMID_STEEL,
+		ITEMID_ORIDECON_STONE,
+#ifdef RENEWAL
+		0
+#endif
+	};
+	static const t_itemid armor_materials[MAX_ARMOR_LEVEL] = {
+		ITEMID_STEEL,
+#ifdef RENEWAL
+		0
+#endif
+	};
+	t_itemid material = 0;
 	struct item *item;
 	struct map_session_data *target_sd;
 
@@ -18955,11 +18978,13 @@ void skill_repairweapon(struct map_session_data *sd, int idx) {
 		return;
 	}
 
-	if ( target_sd->inventory_data[idx]->type == IT_WEAPON )
-		material = materials [ target_sd->inventory_data[idx]->wlv - 1 ]; // Lv1/2/3/4 weapons consume 1 Iron Ore/Iron/Steel/Rough Oridecon
-	else
-		material = materials [2]; // Armors consume 1 Steel
-	if ( pc_search_inventory(sd,material) < 0 ) {
+	if( target_sd->inventory_data[idx]->type == IT_WEAPON ){
+		material = weapon_materials[target_sd->inventory_data[idx]->weapon_level - 1];
+	}else if( target_sd->inventory_data[idx]->type == IT_ARMOR ){
+		material = armor_materials[target_sd->inventory_data[idx]->armor_level - 1];
+	}
+
+	if( material == 0 || pc_search_inventory( sd, material ) < 0 ){
 		clif_skill_fail(sd,sd->menuskill_id,USESKILL_FAIL_LEVEL,0);
 		return;
 	}
@@ -19003,6 +19028,16 @@ void skill_identify(struct map_session_data *sd, int idx)
  *------------------------------------------*/
 void skill_weaponrefine(struct map_session_data *sd, int idx)
 {
+	static const t_itemid material[MAX_WEAPON_LEVEL] = {
+		ITEMID_PHRACON,
+		ITEMID_EMVERETARCON,
+		ITEMID_ORIDECON,
+		ITEMID_ORIDECON,
+#ifdef RENEWAL
+		0
+#endif
+	};
+
 	nullpo_retv(sd);
 
 	if (idx >= 0 && idx < MAX_INVENTORY)
@@ -19012,9 +19047,7 @@ void skill_weaponrefine(struct map_session_data *sd, int idx)
 		item = &sd->inventory.u.items_inventory[idx];
 
 		if(item->nameid > 0 && ditem->type == IT_WEAPON) {
-			int i = 0, per;
-			t_itemid material[5] = { 0, ITEMID_PHRACON, ITEMID_EMVERETARCON, ITEMID_ORIDECON, ITEMID_ORIDECON };
-			if( ditem->flag.no_refine ) { 	// if the item isn't refinable
+			if( ditem->flag.no_refine || ditem->weapon_level < 1 ) { 	// if the item isn't refinable
 				clif_skill_fail(sd,sd->menuskill_id,USESKILL_FAIL_LEVEL,0);
 				return;
 			}
@@ -19022,8 +19055,11 @@ void skill_weaponrefine(struct map_session_data *sd, int idx)
 				clif_upgrademessage(sd, 2, item->nameid);
 				return;
 			}
-			if( (i = pc_search_inventory(sd, material [ditem->wlv])) < 0 ) {
-				clif_upgrademessage(sd, 3, material[ditem->wlv]);
+
+			int i = pc_search_inventory( sd, material[ditem->weapon_level - 1] );
+
+			if( i < 0 ) {
+				clif_upgrademessage( sd, 3, material[ditem->weapon_level - 1] );
 				return;
 			}
 
@@ -19041,12 +19077,13 @@ void skill_weaponrefine(struct map_session_data *sd, int idx)
 				return;
 			}
 
-			if( cost->nameid != material[ditem->wlv] ){
+			if( cost->nameid != material[ditem->weapon_level - 1] ){
+				ShowDebug( "skill_weaponrefine: The hardcoded refine requirement %d for weapon level %d does not match %d from the refine database.\n", material[ditem->weapon_level - 1], ditem->weapon_level, cost->nameid );
 				clif_skill_fail( sd, sd->menuskill_id, USESKILL_FAIL_LEVEL, 0 );
 				return;
 			}
 
-			per = ( cost->chance / 100 );
+			int per = ( cost->chance / 100 );
 			if( sd->class_&JOBL_THIRD )
 				per += 10;
 			else
@@ -19066,7 +19103,9 @@ void skill_weaponrefine(struct map_session_data *sd, int idx)
 				clif_upgrademessage(sd, 0, item->nameid);
 				clif_inventorylist(sd);
 				clif_refine(sd->fd,0,idx,item->refine);
-				achievement_update_objective(sd, AG_ENCHANT_SUCCESS, 2, ditem->wlv, item->refine);
+				if( ditem->type == IT_WEAPON ){
+					achievement_update_objective(sd, AG_ENCHANT_SUCCESS, 2, ditem->weapon_level, item->refine);
+				}
 				if (ep)
 					pc_equipitem(sd,idx,ep);
 				clif_misceffect(&sd->bl,3);
@@ -19074,7 +19113,7 @@ void skill_weaponrefine(struct map_session_data *sd, int idx)
 					item->card[0] == CARD0_FORGE &&
 					(int)MakeDWord(item->card[2],item->card[3]) == sd->status.char_id)
 				{ // Fame point system [DracoRPG]
-					switch(ditem->wlv){
+					switch(ditem->weapon_level){
 						case 1:
 							pc_addfame(sd, battle_config.fame_refine_lv1); // Success to refine to +10 a lv1 weapon you forged = +1 fame point
 							break;
@@ -19386,7 +19425,7 @@ int skill_clear_group(block_list *bl, uint8 flag)
 		return 0;
 
 	size_t count = 0;
-	bool deleted;
+	bool deleted = false;
 
 	// The after loop statement might look stupid, but this prevents iteration problems, if an entry was deleted
 	for (auto it = ud->skillunits.begin(); it != ud->skillunits.end(); (deleted ? it = ud->skillunits.begin() : it++), deleted = false) {
@@ -21329,8 +21368,10 @@ bool skill_produce_mix(struct map_session_data *sd, uint16 skill_id, t_itemid na
 		} while( j >= 0 && x > 0 );
 	}
 
-	if ((equip = (itemdb_isequip(nameid) && skill_id != GN_CHANGEMATERIAL && skill_id != GN_MAKEBOMB  )))
+	if ((equip = (itemdb_isequip(nameid) && skill_id != GN_CHANGEMATERIAL && skill_id != GN_MAKEBOMB)) && itemdb_type(nameid) == IT_WEAPON )
 		wlv = itemdb_wlv(nameid);
+	else
+		wlv = 0;
 
 	if (!equip) {
 		switch (skill_id) {
@@ -21601,8 +21642,22 @@ bool skill_produce_mix(struct map_session_data *sd, uint16 skill_id, t_itemid na
 	} else { // Weapon Forging - skill bonuses are straight from kRO website, other things from a jRO calculator [DracoRPG]
 		make_per = 5000 + ((sd->class_&JOBL_THIRD)?1400:sd->status.job_level*20) + status->dex*10 + status->luk*10; // Base
 		make_per += pc_checkskill(sd,skill_id)*500; // Smithing skills bonus: +5/+10/+15
-		make_per += pc_checkskill(sd,BS_WEAPONRESEARCH)*100 +((wlv >= 3)? pc_checkskill(sd,BS_ORIDEOCON)*100:0); // Weaponry Research bonus: +1/+2/+3/+4/+5/+6/+7/+8/+9/+10, Oridecon Research bonus (custom): +1/+2/+3/+4/+5
-		make_per -= (ele?2000:0) + sc*1500 + (wlv>1?wlv*1000:0); // Element Stone: -20%, Star Crumb: -15% each, Weapon level malus: -0/-20/-30
+		// Weaponry Research bonus: +1/+2/+3/+4/+5/+6/+7/+8/+9/+10
+		make_per += pc_checkskill(sd,BS_WEAPONRESEARCH)*100;
+		//  Oridecon Research bonus (custom): +1/+2/+3/+4/+5
+		if( wlv >= 3 ){
+			make_per += pc_checkskill(sd, BS_ORIDEOCON) * 100;
+		}
+		// Element Stone: -20%
+		if( ele ){
+			make_per -= 2000;
+		}
+		// Star Crumb: -15% each
+		make_per -= sc * 1500;
+		//  Weapon level malus: -0/-10/-20/-30
+		if( wlv > 1 ){
+			make_per -= ( wlv * 1000 );
+		}
 		if      (pc_search_inventory(sd,ITEMID_EMPERIUM_ANVIL) > -1) make_per+= 1000; // Emperium Anvil: +10
 		else if (pc_search_inventory(sd,ITEMID_GOLDEN_ANVIL) > -1)   make_per+= 500; // Golden Anvil: +5
 		else if (pc_search_inventory(sd,ITEMID_ORIDECON_ANVIL) > -1) make_per+= 300; // Oridecon Anvil: +3
@@ -21671,7 +21726,7 @@ bool skill_produce_mix(struct map_session_data *sd, uint16 skill_id, t_itemid na
 		if (equip) {
 			clif_produceeffect(sd,0,nameid);
 			clif_misceffect(&sd->bl,3);
-			if (itemdb_wlv(nameid) >= 3 && ((ele? 1 : 0) + sc) >= 3) // Fame point system [DracoRPG]
+			if (wlv >= 3 && ((ele? 1 : 0) + sc) >= 3) // Fame point system [DracoRPG]
 				pc_addfame(sd, battle_config.fame_forge); // Success to forge a lv3 weapon with 3 additional ingredients = +10 fame point
 		} else {
 			int fame = 0;

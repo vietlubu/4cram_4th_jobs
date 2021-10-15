@@ -887,7 +887,8 @@ struct item_data
 	uint16 slots;
 	uint32 look;
 	uint16 elv;
-	uint16 wlv;
+	uint16 weapon_level;
+	uint16 armor_level;
 	t_itemid view_id;
 	uint16 elvmax; ///< Maximum level for this item
 #ifdef RENEWAL
@@ -1032,7 +1033,7 @@ private:
 	e_sex defaultGender( const YAML::Node &node, std::shared_ptr<item_data> id );
 
 public:
-	ItemDatabase() : TypesafeCachedYamlDatabase("ITEM_DB", 1) {
+	ItemDatabase() : TypesafeCachedYamlDatabase("ITEM_DB", 2, 1) {
 
 	}
 
@@ -1087,7 +1088,7 @@ struct item_data* itemdb_exists(t_itemid nameid);
 #define itemdb_equip(n) itemdb_search(n)->equip
 #define itemdb_usescript(n) itemdb_search(n)->script
 #define itemdb_equipscript(n) itemdb_search(n)->script
-#define itemdb_wlv(n) itemdb_search(n)->wlv
+#define itemdb_wlv(n) itemdb_search(n)->weapon_level
 #define itemdb_range(n) itemdb_search(n)->range
 #define itemdb_slots(n) itemdb_search(n)->slots
 #define itemdb_available(n) (itemdb_search(n)->flag.available)
