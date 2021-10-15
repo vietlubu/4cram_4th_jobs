@@ -4929,8 +4929,8 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 				// TODO: additional grade bonus
 
 				if( wlv == 5 ){
-					// TODO: P.ATK += sd->inventory.u.items_inventory[index].refine * 2;
-					// TODO: S.MATK += sd->inventory.u.items_inventory[index].refine * 2;
+					base_status->patk += sd->inventory.u.items_inventory[index].refine * 2;
+					base_status->smatk += sd->inventory.u.items_inventory[index].refine * 2;
 				}
 #endif
 			}
@@ -4980,8 +4980,8 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 
 #ifdef RENEWAL
 				if( sd->inventory_data[index]->armor_level == 2 ){
-					// TODO: RES += sd->inventory.u.items_inventory[index].refine * 2;
-					// TODO: MRES += sd->inventory.u.items_inventory[index].refine * 2;
+					base_status->res += sd->inventory.u.items_inventory[index].refine * 2;
+					base_status->mres += sd->inventory.u.items_inventory[index].refine * 2;
 				}
 #endif
 			}
