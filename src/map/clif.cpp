@@ -354,25 +354,29 @@ uint16 clif_getport(void)
 #if PACKETVER >= 20071106
 static inline unsigned char clif_bl_type(struct block_list *bl, bool walking) {
 	switch (bl->type) {
-	case BL_PC:    return (disguised(bl) && !pcdb_checkid(status_get_viewdata(bl)->class_))? 0x1:0x0; //PC_TYPE
-	case BL_ITEM:  return 0x2; //ITEM_TYPE
-	case BL_SKILL: return 0x3; //SKILL_TYPE
-	case BL_CHAT:  return 0x4; //UNKNOWN_TYPE
-	case BL_MOB:   return pcdb_checkid(status_get_viewdata(bl)->class_)?0x0:0x5; //NPC_MOB_TYPE
+	case BL_PC:       return (disguised(bl) && !pcdb_checkid(status_get_viewdata(bl)->class_))? 0x1:0x0; //PC_TYPE
+	case BL_ITEM:     return 0x2; //ITEM_TYPE
+	case BL_SKILL:    return 0x3; //SKILL_TYPE
+	case BL_CHAT:     return 0x4; //UNKNOWN_TYPE
+	case BL_MOB:      return pcdb_checkid(status_get_viewdata(bl)->class_)?0x0:0x5; //NPC_MOB_TYPE
 	case BL_NPC:
 // From 2017-07-26 on NPC type units can also use player sprites.
 // There is one exception and this is if they are walking.
 // Since walking NPCs are not supported on official servers, the client does not know how to handle it.
 #if PACKETVER >= 20170726
-				   return ( pcdb_checkid(status_get_viewdata(bl)->class_) && walking ) ? 0x0 : 0x6; //NPC_EVT_TYPE
+				      return ( pcdb_checkid(status_get_viewdata(bl)->class_) && walking ) ? 0x0 : 0x6; //NPC_EVT_TYPE
 #else
-				   return pcdb_checkid(status_get_viewdata(bl)->class_) ? 0x0 : 0x6; //NPC_EVT_TYPE
+				      return pcdb_checkid(status_get_viewdata(bl)->class_) ? 0x0 : 0x6; //NPC_EVT_TYPE
 #endif
-	case BL_PET:   return pcdb_checkid(status_get_viewdata(bl)->class_)?0x0:0x7; //NPC_PET_TYPE
-	case BL_HOM:   return 0x8; //NPC_HOM_TYPE
-	case BL_MER:   return 0x9; //NPC_MERSOL_TYPE
-	case BL_ELEM:  return 0xa; //NPC_ELEMENTAL_TYPE
-	default:       return 0x1; //NPC_TYPE
+	case BL_PET:      return pcdb_checkid(status_get_viewdata(bl)->class_)?0x0:0x7; //NPC_PET_TYPE
+	case BL_HOM:      return 0x8; //NPC_HOM_TYPE
+	case BL_MER:      return 0x9; //NPC_MERSOL_TYPE
+	case BL_ELEM:     return 0xa; //NPC_ELEMENTAL_TYPE
+	case BL_UNKNOWN:  return 0xb; //NPC_UNKNOWN_TYPE - Unconfirmed - Can be attacked.
+	case BL_NPC_WALK: return 0xc; //NPC_WALK_TYPE - Unconfirmed - Can be talked to.
+	case BL_ABR:      return 0xd; //NPC_ABR_TYPE
+	case BL_BIONIC:   return 0xe; //NPC_BIONIC_TYPE
+	default:          return 0x1; //NPC_TYPE
 	}
 }
 #endif

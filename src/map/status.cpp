@@ -9422,8 +9422,8 @@ static signed short status_calc_res(struct block_list *bl, struct status_change 
 		res += sc->data[SC_D_MACHINE]->val3;
 	if (sc->data[SC_MUSICAL_INTERLUDE])
 		res += sc->data[SC_MUSICAL_INTERLUDE]->val2;
-	//if (sc->data[SC_SHADOW_STRIP] && bl->type != BL_PC)
-	//	res -= res * sc->data[SC_SHADOW_STRIP]->val2 / 100;
+	if (sc->data[SC_SHADOW_STRIP] && bl->type != BL_PC)
+		res -= res * sc->data[SC_SHADOW_STRIP]->val2 / 100;
 	if (sc->data[SC_AIN_RHAPSODY])
 		res -= sc->data[SC_AIN_RHAPSODY]->val2;
 
@@ -9442,8 +9442,8 @@ static signed short status_calc_mres(struct block_list *bl, struct status_change
 	if (!sc || !sc->count)
 		return cap_value(mres, 0, SHRT_MAX);
 
-	//if (sc->data[SC_SHADOW_STRIP] && bl->type != BL_PC)
-	//	mres -= mres * sc->data[SC_SHADOW_STRIP]->val2 / 100;
+	if (sc->data[SC_SHADOW_STRIP] && bl->type != BL_PC)
+		mres -= mres * sc->data[SC_SHADOW_STRIP]->val2 / 100;
 	if (sc->data[SC_GEF_NOCTURN])
 		mres -= sc->data[SC_GEF_NOCTURN]->val2;
 
@@ -14012,9 +14012,8 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			val3 = 20 * val1;// Res Increase
 			break;
 		case SC_SHADOW_STRIP:
-			// Disabled until monsters have Res/MRes support.
-			//if (!sd)// Res/MRes on mobs only.
-			//	val2 = 25;// Need official reduction amount.
+			if (!sd)// Res/MRes on mobs only.
+				val2 = 25;// Need official reduction amount.
 			break;
 		case SC_ABYSSFORCEWEAPON:
 			if (sd)

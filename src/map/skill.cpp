@@ -3960,9 +3960,18 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 				(d_bl->type == BL_PC && ((TBL_PC*)d_bl)->devotion[sce->val2] == bl->id)
 				) && check_distance_bl(bl, d_bl, sce->val3) )
 			{
+				int64 devotion_damage = damage;
+				struct status_change *d_sc;
+
+				// Needed to check the devotion master for Rebound Shield status.
+				d_sc = status_get_sc(d_bl);
+
+				if (d_sc && d_sc->data[SC_REBOUND_S])
+					devotion_damage -= devotion_damage * d_sc->data[SC_REBOUND_S]->val2 / 100;
+
 				if (!rmdamage) {
-					clif_damage(d_bl, d_bl, gettick(), 0, 0, damage, 0, DMG_NORMAL, 0, false);
-					status_fix_damage(NULL, d_bl, damage, 0, 0);
+					clif_damage(d_bl, d_bl, gettick(), 0, 0, devotion_damage, 0, DMG_NORMAL, 0, false);
+					status_fix_damage(NULL, d_bl, devotion_damage, 0, 0);
 				} else {
 					bool isDevotRdamage = false;
 
@@ -3971,8 +3980,8 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 					// If !isDevotRdamage, reflected magics are done directly on the target not on paladin
 					// This check is only for magical skill.
 					// For BF_WEAPON skills types track var rdamage and function battle_calc_return_damage
-					clif_damage(bl, (!isDevotRdamage) ? bl : d_bl, gettick(), 0, 0, damage, 0, DMG_NORMAL, 0, false);
-					status_fix_damage(bl, (!isDevotRdamage) ? bl : d_bl, damage, 0, 0);
+					clif_damage(bl, (!isDevotRdamage) ? bl : d_bl, gettick(), 0, 0, devotion_damage, 0, DMG_NORMAL, 0, false);
+					status_fix_damage(bl, (!isDevotRdamage) ? bl : d_bl, devotion_damage, 0, 0);
 				}
 			} else {
 				status_change_end(bl, SC_DEVOTION, INVALID_TIMER);
@@ -5107,7 +5116,6 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case DK_STORMSLASH:
 	case IG_GRAND_JUDGEMENT:
 	case CD_EFFLIGO:
-	case SHC_SHADOW_STAB:
 	case ABC_FRENZY_SHOT:
 	case WH_HAWKRUSH:
 	case WH_HAWKBOOMERANG:
@@ -5133,6 +5141,17 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 		}
 		else
 			sc_start(src, src, SC_E_SLASH_COUNT, 100, 1, skill_get_time(skill_id, skill_lv));
+		clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
+		skill_attack(BF_WEAPON, src, src, bl, skill_id, skill_lv, tick, flag);
+		break;
+
+	case SHC_SHADOW_STAB:
+		if (sc && (sc->data[SC_CLOAKING] || sc->data[SC_CLOAKINGEXCEED]))
+			flag |= 2;// Flag to deal 2 hits.
+
+		status_change_end(src, SC_CLOAKING, INVALID_TIMER);
+		status_change_end(src, SC_CLOAKINGEXCEED, INVALID_TIMER);
+
 		clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
 		skill_attack(BF_WEAPON, src, src, bl, skill_id, skill_lv, tick, flag);
 		break;
@@ -15494,7 +15513,6 @@ int skill_unit_onplace_timer(struct skill_unit *unit, struct block_list *bl, t_t
 		case UNT_FLORAL_FLARE_ROAD:
 		case UNT_CROSS_RAIN:
 		case UNT_PNEUMATICUS_PROCELLA:
-		case UNT_ABYSS_SQUARE:
 		case UNT_LIGHTNING_LAND:
 		case UNT_VENOM_SWAMP:
 		case UNT_CONFLAGRATION:
@@ -15569,6 +15587,18 @@ int skill_unit_onplace_timer(struct skill_unit *unit, struct block_list *bl, t_t
 
 		case UNT_ASTRAL_STRIKE:
 			skill_attack(skill_get_type(AG_ASTRAL_STRIKE_ATK), ss, &unit->bl, bl, AG_ASTRAL_STRIKE_ATK, sg->skill_lv, tick, 0);
+			break;
+
+		case UNT_ABYSS_SQUARE:
+		{
+			short flag = 0;
+
+			// Check to see if the caster is in the AoE.
+			if (distance_bl(ss, &unit->bl) <= unit->range)
+				flag |= 2;// If yes, skill hits twice.
+
+			skill_attack(skill_get_type(sg->skill_id), ss, &unit->bl, bl, sg->skill_id, sg->skill_lv, tick, flag);
+		}
 			break;
 
 		case UNT_FIREWALL:

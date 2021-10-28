@@ -6183,8 +6183,8 @@ static struct Damage initialize_weapon_data(struct block_list *src, struct block
 				if (sc && sc->data[SC_E_SLASH_COUNT])
 					wd.div_ = sc->data[SC_E_SLASH_COUNT]->val1;
 				break;
-			case SHC_SHADOW_STAB:// Not working as it should. Think status is ending before reaching this check. Fix it later. [Rytech]
-				if (sc && (sc->data[SC_CLOAKING] || sc->data[SC_CLOAKINGEXCEED]))
+			case SHC_SHADOW_STAB:
+				if (wd.miscflag == 2)
 					wd.div_ = 2;
 				break;
 			case SHC_IMPACT_CRATER:
@@ -6724,6 +6724,10 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 			break;
 		case AG_CRYSTAL_IMPACT:
 			if (sc && sc->data[SC_CLIMAX] && sc->data[SC_CLIMAX]->val1 == 2)
+				ad.div_ = 2;
+			break;
+		case ABC_ABYSS_SQUARE:
+			if (mflag == 2)
 				ad.div_ = 2;
 			break;
 		case TR_METALIC_FURY:// Deals up to 5 additional hits. But what affects the number of hits? [Rytech]
