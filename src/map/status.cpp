@@ -1448,6 +1448,9 @@ void initChangeTables(void)
 	set_sc( SP_SOULREAPER	, SC_SOULREAPER		, EFST_SOULREAPER	, SCB_NONE );
 	set_sc( SP_SOULCOLLECT	, SC_SOULCOLLECT	, EFST_SOULCOLLECT	, SCB_NONE );
 
+#ifdef RENEWAL
+	set_sc( NV_HELPANGEL			, SC_HELPANGEL		, EFST_HELPANGEL	, SCB_NONE );
+
 	// Dragon Knight
 	set_sc(          DK_SERVANTWEAPON    , SC_SERVANTWEAPON          , EFST_SERVANTWEAPON          , SCB_NONE );
 	set_sc_with_vfx( DK_SERVANT_W_SIGN   , SC_SERVANT_SIGN           , EFST_SERVANT_SIGN           , SCB_NONE );
@@ -1576,9 +1579,6 @@ void initChangeTables(void)
 	set_sc(          EM_EL_STRONG_PROTECTION, SC_STRONG_PROTECTION_OPTION, EFST_STRONG_PROTECTION_OPTION, SCB_ALL );
 	set_sc(          EM_EL_DEEP_POISONING   , SC_DEEP_POISONING_OPTION   , EFST_DEEP_POISONING_OPTION   , SCB_NONE );
 	set_sc(          EM_EL_POISON_SHIELD    , SC_POISON_SHIELD_OPTION    , EFST_POISON_SHIELD_OPTION    , SCB_ALL );
-
-#ifdef RENEWAL
-	set_sc( NV_HELPANGEL			, SC_HELPANGEL		, EFST_HELPANGEL	, SCB_NONE );
 #endif
 
 	/* Storing the target job rather than simply SC_SPIRIT simplifies code later on */
