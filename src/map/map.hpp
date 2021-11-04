@@ -273,9 +273,8 @@ enum bl_type : uint16{
 	BL_CHAT     = 0x0100,
 	BL_ELEM     = 0x0200,
 	BL_UNKNOWN  = 0x0400,// Reserved for unknown type. Can be attacked.
-	BL_NPC_WALK = 0x0800,// Unknown but can be talked to. Might be for walking NPC's.
-	BL_ABR      = 0x1000,
-	BL_BIONIC   = 0x2000,
+	BL_ABR      = 0x0800,
+	BL_BIONIC   = 0x1000,
 
 	BL_ALL   = 0xFFF,
 };
@@ -401,6 +400,7 @@ enum mob_ai {
 	AI_LEGION,
 	AI_FAW,
 	AI_GUILD,
+	AI_WAVEMODE,
 	AI_ABR,
 	AI_BIONIC,
 	AI_MAX

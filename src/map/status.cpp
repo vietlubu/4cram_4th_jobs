@@ -1060,6 +1060,8 @@ void initChangeTables(void)
 	add_sc( NPC_FIREWALK		, SC_PROPERTYWALK		);
 	add_sc( NPC_CLOUD_KILL   	, SC_POISON		);
 	set_sc( NPC_HALLUCINATIONWALK	, SC_NPC_HALLUCINATIONWALK	, EFST_NPC_HALLUCINATIONWALK	, SCB_FLEE );
+	set_sc( NPC_WIDEWEB           , SC_WIDEWEB           , EFST_WIDEWEB               , SCB_FLEE );
+	set_sc_with_vfx( NPC_FIRESTORM, SC_BURNT             , EFST_BURNT                 , SCB_NONE );
 
 	set_sc( CASH_BLESSING		, SC_BLESSING		, EFST_BLESSING		, SCB_STR|SCB_INT|SCB_DEX );
 	set_sc( CASH_INCAGI		, SC_INCREASEAGI	, EFST_INC_AGI, SCB_AGI|SCB_SPEED );
@@ -1806,6 +1808,8 @@ void initChangeTables(void)
 	StatusIconChangeTable[SC_DORAM_BUF_02] = EFST_DORAM_BUF_02;
 	StatusIconChangeTable[SC_SOULATTACK] = EFST_SOULATTACK;
 
+	StatusIconChangeTable[SC_CHILL] = EFST_CHILL;
+
 	// Item Reuse Limits
 	StatusIconChangeTable[SC_REUSE_REFRESH] = EFST_REUSE_REFRESH;
 	StatusIconChangeTable[SC_REUSE_LIMIT_A] = EFST_REUSE_LIMIT_A;
@@ -2253,6 +2257,7 @@ void initChangeTables(void)
 #ifndef RENEWAL
 	StatusChangeStateTable[SC_BASILICA]				|= SCS_NOMOVE|SCS_NOMOVECOND;
 #endif
+	StatusChangeStateTable[SC_WIDEWEB]				|= SCS_NOMOVE;
 	StatusChangeStateTable[SC_STOP]					|= SCS_NOMOVE;
 	StatusChangeStateTable[SC_CLOSECONFINE]			|= SCS_NOMOVE;
 	StatusChangeStateTable[SC_CLOSECONFINE2]		|= SCS_NOMOVE;
@@ -8446,7 +8451,7 @@ static signed short status_calc_flee(struct block_list *bl, struct status_change
 	// Rate value
 	if(sc->data[SC_INCFLEERATE])
 		flee += flee * sc->data[SC_INCFLEERATE]->val1/100;
-	if(sc->data[SC_SPIDERWEB])
+	if(sc->data[SC_SPIDERWEB] || sc->data[SC_WIDEWEB])
 		flee -= flee * 50/100;
 	if(sc->data[SC_BERSERK])
 		flee -= flee * 50/100;
@@ -11292,6 +11297,11 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 		if (sc->data[type])
 			return 0;
 
+	case SC_BURNT:
+		if( sc->data[SC_CHILL] )
+			return 0;
+		break;
+
 	case SC_WEDDING:
 	case SC_XMAS:
 	case SC_SUMMER:
@@ -11805,6 +11815,9 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 		}
 		if (sd)
 			pc_bonus_script_clear(sd, BSF_REM_ON_MADOGEAR);
+		break;
+	case SC_CHILL:
+		status_change_end(bl,SC_BURNT,INVALID_TIMER);
 		break;
 	}
 
@@ -13681,6 +13694,7 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			val3 = val1 * 25; // -movespeed TODO: Figure out movespeed rate
 			break;
 		case SC_C_MARKER:
+		case SC_BURNT:
 			// val1 = skill_lv
 			// val2 = src_id
 			val3 = 10; // -10 flee
@@ -14288,6 +14302,7 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 		case SC_ELECTRICSHOCKER:
 		case SC_MAGNETICFIELD:
 		case SC_NETHERWORLD:
+		case SC_WIDEWEB:
 			if (!unit_blown_immune(bl,0x1))
 				unit_stop_walking(bl,1);
 			break;
@@ -16810,6 +16825,21 @@ TIMER_FUNC(status_change_timer){
 		if (--(sce->val4) >= 0) {
 			status_heal(bl, 1000, 350, 0, 2);
 			sc_timer_next(1000 + tick);
+			return 0;
+		}
+		break;
+	case SC_BURNT:
+		if( --(sce->val4) >= 0 ) {
+			int damage = 2000;
+
+			if( damage >= status->hp )
+				damage = status->hp - 1;
+			map_freeblock_lock();
+			status_zap(bl,damage,0,0);
+			if( sc->data[type] ) {
+				sc_timer_next(1000 + tick);
+			}
+			map_freeblock_unlock();
 			return 0;
 		}
 		break;
