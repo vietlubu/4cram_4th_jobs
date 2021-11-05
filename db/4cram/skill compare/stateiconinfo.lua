@@ -6304,3 +6304,474 @@ StateIconList[EFST_IDs.EFST_RUSH_QUAKE2] = {
 		{ "원거리 물리 데미지 증가" }
 	}
 }
+StateIconList[EFST_IDs.EFST_RISING_SUN] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "일출", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "일출 상태" }
+	}
+}
+StateIconList[EFST_IDs.EFST_NOON_SUN] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "정오", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "정오 상태" }
+	}
+}
+StateIconList[EFST_IDs.EFST_SUNSET_SUN] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "일몰", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "일몰 상태" }
+	}
+}
+StateIconList[EFST_IDs.EFST_RISING_MOON] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "월출", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "월출 상태" }
+	}
+}
+StateIconList[EFST_IDs.EFST_MIDNIGHT_MOON] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "자정", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "자정 상태" }
+	}
+}
+StateIconList[EFST_IDs.EFST_DAWN_MOON] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "월몰", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "월몰 상태" }
+	}
+}
+StateIconList[EFST_IDs.EFST_STAR_BURST] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "천명낙성", COLOR_TITLE_DEBUFF },
+		{ "%s", COLOR_TIME },
+		{ "천명낙성 상태" }
+	}
+}
+StateIconList[EFST_IDs.EFST_SKY_ENCHANT] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "천기합일", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "천기운행 극대화 상태" }
+	}
+}
+StateIconList[EFST_IDs.EFST_TALISMAN_OF_PROTECTION] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "수호부", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "HP 지속 회복" }
+	}
+}
+StateIconList[EFST_IDs.EFST_TALISMAN_OF_WARRIOR] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "무사부", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "P.ATK 증가" }
+	}
+}
+StateIconList[EFST_IDs.EFST_TALISMAN_OF_MAGICIAN] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "법사부", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "S.MATK 증가" }
+	}
+}
+StateIconList[EFST_IDs.EFST_TALISMAN_OF_FIVE_ELEMENTS] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "오행부", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "수/풍/지/화/무속성 적에게 주는 물리 데미지 증가" },
+		{ "수/풍/지/화/무속성 적에게 주는 마법 데미지 증가" }
+	}
+}
+StateIconList[EFST_IDs.EFST_T_FIRST_GOD] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "동쪽의 가호", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "동쪽의 가호 상태" }
+	}
+}
+StateIconList[EFST_IDs.EFST_T_SECOND_GOD] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "서쪽의 가호", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "서쪽의 가호 상태" }
+	}
+}
+StateIconList[EFST_IDs.EFST_T_THIRD_GOD] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "남쪽의 가호", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "남쪽의 가호 상태" }
+	}
+}
+StateIconList[EFST_IDs.EFST_T_FOURTH_GOD] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "북쪽의 가호", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "북쪽의 가호 상태" }
+	}
+}
+StateIconList[EFST_IDs.EFST_T_FIVETH_GOD] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "사방오행의 가호", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "사방오행의 가호 상태" }
+	}
+}
+StateIconList[EFST_IDs.EFST_HEAVEN_AND_EARTH] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "천지신령", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "근접 물리 데미지 증가" },
+		{ "원거리 물리 데미지 증가" },
+		{ "모든 속성 마법 데미지 증가" }
+	}
+}
+StateIconList[EFST_IDs.EFST_HOGOGONG] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "호고공", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "호고공 상태" }
+	}
+}
+StateIconList[EFST_IDs.EFST_MARINE_FESTIVAL] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "귀설 바다축제", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "POW, CRT, CON 증가" }
+	}
+}
+StateIconList[EFST_IDs.EFST_SANDY_FESTIVAL] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "귀설 모래축제", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "SPL, WIS, STA 증가" }
+	}
+}
+StateIconList[EFST_IDs.EFST_KI_SUL_RAMPAGE] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "귀설 거칠게 요동치기", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "AP 회복" }
+	}
+}
+StateIconList[EFST_IDs.EFST_COLORS_OF_HYUN_ROK_1] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "현록의 오색뿔", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "아래 스킬에 수속성 부여" },
+		{ "개박하 메테오" },
+		{ "현록의 잎새바람" },
+		{ "현록포" }
+	}
+}
+StateIconList[EFST_IDs.EFST_COLORS_OF_HYUN_ROK_2] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "현록의 오색뿔", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "아래 스킬에 풍속성 부여" },
+		{ "개박하 메테오" },
+		{ "현록의 잎새바람" },
+		{ "현록포" }
+	}
+}
+StateIconList[EFST_IDs.EFST_COLORS_OF_HYUN_ROK_3] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "현록의 오색뿔", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "아래 스킬에 지속성 부여" },
+		{ "개박하 메테오" },
+		{ "현록의 잎새바람" },
+		{ "현록포" }
+	}
+}
+StateIconList[EFST_IDs.EFST_COLORS_OF_HYUN_ROK_4] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "현록의 오색뿔", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "아래 스킬에 화속성 부여" },
+		{ "개박하 메테오" },
+		{ "현록의 잎새바람" },
+		{ "현록포" }
+	}
+}
+StateIconList[EFST_IDs.EFST_COLORS_OF_HYUN_ROK_5] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "현록의 오색뿔", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "아래 스킬에 암속성 부여" },
+		{ "개박하 메테오" },
+		{ "현록의 잎새바람" },
+		{ "현록포" }
+	}
+}
+StateIconList[EFST_IDs.EFST_COLORS_OF_HYUN_ROK_6] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "현록의 오색뿔", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "아래 스킬에 성속성 부여" },
+		{ "개박하 메테오" },
+		{ "현록의 잎새바람" },
+		{ "현록포" }
+	}
+}
+StateIconList[EFST_IDs.EFST_COLORS_OF_HYUN_ROK_BUFF] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "현록의 오색뿔", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "개박하 메테오 데미지 증가" }
+	}
+}
+StateIconList[EFST_IDs.EFST_TEMPORARY_COMMUNION] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "급속 교감", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "P.ATK, S.MATK, HEAL PLUS 증가" }
+	}
+}
+StateIconList[EFST_IDs.EFST_BLESSING_OF_M_CREATURES] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "영물의 축복", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "P.ATK, S.MATK 증가" }
+	}
+}
+StateIconList[EFST_IDs.EFST_BLESSING_OF_M_C_DEBUFF] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "영물의 축복 부작용", COLOR_TITLE_DEBUFF },
+		{ "%s", COLOR_TIME },
+		{ "일정시간동안 영물의 축복 부여 불가" }
+	}
+}
+StateIconList[EFST_IDs.EFST_INTENSIVE_AIM] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "집중 조준 활성화", COLOR_TITLE_BUFF },
+		{ "ATK 증가" },
+		{ "HIT 증가" },
+		{ "CRI 증가" }
+	}
+}
+StateIconList[EFST_IDs.EFST_GRENADE_FRAGMENT_1] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "그레네이드 프래그먼트", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "수류탄 공격 시 수속성 부여" }
+	}
+}
+StateIconList[EFST_IDs.EFST_GRENADE_FRAGMENT_2] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "그레네이드 프래그먼트", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "수류탄 공격 시 풍속성 부여" }
+	}
+}
+StateIconList[EFST_IDs.EFST_GRENADE_FRAGMENT_3] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "그레네이드 프래그먼트", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "수류탄 공격 시 지속성 부여" }
+	}
+}
+StateIconList[EFST_IDs.EFST_GRENADE_FRAGMENT_4] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "그레네이드 프래그먼트", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "수류탄 공격 시 화속성 부여" }
+	}
+}
+StateIconList[EFST_IDs.EFST_GRENADE_FRAGMENT_5] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "그레네이드 프래그먼트", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "수류탄 공격 시 암속성 부여" }
+	}
+}
+StateIconList[EFST_IDs.EFST_GRENADE_FRAGMENT_6] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "그레네이드 프래그먼트", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "수류탄 공격 시 성속성 부여" }
+	}
+}
+StateIconList[EFST_IDs.EFST_AUTO_FIRING_LAUNCHEREFST] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "오토 파이어링 런처", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "자동 수류탄 발사 런처 활성화 상태" }
+	}
+}
+StateIconList[EFST_IDs.EFST_HIDDEN_CARD] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "히든 카드", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "원거리 물리 데미지 증가" },
+		{ "P.ATK 증가" }
+	}
+}
+StateIconList[EFST_IDs.EFST_NW_GRENADE_MASTERY] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "그레네이드 마스터리", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "CON 증가" },
+		{ "슈류탄 계열 스킬 데미지 증가" }
+	}
+}
+StateIconList[EFST_IDs.EFST_SHIELDCHAINRUSH] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "쉴드 체인 러쉬", COLOR_TITLE_DEBUFF },
+		{ "%s", COLOR_TIME },
+		{ "이동속도 감소" },
+		{ "받는 물리 데미지 증가" },
+		{ "받는 마법 데미지 증가" }
+	}
+}
+StateIconList[EFST_IDs.EFST_MISTYFROST] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "혹한", COLOR_TITLE_DEBUFF },
+		{ "%s", COLOR_TIME },
+		{ "수속성 내성 15% 감소" }
+	}
+}
+StateIconList[EFST_IDs.EFST_GROUNDGRAVITY] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "그라운드 그라비테이션", COLOR_TITLE_DEBUFF },
+		{ "%s", COLOR_TIME },
+		{ "이동속도 감소" },
+		{ "받는 물리 데미지 증가" },
+		{ "받는 마법 데미지 증가" }
+	}
+}
+StateIconList[EFST_IDs.EFST_BREAKINGLIMIT] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "한계돌파", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "전투 계열 스킬 데미지 증폭" }
+	}
+}
+StateIconList[EFST_IDs.EFST_RULEBREAK] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "룰 브레이킹", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "마법 계열 스킬 데미지 증폭" }
+	}
+}
+StateIconList[EFST_IDs.EFST_SHADOW_CLOCK] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "그림자 은신", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "이동속도 증가" },
+		{ "받는 물리 데미지 감소" },
+		{ "받는 마법 데미지 감소" }
+	}
+}
+StateIconList[EFST_IDs.EFST_NIGHTMARE] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "악몽", COLOR_TITLE_DEBUFF },
+		{ "%s", COLOR_TIME },
+		{ "악몽 표식" }
+	}
+}
