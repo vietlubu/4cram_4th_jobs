@@ -96,7 +96,8 @@ StateIconImgList = {
 		[EFST_IDs.EFST_NOEQUIPFULL2] = "efst_shadow_trip.tga",
 		[EFST_IDs.EFST_CURSE_R_CUBE] = "EFST_Curse_R_Cube.tga",
 		[EFST_IDs.EFST_CURSE_B_CUBE] = "EFST_Curse_B_Cube.tga",
-		[EFST_IDs.EFST_TOXIN_OF_MANDARA] = "MH_Toxin_of_Mandara.TGA"
+		[EFST_IDs.EFST_TOXIN_OF_MANDARA] = "MH_Toxin_of_Mandara.TGA",
+		[EFST_IDs.EFST_RUSH_QUAKE1] = "efst_rush_quake1.tga"
 	},
 	PRIORITY_BLUE = {
 		[EFST_IDs.EFST_ATTHASTE_CASH] = "ASPDCASH.TGA",
@@ -229,7 +230,12 @@ StateIconImgList = {
 		[EFST_IDs.EFST_AROMA_OIL] = "Aroma_Oil.tga",
 		[EFST_IDs.EFST_REF_T_POTION] = "ref_t_potion.tga",
 		[EFST_IDs.EFST_ADD_ATK_DAMAGE] = "add_atk_potion.tga",
-		[EFST_IDs.EFST_ADD_MATK_DAMAGE] = "add_matk_potion.tga"
+		[EFST_IDs.EFST_ADD_MATK_DAMAGE] = "add_matk_potion.tga",
+		[EFST_IDs.EFST_NOODLE_FES_1] = "add_atk_potion.TGA",
+		[EFST_IDs.EFST_NOODLE_FES_2] = "add_matk_potion.TGA",
+		[EFST_IDs.EFST_NOODLE_FES_3] = "H_MINE.TGA",
+		[EFST_IDs.EFST_NOODLE_FES_4] = "poioson_mist.TGA",
+		[EFST_IDs.EFST_NOODLE_FES_5] = "ALL_RAY_OF_PROTECTION.TGA"
 	},
 	PRIORITY_GREEN = {
 		[EFST_IDs.EFST_SET_NUM_DEF] = "SETDEF.TGA",
@@ -313,6 +319,8 @@ StateIconImgList = {
 		[EFST_IDs.EFST_SOULFALCON] = "SP_SOUL.TGA",
 		[EFST_IDs.EFST_SOULGOLEM] = "SP_SOUL.TGA",
 		[EFST_IDs.EFST_SOULLINK] = "SP_SOUL.TGA",
+		[EFST_IDs.EFST_PERIOD_RECEIVEITEM_2ND] = "ITEM_G.tga",
+		[EFST_IDs.EFST_PERIOD_PLUSEXP_2ND] = "EXP_G.tga",
 		[EFST_IDs.EFST_WEAPONBLOCK_ON] = "웨폰블로킹.tga",
 		[EFST_IDs.EFST_SACRIFICE] = "EXPIATIO.TGA",
 		[EFST_IDs.EFST_BASILICA_BUFF] = "Resist_Elemental_Saint.tga",
@@ -413,6 +421,7 @@ StateIconImgList = {
 		[EFST_IDs.EFST_PYROCLASTIC] = "디이터4.tga",
 		[EFST_IDs.EFST_SHADOW_WEAPON] = "efst_shadow_scar.tga",
 		[EFST_IDs.EFST_GOLDENE_TONE] = "MH_Godene_Tone.TGA",
-		[EFST_IDs.EFST_TEMPERING] = "MH_Tempering.TGA"
+		[EFST_IDs.EFST_TEMPERING] = "MH_Tempering.TGA",
+		[EFST_IDs.EFST_RUSH_QUAKE2] = "efst_rush_quake2.tga"
 	}
 }

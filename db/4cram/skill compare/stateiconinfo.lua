@@ -4303,6 +4303,24 @@ StateIconList[EFST_IDs.EFST_AID_PERIOD_PLUSJOBEXP_2ND] = {
 		{ "잡 경험치 획득율 증가." }
 	}
 }
+StateIconList[EFST_IDs.EFST_PERIOD_RECEIVEITEM_2ND] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "드랍율 향상", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "아이템 드랍율 50% 증가" }
+	}
+}
+StateIconList[EFST_IDs.EFST_PERIOD_PLUSEXP_2ND] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "경험치 향상", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "경험치 획득율 50% 증가" }
+	}
+}
 StateIconList[EFST_IDs.EFST_S_MANAPOTION] = {
 	haveTimeLimit = 1,
 	posTimeLimitStr = 2,
@@ -4349,7 +4367,7 @@ StateIconList[EFST_IDs.EFST_LHZ_DUN_N1] = {
 		{ "일부 전사자 몬스터에 대한 데미지 증가." },
 		{ "리스트 : 검사, 도둑계열 전사자 몬스터." },
 		{ "일부 전사자 몬스터에게 받는 데미지 감소." },
-		{ "리스트 : 복사, 상인계열 전사자 몬스터." },
+		{ "리스트 : 마법사, 상인계열 전사자 몬스터." },
 		{ "MVP 몬스터 제외." }
 	}
 }
@@ -4360,9 +4378,9 @@ StateIconList[EFST_IDs.EFST_LHZ_DUN_N2] = {
 		{ "무덤의 가호", COLOR_TITLE_BUFF },
 		{ "%s", COLOR_TIME },
 		{ "일부 전사자 몬스터에 대한 데미지 증가." },
-		{ "리스트 : 복사, 상인계열 전사자 몬스터." },
+		{ "리스트 : 마법사, 상인계열 전사자 몬스터." },
 		{ "일부 전사자 몬스터에게 받는 데미지 감소." },
-		{ "리스트 : 마법사, 궁수계열 전사자 몬스터." },
+		{ "리스트 : 복사, 궁수계열 전사자 몬스터." },
 		{ "MVP 몬스터 제외." }
 	}
 }
@@ -4373,7 +4391,7 @@ StateIconList[EFST_IDs.EFST_LHZ_DUN_N3] = {
 		{ "무덤의 가호", COLOR_TITLE_BUFF },
 		{ "%s", COLOR_TIME },
 		{ "일부 전사자 몬스터에 대한 데미지 증가." },
-		{ "리스트 : 마법사, 궁수계열 전사자 몬스터." },
+		{ "리스트 : 복사, 궁수계열 전사자 몬스터." },
 		{ "일부 전사자 몬스터에게 받는 데미지 감소." },
 		{ "리스트 : 검사, 도둑계열 전사자 몬스터." },
 		{ "MVP 몬스터 제외." }
@@ -4914,7 +4932,7 @@ StateIconList[EFST_IDs.EFST_SWEETSFAIR_ATK] = {
 	haveTimeLimit = 1,
 	posTimeLimitStr = 2,
 	descript = {
-		{ "ATK 증가", COLOR_TITLE_BUFF },
+		{ "힘세고 강한 연기", COLOR_TITLE_BUFF },
 		{ "%s", COLOR_TIME },
 		{ "ATK + 7%" }
 	}
@@ -4923,7 +4941,7 @@ StateIconList[EFST_IDs.EFST_SWEETSFAIR_MATK] = {
 	haveTimeLimit = 1,
 	posTimeLimitStr = 2,
 	descript = {
-		{ "MATK 증가", COLOR_TITLE_BUFF },
+		{ "지혜롭고 강한 연기", COLOR_TITLE_BUFF },
 		{ "%s", COLOR_TIME },
 		{ "MATK + 7%" }
 	}
@@ -4951,7 +4969,7 @@ StateIconList[EFST_IDs.EFST_FLOWER_LEAF2] = {
 	haveTimeLimit = 1,
 	posTimeLimitStr = 2,
 	descript = {
-		{ "이벤트 버프", COLOR_TITLE_BUFF },
+		{ "날카롭고 강한 연기", COLOR_TITLE_BUFF },
 		{ "%s", COLOR_TIME },
 		{ "회피율 및 완전회피 증가" },
 		{ "공격 속도 증가" },
@@ -4962,18 +4980,19 @@ StateIconList[EFST_IDs.EFST_FLOWER_LEAF3] = {
 	haveTimeLimit = 1,
 	posTimeLimitStr = 2,
 	descript = {
-		{ "고소한 크림누들", COLOR_TITLE_BUFF },
+		{ "아담한 꽃가지", COLOR_TITLE_BUFF },
 		{ "%s", COLOR_TIME },
-		{ "ATK + 5%" }
+		{ "MHP + 3%" },
+		{ "MSP + 3%" }
 	}
 }
 StateIconList[EFST_IDs.EFST_FLOWER_LEAF4] = {
 	haveTimeLimit = 1,
 	posTimeLimitStr = 2,
 	descript = {
-		{ "달콤한 수박푸딩", COLOR_TITLE_BUFF },
+		{ "벚꽃 찰떡", COLOR_TITLE_BUFF },
 		{ "%s", COLOR_TIME },
-		{ "MATK + 5%" }
+		{ "소형,중형,대형 적에게 주는 데미지 증가" }
 	}
 }
 StateIconList[EFST_IDs.EFST_SOUND_OF_DESTRUCTION] = {
@@ -5905,15 +5924,6 @@ StateIconList[EFST_IDs.EFST_RESEARCHREPORT] = {
 		{ "무형, 식물형에게 주는 데미지 증가" }
 	}
 }
-StateIconList[EFST_IDs.EFST_BO_HELL_DUSTY] = {
-	haveTimeLimit = 1,
-	posTimeLimitStr = 2,
-	descript = {
-		{ "지옥 나무의 가루", COLOR_TITLE_BUFF },
-		{ "%s", COLOR_TIME },
-		{ "무형, 식물형에게 주는 데미지 증가" }
-	}
-}
 StateIconList[EFST_IDs.EFST_RAISINGDRAGON] = {
 	haveTimeLimit = 1,
 	posTimeLimitStr = 2,
@@ -6213,5 +6223,84 @@ StateIconList[EFST_IDs.EFST_TEMPERING] = {
 		{ "템퍼링", COLOR_TITLE_BUFF },
 		{ "%s", COLOR_TIME },
 		{ "P.ATK 증가" }
+	}
+}
+StateIconList[EFST_IDs.EFST_NOODLE_FES_1] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "국수 축제 - 파르팔레", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "근접 및 원거리" },
+		{ "물리 데미지 증가" }
+	}
+}
+StateIconList[EFST_IDs.EFST_NOODLE_FES_2] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "국수 축제 - 크림 새우 파스타", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "모든 속성" },
+		{ "마법 데미지 증가" }
+	}
+}
+StateIconList[EFST_IDs.EFST_NOODLE_FES_3] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "국수 축제 - 토마토 국수", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "변동 캐스팅, 스킬 후 딜레이 감소" },
+		{ "공격속도 증가(공격 후 딜레이 감소)" }
+	}
+}
+StateIconList[EFST_IDs.EFST_NOODLE_FES_4] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "국수 축제 - 잔치 국수", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "ATK 및 MATK % 증가" }
+	}
+}
+StateIconList[EFST_IDs.EFST_NOODLE_FES_5] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "국수 축제 - 간장 비빔 국수", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "P.ATK 증가" },
+		{ "S.MATK 증가" }
+	}
+}
+StateIconList[EFST_IDs.EFST_BO_HELL_DUSTY] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "지옥 나무의 가루", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "무형, 식물형에게 주는 데미지 증가" },
+		{ "원거리 물리 데미지 증가" }
+	}
+}
+StateIconList[EFST_IDs.EFST_RUSH_QUAKE1] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "퀘이크", COLOR_TITLE_DEBUFF },
+		{ "%s", COLOR_TIME },
+		{ "받는 근접 물리 데미지 증가" },
+		{ "받는 원거리 물리 데미지 증가" }
+	}
+}
+StateIconList[EFST_IDs.EFST_RUSH_QUAKE2] = {
+	haveTimeLimit = 1,
+	posTimeLimitStr = 2,
+	descript = {
+		{ "러쉬", COLOR_TITLE_BUFF },
+		{ "%s", COLOR_TIME },
+		{ "근접 물리 데미지 증가" },
+		{ "원거리 물리 데미지 증가" }
 	}
 }
