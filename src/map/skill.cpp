@@ -2255,7 +2255,7 @@ int skill_additional_effect(struct block_list* src, struct block_list *bl, uint1
 		break;
 	} //end switch skill_id
 
-	if (md && battle_config.summons_trigger_autospells && md->master_id && md->special_state.ai)
+	if (md && battle_config.summons_trigger_autospells && md->master_id && md->special_state.ai && md->special_state.ai != AI_ABR && md->special_state.ai != AI_BIONIC)
 	{	//Pass heritage to Master for status causing effects. [Skotlex]
 		sd = map_id2sd(md->master_id);
 		src = sd?&sd->bl:src;
