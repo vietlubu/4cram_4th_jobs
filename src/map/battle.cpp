@@ -6428,15 +6428,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src, struct bl
 
 		// Res reduces physical damage by a percentage and
 		// is calculated before DEF and other reductions.
-		// Official formula not known. Using temp one for now. [Rytech]
-		if (tstatus->res > 0)
+		// This should be the official formula. [Rytech]
+		if ((wd.damage + wd.damage2) && tstatus->res > 0)
 		{
 			short res = tstatus->res;
 			short ignore_res = 0;// Value used as a percentage.
-			
-			if (res > battle_config.max_res_mres_reduction)
-				res = battle_config.max_res_mres_reduction;
-			
+
+			// Attacker status's that pierce Res.
 			if (sc)
 			{
 				if (sc->data[SC_A_TELUM])
@@ -6450,17 +6448,14 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src, struct bl
 			if (ignore_res > 0)
 				res -= res * ignore_res / 100;
 
-			// Guessing damage is reduced to no lower then 1???
-			if (res >= 1000)
-			{
-				wd.damage = 1;
-				wd.damage2 = 1;
-			}
-			else
-			{
-				wd.damage -= wd.damage * res / 1000;
-				wd.damage2 -= wd.damage * res / 1000;
-			}
+			// Max damage reduction from Res is officially 50%.
+			// That means 625 Res is needed to hit that cap.
+			if (res > battle_config.max_res_mres_reduction)
+				res = battle_config.max_res_mres_reduction;
+
+			// Apply damage reduction.
+			wd.damage = wd.damage * (5000 + res) / (5000 + 10 * res);
+			wd.damage2 = wd.damage2 * (5000 + res) / (5000 + 10 * res);
 		}
 
 		if (wd.damage + wd.damage2) { //Check if attack ignores DEF
@@ -7607,15 +7602,13 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 
 		// MRes reduces magical damage by a percentage and
 		// is calculated before MDEF and other reductions.
-		// Official formula not known. Using temp one for now. [Rytech]
-		if (tstatus->mres > 0)
+		// This should be the official formula. [Rytech]
+		if (ad.damage && tstatus->mres > 0)
 		{
 			short mres = tstatus->mres;
 			short ignore_mres = 0;// Value used as percentage.
-			
-			if (mres > battle_config.max_res_mres_reduction)
-				mres = battle_config.max_res_mres_reduction;
-			
+
+			// Attacker status's that pierce MRes.
 			if (sc && sc->data[SC_A_VITA])
 				ignore_mres += sc->data[SC_A_VITA]->val2;
 
@@ -7624,11 +7617,13 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 			if (ignore_mres > 0)
 				mres -= mres * ignore_mres / 100;
 
-			// Guessing damage is reduced to no lower then 1???
-			if (mres >= 1000)
-				ad.damage = 1;
-			else
-				ad.damage -= ad.damage * mres / 1000;
+			// Max damage reduction from MRes is officially 50%.
+			// That means 625 MRes is needed to hit that cap.
+			if (mres > battle_config.max_res_mres_reduction)
+				mres = battle_config.max_res_mres_reduction;
+
+			// Apply damage reduction.
+			ad.damage = ad.damage * (5000 + mres) / (5000 + 10 * mres);
 		}
 
 		if(!flag.imdef){
@@ -10062,7 +10057,7 @@ static const struct _battle_data {
 	{ "use_traitpoint_table",               &battle_config.use_traitpoint_table,            1,      0,      1, },
 	{ "trait_points_job_change",            &battle_config.trait_points_job_change,         7,      1,      1000, },
 	{ "max_trait_parameter",                &battle_config.max_trait_parameter,             100,    10,     SHRT_MAX, },
-	{ "max_res_mres_reduction",             &battle_config.max_res_mres_reduction,          500,    1,      1000, },
+	{ "max_res_mres_reduction",             &battle_config.max_res_mres_reduction,          625,    1,      SHRT_MAX, },
 	{ "max_ap",                             &battle_config.max_ap,                          200,    100,    1000000000, },
 	{ "ap_rate",                            &battle_config.ap_rate,                         100,    1,      INT_MAX, },
 	{ "restart_ap_rate",                    &battle_config.restart_ap_rate,                 0,      0,      100, },

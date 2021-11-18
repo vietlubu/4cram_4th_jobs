@@ -14057,7 +14057,7 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 		case SC_GEF_NOCTURN:// MRes Reduction. Official formula unknown.
 		case SC_AIN_RHAPSODY:// Res Reduction. Official formula unknown.
 			val2 = 10 * val1;// Res/MRes Decrease
-			if (val3 & 2)// Bonus if partner is found in party.
+			if (val3&2)// Bonus if partner is found in party.
 				val2 *= 2;
 			break;
 		case SC_MUSICAL_INTERLUDE:
