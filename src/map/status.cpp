@@ -2531,9 +2531,9 @@ int status_set_maxap(struct block_list *bl, unsigned int maxap, int flag)
 	if (maxap == status->max_ap)
 		return 0;
 	if (maxap > status->max_ap)
-		status_heal(bl, maxap - status->max_ap, 0, 0, 1 | flag);
+		status_heal(bl, 0, 0, maxap - status->max_ap, 1 | flag);
 	else
-		status_zap(bl, status->max_ap - maxap, 0, 0);
+		status_zap(bl, 0, 0, status->max_ap - maxap);
 
 	status->max_ap = maxap;
 	return maxap;
@@ -4545,7 +4545,7 @@ static int status_get_apbonus_equip(TBL_PC *sd) {
 
 	bonus += sd->aprate;
 
-	return bonus -= 100; //Default sprate is 100, so it should be add 0%
+	return bonus -= 100; //Default aprate is 100, so it should be add 0%
 }
 
 /**
@@ -14048,7 +14048,7 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			break;
 		case SC_WINDSIGN:
 			val2 = 8 + 6 * val1;// Chance to gain AP on attack.
-			if (val1 = 5)// Its 40% on level 5.
+			if (val1 == 5)// Its 40% on level 5.
 				val2 += 2;
 			break;
 		case SC_CALAMITYGALE:// Unlimit runs along with this.

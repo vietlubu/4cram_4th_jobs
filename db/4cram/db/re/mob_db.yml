@@ -41,7 +41,7 @@ Body:
     Int: 10
     Dex: 10
     Luk: 10
-    AttackRange: 9
+    AttackRange: 6
     SkillRange: 10
     ChaseRange: 12
     Size: Medium
@@ -66,7 +66,7 @@ Body:
     Int: 10
     Dex: 10
     Luk: 10
-    AttackRange: 4
+    AttackRange: 6
     SkillRange: 10
     ChaseRange: 12
     Size: Medium
@@ -91,7 +91,7 @@ Body:
     Int: 10
     Dex: 10
     Luk: 10
-    AttackRange: 9
+    AttackRange: 6
     SkillRange: 10
     ChaseRange: 12
     Size: Large
@@ -116,7 +116,7 @@ Body:
     Int: 10
     Dex: 10
     Luk: 10
-    AttackRange: 1
+    AttackRange: 3
     SkillRange: 10
     ChaseRange: 12
     Size: Medium
@@ -141,7 +141,7 @@ Body:
     Int: 10
     Dex: 10
     Luk: 10
-    AttackRange: 3
+    AttackRange: 5
     SkillRange: 10
     ChaseRange: 12
     Size: Medium
@@ -166,7 +166,7 @@ Body:
     Int: 10
     Dex: 10
     Luk: 10
-    AttackRange: 4
+    AttackRange: 5
     SkillRange: 10
     ChaseRange: 12
     Size: Medium
@@ -191,7 +191,7 @@ Body:
     Int: 10
     Dex: 10
     Luk: 10
-    AttackRange: 1
+    AttackRange: 5
     SkillRange: 10
     ChaseRange: 12
     Size: Medium

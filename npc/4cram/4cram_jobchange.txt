@@ -10,6 +10,7 @@
 //= Allows changing into 4th jobs (Trait Era Jobs).
 //===== Additional Comments: ================================= 
 //= 1.0 Release Version.
+//= 1.01 Updated required job level to 70.
 //============================================================
 prontera,158,184,4	script	Special Job Changer	485,{
 
@@ -20,7 +21,7 @@ prontera,158,184,4	script	Special Job Changer	485,{
 
 Xready:
 	set @reqbaselv,200;// Required base level to change to trait era jobs.
-	set @reqjoblv,1;// Required job level to change to trait era jobs.
+	set @reqjoblv,70;// Required job level to change to trait era jobs.
 
 	if (checkcart() || checkfalcon() || checkriding() || checkdragon() || checkwug() || checkmadogear())
 		goto Xremove;

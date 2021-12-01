@@ -323,6 +323,6 @@
 // ABR (Automated Battle Robot) - Do any of the attack skills do splash damage??? Damage might be affected by summoner's base lv.
 8601,1,6,1,0,0,0,1,1,yes,0,0,0,weapon,0,0,0,	ABR_BATTLE_BUSTER,Battle Buster
 8602,9,6,1,0,0,0,1,1,yes,0,0,0,weapon,0,0,0,	ABR_DUAL_CANNON_FIRE,Dual Cannon Fire
-8603,0,6,4,0,0x3,5,1,1,yes,0,0,0,none,0,0,0,	ABR_NET_REPAIR,Net Repair// Need official splash size.
-8604,0,6,4,0,0x3,5,1,1,yes,0,0,0,none,0,0,0,	ABR_NET_SUPPORT,Net Support// Need official splash size.
+8603,0,6,4,0,0x3,12,1,1,yes,0,0,0,none,0,0,0,	ABR_NET_REPAIR,Net Repair
+8604,0,6,4,0,0x3,12,1,1,yes,0,0,0,none,0,0,0,	ABR_NET_SUPPORT,Net Support
 8605,9,6,1,0,0,0,1,1,yes,0,0,0,weapon,0,0,0,	ABR_INFINITY_BUSTER,Infinity Buster
