@@ -4355,6 +4355,7 @@
 	export_constant(W_DOUBLE_DA);
 	export_constant(W_DOUBLE_SA);
 	export_constant(MAX_WEAPON_TYPE_ALL);
+	export_constant(W_SHIELD);
 
 	/* ammunition types */
 	/* Send deprecation notice and temporarily replace with new constant value. */
@@ -5470,6 +5471,8 @@
 	export_constant(IG_XMAS_PACKAGE_14);
 	export_constant(IG_EASTER_EGG);
 	export_constant(IG_PITAPAT_BOX);
+	export_constant(IG_HAPPY_BOX_J);
+	export_constant(IG_CLASS_SHADOW_CUBE);
 
 	/* unit stop walking */
 	export_constant(USW_NONE);
@@ -8460,6 +8463,20 @@
 	export_constant(AUTOSPELL_FORCE_TARGET);
 	export_constant(AUTOSPELL_FORCE_RANDOM_LEVEL);
 	export_constant(AUTOSPELL_FORCE_ALL);
+
+	/* stats */
+	export_constant(PARAM_STR);
+	export_constant(PARAM_AGI);
+	export_constant(PARAM_VIT);
+	export_constant(PARAM_INT);
+	export_constant(PARAM_DEX);
+	export_constant(PARAM_LUK);
+	export_constant(PARAM_POW);
+	export_constant(PARAM_STA);
+	export_constant(PARAM_WIS);
+	export_constant(PARAM_SPL);
+	export_constant(PARAM_CON);
+	export_constant(PARAM_CRT);
 
 	#undef export_constant
 	#undef export_constant2

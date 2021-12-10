@@ -367,7 +367,7 @@ uint64 ItemDatabase::parseBodyNode(const YAML::Node &node) {
 			int64 constant;
 
 			if (!script_get_constant(className_constant.c_str(), &constant)) {
-				this->invalidWarning(classNode[className], "Invalid class upper %s, defaulting to All.\n", className.c_str());
+				this->invalidWarning(classNode[className], "Invalid class %s, defaulting to All.\n", className.c_str());
 				item->class_upper |= ITEMJ_ALL;
 				break;
 			}
