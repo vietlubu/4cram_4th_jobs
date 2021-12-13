@@ -670,8 +670,8 @@ struct map_session_data {
 
 	struct pet_data *pd;
 	struct homun_data *hd;	// [blackhole89]
-	struct mercenary_data *md;
-	struct elemental_data *ed;
+	s_mercenary_data *md;
+	s_elemental_data *ed;
 
 	struct s_hate_mob {
 		int  m; //-1 - none, other: map index corresponding to map name.
@@ -922,6 +922,12 @@ enum e_ammo_type : uint8 {
 	AMMO_CANNONBALL,
 	AMMO_THROWWEAPON,
 	MAX_AMMO_TYPE
+};
+
+enum e_card_type : uint8 {
+	CARD_NORMAL = 0,
+	CARD_ENCHANT,
+	MAX_CARD_TYPE
 };
 
 enum idletime_option {
