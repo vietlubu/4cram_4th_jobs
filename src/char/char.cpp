@@ -1815,12 +1815,21 @@ int char_mmo_char_tobuf(uint8* buffer, struct mmo_charstatus* p)
 	WBUFL(buf,32) = p->karma;
 	WBUFL(buf,36) = p->manner;
 	WBUFW(buf,40) = umin(p->status_point, INT16_MAX);
+#if PACKETVER >= 20211117
+	WBUFQ(buf, 42) = p->hp;
+	WBUFQ(buf, 50) = p->max_hp;
+	WBUFQ(buf, 58) = min(p->sp, INT16_MAX);
+	WBUFQ(buf, 66) = min(p->max_sp, INT16_MAX);
+	offset += 24;
+	buf = WBUFP(buffer, offset);
+#else
 	WBUFL(buf,42) = p->hp;
 	WBUFL(buf,46) = p->max_hp;
 	offset+=4;
 	buf = WBUFP(buffer,offset);
 	WBUFW(buf,46) = min(p->sp, INT16_MAX);
 	WBUFW(buf,48) = min(p->max_sp, INT16_MAX);
+#endif
 	WBUFW(buf,50) = DEFAULT_WALK_SPEED; // p->speed;
 	WBUFW(buf,52) = p->class_;
 	WBUFW(buf,54) = p->hair;

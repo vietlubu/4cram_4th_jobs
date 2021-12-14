@@ -10,8 +10,8 @@
  **/
 
 // 4CrAM Custom Settings
-// A 2020-09-02bRagexeRE of newer client is recommended.
-#define PACKETVER 20200902
+// A 2021-11-17aRagexeRE of newer client is recommended.
+#define PACKETVER 20211117
 #define PACKETVER_RE
 
 #endif /* CONFIG_CUSTOM_DEFINES_PRE_HPP */
