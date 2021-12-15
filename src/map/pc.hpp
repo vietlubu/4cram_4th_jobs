@@ -1124,7 +1124,9 @@ enum e_mado_type : uint16 {
 	( (class_) >= JOB_BABY_NINJA			&& (class_) <= JOB_BABY_REBELLION ) || \
 	( (class_) >= JOB_BABY_STAR_GLADIATOR2	&& (class_) <= JOB_BABY_STAR_EMPEROR2 ) || \
 	( (class_) >= JOB_DRAGON_KNIGHT			&& (class_) <= JOB_TROUVERE       ) || \
-	( (class_) >= JOB_WINDHAWK2				&& (class_) <= JOB_IMPERIAL_GUARD2 ) \
+	( (class_) >= JOB_WINDHAWK2				&& (class_) <= JOB_IMPERIAL_GUARD2 ) || \
+	( (class_) >= JOB_SKY_EMPEROR			&& (class_) <= JOB_SPIRIT_HANDLER ) || \
+	  (class_) == JOB_SKY_EMPEROR2 \
 )
 #define pcdb_checkid(class_) pcdb_checkid_sub((unsigned int)class_)
 
@@ -1571,6 +1573,9 @@ short pc_get_itemgroup_bonus_group(struct map_session_data* sd, uint16 group_id,
 bool pc_is_same_equip_index(enum equip_index eqi, short *equip_index, short index);
 /// Check if player is Taekwon Ranker and the level is >= 90 (battle_config.taekwon_ranker_min_lv)
 #define pc_is_taekwon_ranker(sd) (((sd)->class_&MAPID_UPPERMASK) == MAPID_TAEKWON && (sd)->status.base_level >= battle_config.taekwon_ranker_min_lv && pc_famerank((sd)->status.char_id,MAPID_TAEKWON))
+
+/// Check if player is a trait job.
+#define pc_is_trait_job(class_) (((class_)&JOBL_FOURTH) || ((class_)&MAPID_THIRDMASK) == MAPID_NIGHT_WATCH || ((class_)&MAPID_THIRDMASK) == MAPID_SHINKIROSHIRANUI || ((class_)&MAPID_UPPERMASK) == MAPID_SPIRIT_HANDLER)
 
 TIMER_FUNC(pc_autotrade_timer);
 

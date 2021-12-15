@@ -248,6 +248,16 @@
 	export_constant(JOB_DRAGON_KNIGHT2);
 	export_constant(JOB_IMPERIAL_GUARD2);
 
+	export_constant(JOB_SKY_EMPEROR);
+	export_constant(JOB_SOUL_ASCETIC);
+	export_constant(JOB_SHINKIRO);
+	export_constant(JOB_SHIRANUI);
+	export_constant(JOB_NIGHT_WATCH);
+	export_constant(JOB_HYPER_NOVICE);
+	export_constant(JOB_SPIRIT_HANDLER);
+
+	export_constant(JOB_SKY_EMPEROR2);
+
 	/* EA jobs */
 	export_constant2("EAJL_2_1",JOBL_2_1);
 	export_constant2("EAJL_2_2",JOBL_2_2);
@@ -423,6 +433,13 @@
 	export_constant2("EAJ_INQUISITOR",MAPID_INQUISITOR);
 	export_constant2("EAJ_BIOLO",MAPID_BIOLO);
 	export_constant2("EAJ_ABYSS_CHASER",MAPID_ABYSS_CHASER);
+
+	export_constant2("EAJ_SKY_EMPEROR", MAPID_SKY_EMPEROR);
+	export_constant2("EAJ_SOUL_ASCETIC", MAPID_SOUL_ASCETIC);
+	export_constant2("EAJ_SHINKIROSHIRANUI", MAPID_SHINKIROSHIRANUI);
+	export_constant2("EAJ_NIGHT_WATCH", MAPID_NIGHT_WATCH);
+	export_constant2("EAJ_HYPER_NOVICE", MAPID_HYPER_NOVICE);
+	export_constant2("EAJ_SPIRIT_HANDLER", MAPID_SPIRIT_HANDLER);
 
 	/* sex */
 	export_constant(SEX_FEMALE);
@@ -1848,6 +1865,80 @@
 	export_constant(SC_DEEP_POISONING_OPTION);
 	export_constant(SC_POISON_SHIELD);
 	export_constant(SC_POISON_SHIELD_OPTION);
+	
+	// 2021 Mutated Homunculus Skills
+	export_constant(SC_TOXIN_OF_MANDARA);
+	export_constant(SC_GOLDENE_TONE);
+	export_constant(SC_TEMPERING);
+
+	// 2021 4th Job Skills Update
+	export_constant(SC_RUSH_QUAKE1);
+	export_constant(SC_RUSH_QUAKE2);
+
+	// Hyper Novice
+	export_constant(SC_SHIELDCHAINRUSH);
+	export_constant(SC_MISTYFROST);
+	export_constant(SC_GROUNDGRAVITY);
+	export_constant(SC_BREAKINGLIMIT);
+	export_constant(SC_RULEBREAK);
+	
+	// Sky Emperor
+	export_constant(SC_RISING_SUN);
+	export_constant(SC_NOON_SUN);
+	export_constant(SC_SUNSET_SUN);
+	export_constant(SC_RISING_MOON);
+	export_constant(SC_MIDNIGHT_MOON);
+	export_constant(SC_DAWN_MOON);
+	export_constant(SC_STAR_BURST);
+	export_constant(SC_SKY_ENCHANT);
+	
+	// Soul Ascetic
+	export_constant(SC_TALISMAN_OF_PROTECTION);
+	export_constant(SC_TALISMAN_OF_WARRIOR);
+	export_constant(SC_TALISMAN_OF_MAGICIAN);
+	export_constant(SC_TALISMAN_OF_FIVE_ELEMENTS);
+	export_constant(SC_T_FIRST_GOD);
+	export_constant(SC_T_SECOND_GOD);
+	export_constant(SC_T_THIRD_GOD);
+	export_constant(SC_T_FOURTH_GOD);
+	export_constant(SC_T_FIVETH_GOD);
+	export_constant(SC_HEAVEN_AND_EARTH);
+	
+	// Night Watch
+	export_constant(SC_NW_P_F_I);
+	export_constant(SC_INTENSIVE_AIM);
+	export_constant(SC_INTENSIVE_AIM_COUNT);
+	export_constant(SC_GRENADE_FRAGMENT_1);
+	export_constant(SC_GRENADE_FRAGMENT_2);
+	export_constant(SC_GRENADE_FRAGMENT_3);
+	export_constant(SC_GRENADE_FRAGMENT_4);
+	export_constant(SC_GRENADE_FRAGMENT_5);
+	export_constant(SC_GRENADE_FRAGMENT_6);
+	export_constant(SC_AUTO_FIRING_LAUNCHEREFST);
+	export_constant(SC_HIDDEN_CARD);
+	export_constant(SC_NW_GRENADE_MASTERY);
+
+	// Shinkiro/Shiranui
+	export_constant(SC_SHADOW_CLOCK);
+	export_constant(SC_SHINKIROU_CALL);
+	export_constant(SC_NIGHTMARE);
+	export_constant(SC_SBUNSHIN);
+
+	// Spirit Handler
+	export_constant(SC_HOGOGONG);
+	export_constant(SC_MARINE_FESTIVAL);
+	export_constant(SC_SANDY_FESTIVAL);
+	export_constant(SC_KI_SUL_RAMPAGE);
+	export_constant(SC_COLORS_OF_HYUN_ROK_1);
+	export_constant(SC_COLORS_OF_HYUN_ROK_2);
+	export_constant(SC_COLORS_OF_HYUN_ROK_3);
+	export_constant(SC_COLORS_OF_HYUN_ROK_4);
+	export_constant(SC_COLORS_OF_HYUN_ROK_5);
+	export_constant(SC_COLORS_OF_HYUN_ROK_6);
+	export_constant(SC_COLORS_OF_HYUN_ROK_BUFF);
+	export_constant(SC_TEMPORARY_COMMUNION);
+	export_constant(SC_BLESSING_OF_M_CREATURES);
+	export_constant(SC_BLESSING_OF_M_C_DEBUFF);
 
 #ifdef RENEWAL
 	export_constant(SC_EXTREMITYFIST2);

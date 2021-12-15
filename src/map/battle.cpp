@@ -5858,11 +5858,11 @@ static void battle_calc_attack_left_right_hands(struct Damage* wd, struct block_
 			wd->damage2 = (int64)wd->damage * (1 + (skill * 2))/100;
 		} else if(is_attack_right_handed(src, skill_id) && is_attack_left_handed(src, skill_id)) {	//Dual-wield
 			if (wd->damage) {
-				if( (sd->class_&MAPID_BASEMASK) == MAPID_THIEF ) {
+				if((sd->class_&MAPID_UPPERMASK) == MAPID_ASSASSIN) {
 					skill = pc_checkskill(sd,AS_RIGHT);
 					ATK_RATER(wd->damage, 50 + (skill * 10))
 				}
-				else if(sd->class_ == MAPID_KAGEROUOBORO) {
+				else if((sd->class_&MAPID_UPPERMASK) == MAPID_KAGEROUOBORO) {
 					skill = pc_checkskill(sd,KO_RIGHT);
 					ATK_RATER(wd->damage, 70 + (skill * 10))
 				}
@@ -5870,11 +5870,11 @@ static void battle_calc_attack_left_right_hands(struct Damage* wd, struct block_
 					wd->damage = 1;
 			}
 			if (wd->damage2) {
-				if( (sd->class_&MAPID_BASEMASK) == MAPID_THIEF) {
+				if((sd->class_&MAPID_UPPERMASK) == MAPID_ASSASSIN) {
 					skill = pc_checkskill(sd,AS_LEFT);
 					ATK_RATEL(wd->damage2, 30 + (skill * 10))
 				}
-				else if(sd->class_ == MAPID_KAGEROUOBORO) {
+				else if((sd->class_&MAPID_UPPERMASK) == MAPID_KAGEROUOBORO) {
 					skill = pc_checkskill(sd,KO_LEFT);
 					ATK_RATEL(wd->damage2, 50 + (skill * 10))
 				}

@@ -1596,14 +1596,14 @@ void initChangeTables(void)
 	SkillStatusChangeTable[skill_get_index(SL_SAGE)]		= (sc_type)MAPID_SAGE,
 	SkillStatusChangeTable[skill_get_index(SL_CRUSADER)]	= (sc_type)MAPID_CRUSADER,
 	SkillStatusChangeTable[skill_get_index(SL_SUPERNOVICE)]	= (sc_type)MAPID_SUPER_NOVICE,
-	SkillStatusChangeTable[skill_get_index(SL_KNIGHT)]	= (sc_type)MAPID_KNIGHT,
-	SkillStatusChangeTable[skill_get_index(SL_WIZARD)]	= (sc_type)MAPID_WIZARD,
-	SkillStatusChangeTable[skill_get_index(SL_PRIEST)]	= (sc_type)MAPID_PRIEST,
+	SkillStatusChangeTable[skill_get_index(SL_KNIGHT)]		= (sc_type)MAPID_KNIGHT,
+	SkillStatusChangeTable[skill_get_index(SL_WIZARD)]		= (sc_type)MAPID_WIZARD,
+	SkillStatusChangeTable[skill_get_index(SL_PRIEST)]		= (sc_type)MAPID_PRIEST,
 	SkillStatusChangeTable[skill_get_index(SL_BARDDANCER)]	= (sc_type)MAPID_BARDDANCER,
-	SkillStatusChangeTable[skill_get_index(SL_ROGUE)]	= (sc_type)MAPID_ROGUE,
-	SkillStatusChangeTable[skill_get_index(SL_ASSASIN)]	= (sc_type)MAPID_ASSASSIN,
+	SkillStatusChangeTable[skill_get_index(SL_ROGUE)]		= (sc_type)MAPID_ROGUE,
+	SkillStatusChangeTable[skill_get_index(SL_ASSASIN)]		= (sc_type)MAPID_ASSASSIN,
 	SkillStatusChangeTable[skill_get_index(SL_BLACKSMITH)]	= (sc_type)MAPID_BLACKSMITH,
-	SkillStatusChangeTable[skill_get_index(SL_HUNTER)]	= (sc_type)MAPID_HUNTER,
+	SkillStatusChangeTable[skill_get_index(SL_HUNTER)]		= (sc_type)MAPID_HUNTER,
 	SkillStatusChangeTable[skill_get_index(SL_SOULLINKER)]	= (sc_type)MAPID_SOUL_LINKER,
 
 	/* Status that don't have a skill associated */
@@ -4216,7 +4216,7 @@ static int status_get_hpbonus(struct block_list *bl, enum e_status_bonus type) {
 #ifndef HP_SP_TABLES
 			if ((sd->class_&MAPID_UPPERMASK) == MAPID_SUPER_NOVICE && sd->status.base_level >= 99)
 				bonus += 2000; // Supernovice lvl99 hp bonus.
-			if ((sd->class_&MAPID_UPPERMASK) == MAPID_SUPER_NOVICE && sd->status.base_level >= 150)
+			if ((sd->class_&MAPID_THIRDMASK) == MAPID_SUPER_NOVICE_E && sd->status.base_level >= 150)
 				bonus += 2000; // Supernovice lvl150 hp bonus.
 #endif
 		}
@@ -4627,7 +4627,7 @@ static unsigned int status_calc_maxap_pc(struct map_session_data* sd) {
 
 	nullpo_ret(sd);
 
-	dmax = (sd->class_&JOBL_FOURTH) ? 200 : 0;
+	dmax = pc_is_trait_job(sd->class_) ? 200 : 0;
 	dmax += status_get_apbonus(&sd->bl, STATUS_BONUS_FIX);
 	equip_bonus = (dmax * status_get_apbonus_equip(sd) / 100);
 	item_bonus = (dmax * status_get_apbonus_item(&sd->bl) / 100);

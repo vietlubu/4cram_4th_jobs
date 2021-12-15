@@ -21,6 +21,14 @@ Body:
       Meister2: true
       Dragon_Knight2: true
       Imperial_Guard2: true
+      Sky_Emperor: true
+      Soul_Ascetic: true
+      Shinkiro: true
+      Shiranui: true
+      Night_Watch: true
+      Hyper_Novice: true
+      Spirit_Handler: true
+      Sky_Emperor2: true
     MaxBaseLevel: 250
     BaseExp:
       - Level: 1
@@ -541,6 +549,14 @@ Body:
       Meister2: true
       Dragon_Knight2: true
       Imperial_Guard2: true
+      Sky_Emperor: true
+      Soul_Ascetic: true
+      Shinkiro: true
+      Shiranui: true
+      Night_Watch: true
+      Hyper_Novice: true
+      Spirit_Handler: true
+      Sky_Emperor2: true
     MaxJobLevel: 50
     JobExp:
       - Level: 1

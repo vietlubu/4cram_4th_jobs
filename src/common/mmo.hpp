@@ -63,7 +63,7 @@ typedef uint32 t_itemid;
 #define MAX_BANK_ZENY SINT32_MAX ///Max zeny in Bank
 #define MAX_FAME 1000000000 ///Max fame points
 #define MAX_CART 100 ///Maximum item in cart
-#define MAX_SKILL 1460 ///Maximum skill can be hold by Player, Homunculus, & Mercenary (skill list) AND skill_db limit
+#define MAX_SKILL 1580 ///Maximum skill can be hold by Player, Homunculus, & Mercenary (skill list) AND skill_db limit
 #define DEFAULT_WALK_SPEED 150 ///Default walk speed
 #define MIN_WALK_SPEED 20 ///Min walk speed
 #define MAX_WALK_SPEED 1000 ///Max walk speed
@@ -140,7 +140,7 @@ const t_itemid WEDDING_RING_F = 2635;
 
 //Base Homun skill.
 #define HM_SKILLBASE 8001
-#define MAX_HOMUNSKILL 43
+#define MAX_HOMUNSKILL 59
 #define MAX_HOMUNCULUS_CLASS	52	//[orn], Increased to 60 from 16 to allow new Homun-S.
 #define HM_CLASS_BASE 6001
 #define HM_CLASS_MAX (HM_CLASS_BASE+MAX_HOMUNCULUS_CLASS-1)
@@ -1025,6 +1025,16 @@ enum e_job {
 	JOB_MEISTER2,
 	JOB_DRAGON_KNIGHT2,
 	JOB_IMPERIAL_GUARD2,
+		
+	JOB_SKY_EMPEROR = 4302,
+	JOB_SOUL_ASCETIC,
+	JOB_SHINKIRO,
+	JOB_SHIRANUI,
+	JOB_NIGHT_WATCH,
+	JOB_HYPER_NOVICE,
+	JOB_SPIRIT_HANDLER,
+
+	JOB_SKY_EMPEROR2 = 4316,
 
 	JOB_MAX,
 };
