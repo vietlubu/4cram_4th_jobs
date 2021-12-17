@@ -63,9 +63,8 @@ enum sc_type : int16;
 #define ATTENDANCE_COUNT_VAR "#AttendanceCounter"
 #define ACHIEVEMENTLEVEL "AchievementLevel"
 
-//Update this max as necessary. 55 is the value needed for Super Baby currently
-//Raised to 105 since Expanded Super Baby needs it.
-#define MAX_SKILL_TREE 105
+//Update this max as necessary. Set to 117 as the Hyper Novice needs it.
+#define MAX_SKILL_TREE 117
 //Total number of classes (for data storage)
 #define CLASS_COUNT (JOB_MAX - JOB_NOVICE_HIGH + JOB_MAX_BASIC)
 

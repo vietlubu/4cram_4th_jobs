@@ -6130,6 +6130,559 @@ Body:
     SplashArea: 6
     Requires:
       SpCost: 1
+  - Id: 5401
+    Name: NW_P_F_I
+    Description: P.F.I
+    MaxLevel: 10
+  - Id: 5402
+    Name: NW_GRENADE_MASTERY
+    Description: Grenade Mastery
+    MaxLevel: 10
+  - Id: 5403
+    Name: NW_INTENSIVE_AIM
+    Description: Intensive Aim
+    MaxLevel: 1
+    CastCancel: true
+  - Id: 5404
+    Name: NW_GRENADE_FRAGMENT
+    Description: Grenade Fragment
+    MaxLevel: 7
+    CastCancel: true
+  - Id: 5405
+    Name: NW_THE_VIGILANTE_AT_NIGHT
+    Description: The Vigilante At Night
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5406
+    Name: NW_ONLY_ONE_BULLET
+    Description: Only One Bullet
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5407
+    Name: NW_SPIRAL_SHOOTING
+    Description: Spiral Shooting
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5408
+    Name: NW_MAGAZINE_FOR_ONE
+    Description: Magazine For One
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5409
+    Name: NW_WILD_FIRE
+    Description: Wild Fire
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5410
+    Name: NW_BASIC_GRENADE
+    Description: Basic Grenade
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5411
+    Name: NW_HASTY_FIRE_IN_THE_HOLE
+    Description: Hasty Fire In The Hole
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5412
+    Name: NW_GRENADES_DROPPING
+    Description: Grenades Dropping
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5413
+    Name: NW_AUTO_FIRING_LAUNCHER
+    Description: Auto Firing Launcher
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5414
+    Name: NW_HIDDEN_CARD
+    Description: Hidden Card
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5415
+    Name: NW_MISSION_BOMBARD
+    Description: Mission Bombard
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5416
+    Name: SOA_TALISMAN_MASTERY
+    Description: Talisman Mastery
+    MaxLevel: 10
+  - Id: 5417
+    Name: SOA_SOUL_MASTERY
+    Description: Soul Mastery
+    MaxLevel: 10
+  - Id: 5418
+    Name: SOA_TALISMAN_OF_PROTECTION
+    Description: Talisman Of Protection
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5419
+    Name: SOA_TALISMAN_OF_WARRIOR
+    Description: Talisman Of Warrior
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5420
+    Name: SOA_TALISMAN_OF_MAGICIAN
+    Description: Talisman Of Magician
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5421
+    Name: SOA_SOUL_GATHERING
+    Description: Soul Gathering
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5422
+    Name: SOA_TOTEM_OF_TUTELARY
+    Description: Totem Of Tutelary
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5423
+    Name: SOA_TALISMAN_OF_FIVE_ELEMENTS
+    Description: Talisman Of Five Elements
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5424
+    Name: SOA_TALISMAN_OF_SOUL_STEALING
+    Description: Talisman Of Soul Stealing
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5425
+    Name: SOA_EXORCISM_OF_MALICIOUS_SOUL
+    Description: Exorcism Of Malicious Soul
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5426
+    Name: SOA_TALISMAN_OF_BLUE_DRAGON
+    Description: Talisman Of Blue Dragon
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5427
+    Name: SOA_TALISMAN_OF_WHITE_TIGER
+    Description: Talisman Of White Tiger
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5428
+    Name: SOA_TALISMAN_OF_RED_PHOENIX
+    Description: Talisman Of Red Phoenix
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5429
+    Name: SOA_TALISMAN_OF_BLACK_TORTOISE
+    Description: Talisman Of Black Tortoise
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5430
+    Name: SOA_TALISMAN_OF_FOUR_BEARING_GOD
+    Description: Talisman Of Four Bearing God
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5431
+    Name: SOA_CIRCLE_OF_DIRECTIONS_AND_ELEMENTALS
+    Description: Circle Of Directions And Elementals
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5432
+    Name: SOA_SOUL_OF_HEAVEN_AND_EARTH
+    Description: Soul Of Heaven And Earth
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5433
+    Name: SH_MYSTICAL_CREATURE_MASTERY
+    Description: Mystical Creature Mastery
+    MaxLevel: 10
+  - Id: 5434
+    Name: SH_COMMUNE_WITH_CHUL_HO
+    Description: Commune With Chul Ho
+    MaxLevel: 1
+  - Id: 5435
+    Name: SH_CHUL_HO_SONIC_CLAW
+    Description: Chul Ho Sonic Claw
+    MaxLevel: 7
+    CastCancel: true
+  - Id: 5436
+    Name: SH_HOWLING_OF_CHUL_HO
+    Description: Howling Of Chul Ho
+    MaxLevel: 7
+    CastCancel: true
+  - Id: 5437
+    Name: SH_HOGOGONG_STRIKE
+    Description: Hogogong Strike
+    MaxLevel: 7
+    CastCancel: true
+  - Id: 5438
+    Name: SH_COMMUNE_WITH_KI_SUL
+    Description: Commune With Ki Sul
+    MaxLevel: 1
+  - Id: 5439
+    Name: SH_KI_SUL_WATER_SPRAYING
+    Description: Ki Sul Water Spraying
+    MaxLevel: 7
+    CastCancel: true
+  - Id: 5440
+    Name: SH_MARINE_FESTIVAL_OF_KI_SUL
+    Description: Marine Festival Of Ki Sul
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5441
+    Name: SH_SANDY_FESTIVAL_OF_KI_SUL
+    Description: Sandy Festival Of Ki Sul
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5442
+    Name: SH_KI_SUL_RAMPAGE
+    Description: Ki Sul Rampage
+    MaxLevel: 7
+    CastCancel: true
+  - Id: 5443
+    Name: SH_COMMUNE_WITH_HYUN_ROK
+    Description: Commune With Hyun Rok
+    MaxLevel: 1
+  - Id: 5444
+    Name: SH_COLORS_OF_HYUN_ROK
+    Description: Colors Of Hyun Rok
+    MaxLevel: 7
+    CastCancel: true
+  - Id: 5445
+    Name: SH_HYUN_ROKS_BREEZE
+    Description: Hyun Roks Breeze
+    MaxLevel: 7
+    CastCancel: true
+  - Id: 5446
+    Name: SH_HYUN_ROK_CANNON
+    Description: Hyun Rok Cannon
+    MaxLevel: 7
+    CastCancel: true
+  - Id: 5447
+    Name: SH_TEMPORARY_COMMUNION
+    Description: Temporary Communion
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5448
+    Name: SH_BLESSING_OF_MYSTICAL_CREATURES
+    Description: Blessing Of Mystical Creatures
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5449
+    Name: HN_SELFSTUDY_TATICS
+    Description: Self Study Tatics
+    MaxLevel: 10
+  - Id: 5450
+    Name: HN_SELFSTUDY_SOCERY
+    Description: Self Study Socery
+    MaxLevel: 10
+  - Id: 5451
+    Name: HN_DOUBLEBOWLINGBASH
+    Description: Double Bowling Bash
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5452
+    Name: HN_MEGA_SONIC_BLOW
+    Description: Mega Sonic Blow
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5453
+    Name: HN_SHIELD_CHAIN_RUSH
+    Description: Shield Chain Rush
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5454
+    Name: HN_SPIRAL_PIERCE_MAX
+    Description: Spiral Pierce Max
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5455
+    Name: HN_METEOR_STORM_BUSTER
+    Description: Meteor Storm Buster
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5456
+    Name: HN_JUPITEL_THUNDER_STORM
+    Description: Jupitel Thunder Storm
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5457
+    Name: HN_JACK_FROST_NOVA
+    Description: Jack Frost Nova
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5458
+    Name: HN_HELLS_DRIVE
+    Description: Hells Drive
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5459
+    Name: HN_GROUND_GRAVITATION
+    Description: Ground Gravitation
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5460
+    Name: HN_NAPALM_VULCAN_STRIKE
+    Description: Napalm Vulcan Strike
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5461
+    Name: HN_BREAKINGLIMIT
+    Description: Breaking Limit
+    MaxLevel: 1
+    CastCancel: true
+  - Id: 5462
+    Name: HN_RULEBREAK
+    Description: Rule Break
+    MaxLevel: 1
+    CastCancel: true
+  - Id: 5463
+    Name: SKE_SKY_MASTERY
+    Description: Sky Mastery
+    MaxLevel: 10
+  - Id: 5464
+    Name: SKE_WAR_BOOK_MASTERY
+    Description: War Book Mastery
+    MaxLevel: 10
+  - Id: 5465
+    Name: SKE_RISING_SUN
+    Description: Rising Sun
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5466
+    Name: SKE_NOON_BLAST
+    Description: Noon Blast
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5467
+    Name: SKE_SUNSET_BLAST
+    Description: Sunset Blast
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5468
+    Name: SKE_RISING_MOON
+    Description: Rising Moon
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5469
+    Name: SKE_MIDNIGHT_KICK
+    Description: Midnight Kick
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5470
+    Name: SKE_DAWN_BREAK
+    Description: Dawn Break
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5471
+    Name: SKE_TWINKLING_GALAXY
+    Description: Twinkling Galaxy
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5472
+    Name: SKE_STAR_BURST
+    Description: Star Burst
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5473
+    Name: SKE_STAR_CANNON
+    Description: Star Cannon
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5474
+    Name: SKE_ALL_IN_THE_SKY
+    Description: All In The Sky
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5475
+    Name: SKE_ENCHANTING_SKY
+    Description: Enchanting Sky
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5476
+    Name: SS_TOKEDASU
+    Description: Melt Away
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5477
+    Name: SS_SHIMIRU
+    Description: Infiltrate
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5478
+    Name: SS_AKUMUKESU
+    Description: Nightmare Erasion
+    MaxLevel: 1
+    CastCancel: true
+  - Id: 5479
+    Name: SS_SHINKIROU
+    Description: Mirage
+    MaxLevel: 1
+    CastCancel: true
+  - Id: 5480
+    Name: SS_KAGEGARI
+    Description: Shadow Hunting
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5481
+    Name: SS_KAGENOMAI
+    Description: Shadow Dance
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5482
+    Name: SS_KAGEGISSEN
+    Description: Shadow Flash
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5483
+    Name: SS_FUUMASHOUAKU
+    Description: Huuma Shuriken - Grasp
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5484
+    Name: SS_FUUMAKOUCHIKU
+    Description: Huuma Shuriken - Construct
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5485
+    Name: SS_KUNAIWAIKYOKU
+    Description: Kunai - Distortion
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5486
+    Name: SS_KUNAIKAITEN
+    Description: Kunai - Rotation
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5487
+    Name: SS_KUNAIKUSSETSU
+    Description: Kunai - Refraction
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5488
+    Name: SS_SEKIENHOU
+    Description: Red Flame Cannon
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5489
+    Name: SS_REIKETSUHOU
+    Description: Cold Blooded Cannon
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5490
+    Name: SS_RAIDENPOU
+    Description: Thundering Cannon
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5491
+    Name: SS_KINRYUUHOU
+    Description: Golden Dragon Canno
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5492
+    Name: SS_ANTENPOU
+    Description: Darkening Cannon
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 5493
+    Name: SS_KAGEAKUMU
+    Description: Shadow - Nightmare
+    MaxLevel: 1
+    CastCancel: true
+  - Id: 5494
+    Name: SS_HITOUAKUMU
+    Description: Kunai - Nightmare
+    MaxLevel: 1
+    CastCancel: true
+  - Id: 5495
+    Name: SS_ANKOKURYUUAKUMU
+    Description: Dark Dragon - Nightmare
+    MaxLevel: 1
+    CastCancel: true
+  - Id: 5496
+    Name: NW_THE_VIGILANTE_AT_NIGHT_GUN_GATLING
+    Description: The Vigilante At Night Gun Gatling
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5497
+    Name: NW_THE_VIGILANTE_AT_NIGHT_GUN_SHOTGUN
+    Description: The Vigilante At Night Gun Shotgun
+    MaxLevel: 5
+    CastCancel: true
+  - Id: 5498
+    Name: SS_FUUMAKOUCHIKU_BLASTING
+    Description: Huuma Shuriken - Construct Blasting
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 8044
+    Name: MH_BLAST_FORGE
+    Description: Blast Forge
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 8045
+    Name: MH_TEMPERING
+    Description: Tempering
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 8046
+    Name: MH_CLASSY_FLUTTER
+    Description: Classy Flutter
+    MaxLevel: 10
+  - Id: 8047
+    Name: MH_TWISTER_CUTTER
+    Description: Twister Cutter
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 8048
+    Name: MH_ABSOLUTE_ZEPHYR
+    Description: Absolute Zephyr
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 8049
+    Name: MH_BRUSHUP_CLAW
+    Description: Brushup Claw
+    MaxLevel: 10
+  - Id: 8050
+    Name: MH_BLAZING_AND_FURIOUS
+    Description: Blazing And Furious
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 8051
+    Name: MH_THE_ONE_FIGHTER_RISES
+    Description: The One Fighter Rises
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 8052
+    Name: MH_POLISHING_NEEDLE
+    Description: Polishing Needle
+    MaxLevel: 10
+  - Id: 8053
+    Name: MH_TOXIN_OF_MANDARA
+    Description: Toxin Of Mandara
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 8054
+    Name: MH_NEEDLE_STINGER
+    Description: Needle Stinger
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 8055
+    Name: MH_LICHT_GEHORN
+    Description: Licht Gehorn
+    MaxLevel: 10
+  - Id: 8056
+    Name: MH_GLANZEN_SPIES
+    Description: Glanzen Spies
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 8057
+    Name: MH_HEILIGE_PFERD
+    Description: Heilige Pferd
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 8058
+    Name: MH_GOLDENE_TONE
+    Description: Goldene Tone
+    MaxLevel: 10
+    CastCancel: true
+  - Id: 8059
+    Name: MH_BLAZING_LAVA
+    Description: Blazing Lava
+    MaxLevel: 10
   - Id: 8443
     Name: EM_EL_FLAMETECHNIC
     Description: Flame Technic

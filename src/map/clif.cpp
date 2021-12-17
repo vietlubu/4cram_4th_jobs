@@ -5352,7 +5352,7 @@ void clif_skill_unit_test(struct block_list *bl, short x, short y, int unit_id, 
 	WBUFW(buf, 0) = 0x09ca;
 	WBUFW(buf, 2) = packet_len(0x09ca);
 	WBUFL(buf, 4) = 1000;
-	WBUFL(buf, 8) = 2000;
+	WBUFL(buf, 8) = bl->id;
 	WBUFW(buf, 12) = x;
 	WBUFW(buf, 14) = y;
 	WBUFL(buf, 16) = unit_id;
