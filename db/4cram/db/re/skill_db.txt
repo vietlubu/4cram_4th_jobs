@@ -150,7 +150,7 @@
 5260,0,6,4,0,0x1,0,5,1,yes,0,0,0,none,0,0,0,	IG_ATTACK_STANCE,Attack Stance
 5261,0,6,4,0,0x1,1:1:2:2:3,5,1,yes,0,0,0,none,0,0,0,	IG_ULTIMATE_SACRIFICE,Ultimate Sacrifice
 5262,0,6,4,0,0x1,0,5,1,yes,0,0,0,none,0,0,0,	IG_HOLY_SHIELD,Holy Shield
-5263,9,6,1,-1,0x2,3,10,1,yes,0,0,0,weapon,0,0,0,	IG_GRAND_JUDGEMENT,Grand Judgement
+5263,9,6,1,-1,0x2,3,10,1,yes,0,0,0,weapon,0,0,0,	IG_GRAND_JUDGEMENT,Grand Judgement// Fix me. Not dealing splash damage.
 5264,9,8,1,6,0,0,10,-10,yes,0,0,0,magic,0,0,0,	IG_JUDGEMENT_CROSS,Judgement Cross
 5265,9,8,1,-1,0,0,5,-7,yes,0,0,0,weapon,0,0,2,	IG_SHIELD_SHOOTING,Shield Shooting// Assume it should have a far cast range right?
 5266,1,8,1,-1,0x2,3,10,2,yes,0,0,0,weapon,0,0,3,	IG_OVERSLASH,Overslash
@@ -218,7 +218,7 @@
 5318,0,6,4,0,0x1,0,10,1,yes,0,0,0,none,0,0,0,	ABC_ABYSS_SLAYER,Abyss Slayer
 5319,9,6,2,0,0,0,10,1,yes,0,0,0,magic,0,0,0,	ABC_ABYSS_STRIKE,Abyss Strike
 5320,2,8,1,-1,0x2,1:1:1:1:1:2:2:2:2:2,10,-5,yes,0,0,0,weapon,0,0,2,	ABC_DEFT_STAB,Deft Stab// Dash skill??? Is it really a 2 cell range?
-5321,9,8,2,0,0,0,5,1,yes,0,0,0,magic,0,0,4,	ABC_ABYSS_SQUARE,Abyss Square// Splash needed to check for caster? Code in double hit later.
+5321,9,8,2,0,0,0,5,1,yes,0,0,0,magic,0,0,4,	ABC_ABYSS_SQUARE,Abyss Square// FIX DEFT_STAB not dashing.
 5322,9,8,1,-1,0x100,0,10,-10,yes,0,0,0,weapon,0,0,2,	ABC_FRENZY_SHOT,Frenzy Shot
 
 // Windhawk
