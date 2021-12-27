@@ -38,3 +38,69 @@
 Header:
   Type: INSTANCE_DB
   Version: 1
+
+Body:
+  - Id: 80
+    Name: Twilight Garden
+    TimeLimit: 7200
+    Enter:
+      Map: 1@bamn
+      X: 102
+      Y: 321
+    AdditionalMaps:
+      1@bamq: true
+  - Id: 81
+    Name: Hey! Sweety
+    TimeLimit: 3600
+    Enter:
+      Map: 1@bamq
+      X: 16
+      Y: 39
+    AdditionalMaps:
+      1@bamn: true
+  - Id: 82
+    Name: Water Garden
+    TimeLimit: 3600
+    Enter:
+      Map: 1@ghg
+      X: 64
+      Y: 69
+  - Id: 83
+    Name: Water Garden (Normal)
+    TimeLimit: 3600
+    Enter:
+      Map: 1@ghg
+      X: 64
+      Y: 69
+  - Id: 84
+    Name: Water Garden (Hard)
+    TimeLimit: 3600
+    Enter:
+      Map: 1@ghg
+      X: 64
+      Y: 69
+  - Id: 85
+    Name: Lost Farm of Time
+    TimeLimit: 3600
+    Enter:
+      Map: 1@lost
+      X: 161
+      Y: 42
+  - Id: 86
+    Name: Hidden Flower Garden
+    Enter:
+      Map: 1@herbs
+      X: 51
+      Y: 273
+  - Id: 87
+    Name: Security Area 1
+    Enter:
+      Map: 1@herbs
+      X: 45
+      Y: 208
+  - Id: 88
+    Name: Security Area 2
+    Enter:
+      Map: 1@herbs
+      X: 45
+      Y: 208
